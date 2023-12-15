@@ -15,6 +15,7 @@ Esc - Pause menu
 When encountering an enemy/boss, the penguin will enter a battle screen. The battle will be either:
 * osu! (click circles to a tune in succession); boss battle
 * Dodging projectiles (WASD keys); normal battle
+
 Enemies:
 * Kade the killer whale (final boss)
 * Westie the Petrel (boss)
