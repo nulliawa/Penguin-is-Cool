@@ -3,38 +3,41 @@ import java.awt.event.KeyEvent;
 public class Player {
     // Private vs. protected?
     private int x, y;
-    private int playerX, playerY;
-    private int walkDistance = 5;
+    private int walkSpeed = 5;
     private int interactionDistance = 10; // Within interactionDistance
-    public Player (int x, int y) {
+
+    public Player(int x, int y) {
         this.x = x;
         this.y = y;
-        playerX = 0;
-        playerY = 0;
     }
 
-    public void playerKeyPress(int keyCode) {
+    public void move(int keyCode) {
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
         // Movement of penguin
         if (keyCode == W) {
-            playerY -= walkDistance;
+            x -= walkSpeed;
         }
         if (keyCode == A) {
-            playerX -= walkDistance;
+            x -= walkSpeed;
         }
         if (keyCode == S) {
-            playerY += walkDistance;
+            y += walkSpeed;
         }
         if (keyCode == D) {
-            playerX += walkDistance;
+            y += walkSpeed;
         }
     }
 
-    public void playerCollision() {
+    public void keyPress(int keyCode) {
+        move(keyCode);
+        // interact();
+    }
+
+    public void collision() {
 
     }
 
-//    public void interact(Puzzle puzzle) {
+//    public void interact(int keyCode, Puzzle puzzle) {
 //        final int SPACE = KeyEvent.VK_SPACE;
 //        // Check if penguin is close enough to an object
 //        if (Math.hypot(puzzle.getX() - playerX, puzzle.getY()) <= interactionDistance) {
@@ -42,7 +45,14 @@ public class Player {
 //        }
 //    }
 
-//    public void draw(Graphics g) {
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+    //    public void draw(Graphics g) {
 //        // Draw the penguin
 //    }
 
