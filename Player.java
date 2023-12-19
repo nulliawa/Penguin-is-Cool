@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 public class Player {
     // Private vs. protected?
     private int x, y;
-    private final int width = 30, height = 40;
+    private final int WIDTH = 30, HEIGHT = 40;
     private int walkSpeed = 5;
     private int interactionDistance = 10; // Within interactionDistance
 
@@ -46,13 +46,14 @@ public class Player {
 //            // If getting close enough to an object, it changes
 //        }
 //    }
-
+    public void setX(int x){
+        this.x=x;
+    }
+    public void setY(int y){
+        this.y=y;
+    }
     public Rectangle getRect(){
         return new Rectangle(x,y,WIDTH,HEIGHT);
-    }
-    
-    public int getY() {
-        return y;
     }
 
     public void draw(Graphics g) {
