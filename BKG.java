@@ -18,7 +18,9 @@ public class BKG {
             p.setY(this.offY+pH);
         }
         //bottom intersect
+        else if(pY<this.offY+this.height){
 
+        }
     }
     public void move(Player p){
 

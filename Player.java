@@ -33,7 +33,7 @@ public class Player {
     }
 
     public void keyPress(int keyCode) {
-        move(keyCode);
+//        move(keyCode);
         // interact();
     }
 
