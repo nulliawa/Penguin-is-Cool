@@ -47,10 +47,10 @@ public class Player {
 //        }
 //    }
 
-    public int getX() {
-        return x;
+    public Rectangle getRect(){
+        return new Rectangle(x,y,WIDTH,HEIGHT);
     }
-
+    
     public int getY() {
         return y;
     }
@@ -60,5 +60,9 @@ public class Player {
         g.setColor(Color.BLUE);
         g.fillRect(x, y, 30, 30);
     }
+
+    //    public void draw(Graphics g) {
+//        // Draw the penguin
+//    }
 
 }
