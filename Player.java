@@ -48,20 +48,14 @@ public class Player {
 //            // If getting close enough to an object, it changes
 //        }
 //    }
-<<<<<<< Updated upstream
     public void setX(int x){
         this.x=x;
     }
     public void setY(int y){
         this.y=y;
     }
-    public Rectangle getRect(){
-        return new Rectangle(x,y,WIDTH,HEIGHT);
-=======
-
     public Rectangle getRect() {
         return new Rectangle(x, y, WIDTH, HEIGHT);
->>>>>>> Stashed changes
     }
 
     public void draw(Graphics g) {
