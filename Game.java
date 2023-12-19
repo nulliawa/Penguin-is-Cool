@@ -14,6 +14,13 @@ public class Game extends BaseFrame{
     }
 
     public void move(Player p){
+        /*
+        if (x < Math.abs(background.x - offsetDistance) || y < Math.abs(background.y - offsetDistance)) { // If the penguin is within the offset range
+        if player distance is near the edge, then player.move(), else bkg.move()
+         */
+        if (player.getRect().x < Math.abs(bkg.getRect.x - offsetDistance)) {
+            
+        }
         bkg.move(p);
     }
     public void draw(Graphics g){//test
