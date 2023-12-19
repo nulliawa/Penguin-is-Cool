@@ -18,7 +18,7 @@ public class Game extends BaseFrame{
     }
     public void draw(Graphics g){//test
         g.setColor(Color.red);
-        bkg.draw(g);
+        bkg.draw(g,null);
 //        g.drawRect(mx,my,20,20);
 //        if(mb==1){
 //            g.fillRect(mx,my,20,20);
@@ -28,7 +28,7 @@ public class Game extends BaseFrame{
     @Override
     public void keyPressed(KeyEvent e){
         super.keyPressed(e);
-        player.playerKeyPress(e.getKeyCode());
+        player.keyPress(e.getKeyCode());
     }
 
 
