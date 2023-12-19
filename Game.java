@@ -33,6 +33,6 @@ public class Game extends BaseFrame{
 
 
     public static void main(String[] args) {
-        Game game=new Game("Penguin Is Cool",1200,600);;;;;;;;;;;;;;
+        Game game=new Game("Penguin Is Cool",1200,600);
     }
 }

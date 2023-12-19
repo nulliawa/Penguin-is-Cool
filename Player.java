@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class Player {
@@ -45,13 +46,11 @@ public class Player {
 //        }
 //    }
 
-    public int getX() {
-        return x;
+    public Rectangle getRect(){
+        return new Rectangle(x,y,WIDTH,HEIGHT);
     }
 
-    public int getY() {
-        return y;
-    }
+
     //    public void draw(Graphics g) {
 //        // Draw the penguin
 //    }
