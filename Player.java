@@ -4,17 +4,20 @@ import java.awt.event.KeyEvent;
 public class Player {
     // Private vs. protected?
     private int x, y;
-    private final int width = 30, height = 40;
+    private final int WIDTH = 30, HEIGHT = 40;
     private int walkSpeed = 5;
-    private int interactionDistance = 10; // Within interactionDistance
+    private int interactionDistance = 10, offsetDistance = 10; // Within interactionDistance
 
     public Player(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public void move(int keyCode) {
+    public void move(int keyCode, Rectangle background) {
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
+        if (x < background.x - offsetDistance || y < background.y - offsetDistance) { // If the penguin is within the offset range
+
+        }
         // Movement of penguin, NOT offset
         if (keyCode == W) {
             y -= walkSpeed;
