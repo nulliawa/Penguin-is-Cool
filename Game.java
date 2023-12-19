@@ -18,6 +18,7 @@ public class Game extends BaseFrame{
     }
     public void draw(Graphics g){//test
         g.setColor(Color.red);
+        player.draw(g);
         bkg.draw(g,null);
 //        g.drawRect(mx,my,20,20);
 //        if(mb==1){
@@ -33,6 +34,6 @@ public class Game extends BaseFrame{
 
 
     public static void main(String[] args) {
-        Game game=new Game("Penguin Is Cool",1200,600);;;;;;;;;;;;;;
+        Game game=new Game("Penguin Is Cool",1200,600);
     }
 }

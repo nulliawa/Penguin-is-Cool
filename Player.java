@@ -1,8 +1,10 @@
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class Player {
     // Private vs. protected?
     private int x, y;
+    private final int width = 30, height = 40;
     private int walkSpeed = 5;
     private int interactionDistance = 10; // Within interactionDistance
 
@@ -15,7 +17,7 @@ public class Player {
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
         // Movement of penguin, NOT offset
         if (keyCode == W) {
-            x -= walkSpeed;
+            y -= walkSpeed;
         }
         if (keyCode == A) {
             x -= walkSpeed;
@@ -24,7 +26,7 @@ public class Player {
             y += walkSpeed;
         }
         if (keyCode == D) {
-            y += walkSpeed;
+            x += walkSpeed;
         }
     }
 
@@ -52,8 +54,11 @@ public class Player {
     public int getY() {
         return y;
     }
-    //    public void draw(Graphics g) {
-//        // Draw the penguin
-//    }
+
+    public void draw(Graphics g) {
+        // Draw the penguin
+        g.setColor(Color.BLUE);
+        g.fillRect(x, y, 30, 30);
+    }
 
 }
