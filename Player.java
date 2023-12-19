@@ -13,7 +13,7 @@ public class Player {
 
     public void move(int keyCode) {
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
-        // Movement of penguin
+        // Movement of penguin, NOT offset
         if (keyCode == W) {
             x -= walkSpeed;
         }
