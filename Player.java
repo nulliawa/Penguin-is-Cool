@@ -64,8 +64,4 @@ public class Player {
         g.fillRect(x, y, 30, 30);
     }
 
-    //    public void draw(Graphics g) {
-//        // Draw the penguin
-//    }
-
 }

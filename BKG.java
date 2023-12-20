@@ -52,6 +52,10 @@ public class BKG {
         return offX;
     }
 
+    public int getOffY() {
+        return offY;
+    }
+
     public Rectangle getRect(){
         return backRect;
     }
