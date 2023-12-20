@@ -1,7 +1,10 @@
 import java.awt.*;
+import java.awt.event.KeyEvent;
+
 public class BKG {
     //background
     private int offX=300, offY=150,width,height;
+    private final int off = 10;
     //character at center, move background instead of player
     Rectangle backRect;
     public BKG(int width,int height){
@@ -22,13 +25,33 @@ public class BKG {
 
         }
     }
-    public void move(Player p){
+    public void move(int keyCode){
+        final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
+
+        // Movement of offset
+        if (keyCode == W) {
+            offY += off;
+        }
+        if (keyCode == A) {
+            offX += off;
+        }
+        if (keyCode == S) {
+            offY -= off;
+        }
+        if (keyCode == D) {
+            offX -= off;
+        }
 
         //will need to stop offset at edge of screen
         //if not at edge, player at center, move the background
-        this.offX=p.getRect().x;
-        this.offY=p.getRect().y;
+//        this.offX=p.getRect().x;
+//        this.offY=p.getRect().y;
     }
+
+    public int getOffX() {
+        return offX;
+    }
+
     public Rectangle getRect(){
         return backRect;
     }
