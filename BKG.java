@@ -1,20 +1,39 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class BKG {
     //background
-    private int offX=300, offY=150,width,height;
+    private ArrayList<BKG> squares=new ArrayList<>();
+    private int offX, offY,width,height;
     private final int off = 10;
     //character at center, move background instead of player
     Rectangle backRect;
-    public BKG(int width,int height){
+    public BKG(int offX, int offY, int width,int height){
         this.offX=offX;
         this.offY=offY;
         this.width=width;
         this.height=height;
         this.backRect=new Rectangle(offX,offY,width,height);
     }
+    public void setUp(){
+        for(int i=0;i<10;i++){
+            for(int j=0;j<10;j++){
+                if(i%2==0) {
+                    if (j % 2 == 0) {
+                        squares.add(new BKG(i * 100, j * 100, 100, 100));
+                    }
+                }
+                else{
+                    if(j%2==1){
+                        squares.add(new BKG(i * 100, j * 100, 100, 100));
+                    }
+                }
+            }
+        }
+    }
     public void collision(Player p){//called on the blocks that cannot be passed through
+
         //top intersect
         int pX=p.getRect().x,pY=p.getRect().y,pW=p.getRect().width,pH=p.getRect().height;
         if(pY+pH>=this.offY&&pX+pW<this.offX||pX>this.offX+this.width){
@@ -27,7 +46,9 @@ public class BKG {
     }
     public void move(int keyCode){
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
-
+        for(BKG b:squares){
+            b.move(keyCode);
+        }
         // Movement of offset
         if (keyCode == W) {
             offY += off;
@@ -62,5 +83,11 @@ public class BKG {
     public void draw(Graphics g,Image img){
         g.setColor(Color.cyan);//placeholder
         g.fillRect(offX,offY,width,height);
+        g.setColor(Color.blue);
+
+        for(int s=0;s<squares.size()-1;s++){
+            BKG b=squares.get(s);
+                g.fillRect(b.offX, b.offY, b.width, b.height);
+        }
     }
 }

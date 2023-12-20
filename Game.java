@@ -15,7 +15,8 @@ public class Game extends BaseFrame {
         super(title, width, height);
 
         // bkg = new BKG(width / 2, height / 2);
-        bkg = new BKG(3000, 1000);
+        bkg = new BKG(0,0,3000, 1000);
+        bkg.setUp();
         player = new Player(width/2, height/2);
         player.setX(width/2 - player.getRect().width);
         player.setY(height/2 - player.getRect().height);
