@@ -5,12 +5,15 @@ public class Player {
     // Private vs. protected?
     private int x, y;
     private final int WIDTH = 30, HEIGHT = 40;
-    private int walkSpeed = 5;
+    private int walkSpeed = 10;
     private int interactionDistance = 10, offsetDistance = 10; // Within interactionDistance
 
     public Player(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+    public boolean atEdge(){
+        return x<1366/2&&y<786/2;//resolution/2
     }
 
     public void move(int keyCode) {
@@ -60,7 +63,7 @@ public class Player {
 
     public void draw(Graphics g) {
         // Draw the penguin
-        g.setColor(Color.BLUE);
+        g.setColor(Color.BLACK);
         g.fillRect(x, y, 30, 30);
     }
 

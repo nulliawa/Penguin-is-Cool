@@ -7,6 +7,7 @@ public class BKG {
     private ArrayList<BKG> squares=new ArrayList<>();
     private int offX, offY,width,height;
     private final int off = 10;
+    private boolean sideMove;//is the character at the edge
     //character at center, move background instead of player
     Rectangle backRect;
     public BKG(int offX, int offY, int width,int height){
@@ -15,6 +16,7 @@ public class BKG {
         this.width=width;
         this.height=height;
         this.backRect=new Rectangle(offX,offY,width,height);
+        this.sideMove=false;
     }
     public void setUp(){
         for(int i=0;i<10;i++){
@@ -44,8 +46,15 @@ public class BKG {
 
         }
     }
+    public boolean atEdge(){//check if background top left corner is at starting position
+        return offX<=0&&offY<=0;
+    }
     public void move(int keyCode){
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
+
+//        if(!sideMove){//switch for moving at side, turns back on with player x,y
+//            this.sideMove=this.atEdge();
+//        }
         for(BKG b:squares){
             b.move(keyCode);
         }
@@ -62,7 +71,6 @@ public class BKG {
         if (keyCode == D) {
             offX -= off;
         }
-
         //will need to stop offset at edge of screen
         //if not at edge, player at center, move the background
 //        this.offX=p.getRect().x;

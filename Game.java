@@ -3,11 +3,13 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class Game extends BaseFrame {
-    private final int WIDTH = 1920, HEIGHT = 1080;
+//    private final int WIDTH = 1920, HEIGHT = 1080;
+    private final int WIDTH=1366,HEIGHT=768;
     public final int MENU = 0, GAME = 1;
-    int screen = MENU; // Change to MENU when done gameplay
+    int screen = GAME; // Change to MENU when done gameplay
     private Player player;
     private BKG bkg;
+    private boolean sideMove=false;
     private int offsetDistance = 300; // How far from the edge of the offset
     // private ArrayList<Button> menuButtons = new ArrayList<>();
 
@@ -28,9 +30,28 @@ public class Game extends BaseFrame {
         if (x < Math.abs(background.x - offsetDistance) || y < Math.abs(background.y - offsetDistance)) { // If the penguin is within the offset range
         if player distance is near the edge, then player.move(), else bkg.move()
          */
-        if (player.getRect().x < Math.abs(bkg.getOffX() + offsetDistance) || player.getRect().y < Math.abs(bkg.getRect().y - offsetDistance)) { // Check other 3 conditions
+//        if(!sideMove){//at middle
+//            sideMove=bkg.atEdge();
+//        }
+//        else{
+//            sideMove=!player.atEdge();
+//        }
+        if(!sideMove) {//not at edge, then check if background is at edge and player is at edge
+            sideMove = bkg.atEdge();
+        }
+        else{//once both are true, then background will be fixed so check for when player not at edge
+            sideMove=!player.atEdge();
+        }
+        System.out.println(sideMove);
+//        if (player.getRect().x < Math.abs(bkg.getOffX() + offsetDistance) || player.getRect().y < Math.abs(bkg.getRect().y - offsetDistance)) { // Check other 3 conditions
+//            player.move(e.getKeyCode());
+//        } else {
+//            bkg.move(e.getKeyCode());
+//        }
+        if(sideMove){
             player.move(e.getKeyCode());
-        } else {
+        }
+        else{
             bkg.move(e.getKeyCode());
         }
     }
@@ -71,6 +92,6 @@ public class Game extends BaseFrame {
 
 
     public static void main(String[] args) {
-        Game game = new Game("Penguin Is Cool", 1920, 1080);
+        Game game = new Game("Penguin Is Cool", 1366, 768);
     }
 }
