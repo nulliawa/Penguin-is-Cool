@@ -77,12 +77,32 @@ public class BKG {
 //        this.offY=p.getRect().y;
     }
 
+    public void moveDown(int keyCode) {
+        if (keyCode == KeyEvent.VK_S) {
+            offY -= off;
+        }
+    }
+
+    public void moveRight(int keyCode) {
+        if (keyCode == KeyEvent.VK_D) {
+            offX += off;
+        }
+    }
+
     public int getOffX() {
         return offX;
     }
 
     public int getOffY() {
         return offY;
+    }
+
+    public void setOffX(int offX) {
+        this.offX = offX;
+    }
+
+    public void setOffY(int offY) {
+        this.offY = offY;
     }
 
     public Rectangle getRect(){

@@ -7,6 +7,7 @@ public class Player {
     private final int WIDTH = 30, HEIGHT = 40;
     private int walkSpeed = 10;
     private int interactionDistance = 10, offsetDistance = 10; // Within interactionDistance
+    private boolean walkUp, walkLeft, walkDown, walkRight;
 
     public Player(int x, int y) {
         this.x = x;
@@ -19,26 +20,30 @@ public class Player {
     public void move(int keyCode) {
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
 
-        // Movement of penguin, NOT offset
+        // Movement of penguin
         if (keyCode == W) {
+            walkUp = true;
             y -= walkSpeed;
         }
         if (keyCode == A) {
+            walkLeft = true;
             x -= walkSpeed;
         }
         if (keyCode == S) {
+            walkDown = true;
             y += walkSpeed;
         }
         if (keyCode == D) {
+            walkRight = true;
             x += walkSpeed;
         }
 
     }
 
-    public void keyPress(int keyCode) {
-        move(keyCode);
-        // interact();
-    }
+//    public void keyPress(int keyCode) {
+//        move(keyCode);
+//        // interact();
+//    }
 
     public void collision() {
 
@@ -51,6 +56,25 @@ public class Player {
 //            // If getting close enough to an object, it changes
 //        }
 //    }
+
+
+    public boolean isWalkUp() {
+        return walkUp;
+    }
+
+    public boolean isWalkLeft() {
+        return walkLeft;
+    }
+
+    public boolean isWalkDown() {
+        return walkDown;
+    }
+
+    public boolean isWalkRight() {
+        return walkRight;
+    }
+
+
     public void setX(int x){
         this.x=x;
     }

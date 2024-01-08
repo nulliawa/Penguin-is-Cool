@@ -26,6 +26,43 @@ public class Game extends BaseFrame {
     }
 
     public void move(KeyEvent e) {
+        // If player gets to the edge of the background, stop moving the background, instead move the player
+
+        System.out.println(bkg.getOffX());
+        System.out.println(bkg.getOffY());
+
+
+        
+//        if (bkg.getOffX() > -10) {
+//            player.move(e.getKeyCode());
+//            if (player.getRect().x == WIDTH/2) {
+//                bkg.moveRight(e.getKeyCode());
+//            }
+//        } else {
+//            bkg.moveRight(e.getKeyCode());
+//        }
+//
+//        if (bkg.getOffY() > -10) {
+//            player.move(e.getKeyCode());
+//            if (player.getRect().y == HEIGHT/2) {
+//                bkg.move(e.getKeyCode());
+//            }
+//        } else {
+//            bkg.moveDown(e.getKeyCode());
+//        }
+//        System.out.println(bkg.getOffX());
+//        System.out.println(bkg.getOffY());
+//
+//        if (bkg.getOffX() <= 0 || bkg.getOffY() <= 0) {
+//            bkg.move(e.getKeyCode());
+//            if (player.isWalkRight() || player.isWalkDown()) {
+//                player.move(e.getKeyCode());
+//            }
+//        } else {
+//            player.move(e.getKeyCode());
+//        }
+
+
         /*
         if (x < Math.abs(background.x - offsetDistance) || y < Math.abs(background.y - offsetDistance)) { // If the penguin is within the offset range
         if player distance is near the edge, then player.move(), else bkg.move()
@@ -36,24 +73,24 @@ public class Game extends BaseFrame {
 //        else{
 //            sideMove=!player.atEdge();
 //        }
-        if(!sideMove) {//not at edge, then check if background is at edge and player is at edge
-            sideMove = bkg.atEdge();
-        }
-        else{//once both are true, then background will be fixed so check for when player not at edge
-            sideMove=!player.atEdge();
-        }
-        System.out.println(sideMove);
+//        if(!sideMove) {//not at edge, then check if background is at edge and player is at edge
+//            sideMove = bkg.atEdge();
+//        }
+//        else{//once both are true, then background will be fixed so check for when player not at edge
+//            sideMove=!player.atEdge();
+//        }
+//        System.out.println(sideMove);
 //        if (player.getRect().x < Math.abs(bkg.getOffX() + offsetDistance) || player.getRect().y < Math.abs(bkg.getRect().y - offsetDistance)) { // Check other 3 conditions
 //            player.move(e.getKeyCode());
 //        } else {
 //            bkg.move(e.getKeyCode());
 //        }
-        if(sideMove){
-            player.move(e.getKeyCode());
-        }
-        else{
-            bkg.move(e.getKeyCode());
-        }
+//        if(sideMove){
+//            player.move(e.getKeyCode());
+//        }
+//        else{
+//            bkg.move(e.getKeyCode());
+//        }
     }
 
     public void drawMenu(Graphics g) {
