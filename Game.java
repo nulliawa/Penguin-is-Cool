@@ -6,7 +6,7 @@ public class Game extends BaseFrame {
 //    private final int WIDTH = 1920, HEIGHT = 1080;
     private final int WIDTH=1366,HEIGHT=768;
     public final int MENU = 0, GAME = 1;
-    int screen = GAME; // Change to MENU when done gameplay
+    int screen = MENU; // Change to MENU when done gameplay
     private Player player;
     private BKG bkg;
     private boolean sideMove=false;
@@ -98,7 +98,14 @@ public class Game extends BaseFrame {
 //        }
 
 
-        
+//        if (bkg.getOffX() <= 0 && bkg.getOffY() <= 0) {
+//            System.out.println(player.getRect().x);
+//            System.out.println(WIDTH/2);
+//            if (player.getRect().x == WIDTH/2 - 30 && player.isWalkRight()) {
+//                bkg.move(e.getKeyCode());
+//            }
+//
+//        }
 //        if (bkg.getOffX() > -10) {
 //            player.move(e.getKeyCode());
 //            if (player.getRect().x == WIDTH/2) {
@@ -167,12 +174,27 @@ public class Game extends BaseFrame {
         g.setColor(Color.WHITE);
         g.fillRect(bg.x, bg.y, bg.width, bg.height);
 
-        g.setFont(new Font("Times New Roman", Font.PLAIN, 40)); // PLACEHOLDER FONT
+        g.setFont(new Font("SnowtopCaps", Font.PLAIN, 150));
         g.setColor(Color.CYAN);
-        g.drawString("Penguin is Cool", WIDTH/2 - 125, 200);
+        g.drawString("Penguin is Cool",  WIDTH/2 - 550, 200);
 
-        Button play = new Button(WIDTH/2 - 150, 200, 300, 200);
-        play.draw(g);
+        // ARRAYS BELOW ?
+        int[][] buttons = {{WIDTH/2 - 200, 250, 400, 200}, {WIDTH/2 - 200, 500, 400, 200}};
+        String[] buttonText = {"Play", "Tutorial"};
+        int[][] textCoordinates = {{640, 365}, {600, 600}};
+
+
+        for (int i = 0; i < buttons.length; i++) {
+            g.drawRect(buttons[i][0], buttons[i][1], buttons[i][2], buttons[i][3]);
+
+            g.setFont(new Font("Comic Sans MS", Font.BOLD, 50));
+            g.drawString(buttonText[i], textCoordinates[i][0], textCoordinates[i][1]);
+        }
+
+//        for (int[] button : buttons) {
+//            g.drawRect(button[0], button[1], button[2], button[3]);
+//            g.drawString(, 100, 100);
+//        }
     }
 
     public void drawGame(Graphics g) {

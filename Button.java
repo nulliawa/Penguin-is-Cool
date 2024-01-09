@@ -8,9 +8,4 @@ public class Button {
         this.width = width;
         this.height = height;
     }
-
-    public void draw(Graphics g) {
-        g.setColor(Color.red);
-        g.drawRect(x, y, width, height);
-    }
 }
