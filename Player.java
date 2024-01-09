@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 public class Player {
     // Private vs. protected?
     private int x, y;
-    private final int SIZE=30,WIDTH=1366,HEIGHT=768;;
+    private final int SIZE=30,WIDTH=1366,HEIGHT=768;
     private int walkSpeed = 10;
     private int interactionDistance = 10, offsetDistance = 10; // Within interactionDistance
 //    private boolean walkUp, walkLeft, walkDown, walkRight;
@@ -23,7 +23,13 @@ public class Player {
     public boolean edgeY(){
         return y<HEIGHT/2-SIZE/2;
     }
-
+    public boolean pushX(){
+        //player is up against center line in x direction
+        return Math.abs(x-WIDTH/2-SIZE/2)<=10;
+    }
+    public boolean pushY(){
+        return Math.abs(y-HEIGHT/2-SIZE/2)<=10;
+    }
     public boolean isFixedX(){
         return x==WIDTH/2-SIZE/2;
     }
@@ -59,11 +65,6 @@ public class Player {
 
     }
 
-//    public void keyPress(int keyCode) {
-//        move(keyCode);
-//        // interact();
-//    }
-
     public void collision() {
 
     }
@@ -75,24 +76,6 @@ public class Player {
 //            // If getting close enough to an object, it changes
 //        }
 //    }
-
-
-//    public boolean isWalkUp() {
-//        return walkUp;
-//    }
-//
-//    public boolean isWalkLeft() {
-//        return walkLeft;
-//    }
-//
-//    public boolean isWalkDown() {
-//        return walkDown;
-//    }
-//
-//    public boolean isWalkRight() {
-//        return walkRight;
-//    }
-
 
     public void setX(int x){
         this.x=x;

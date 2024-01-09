@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 public class BKG {
     //background
+    private final int WIDTH=1366,HEIGHT=768;
     private ArrayList<BKG> squares=new ArrayList<>();
     private int offX, offY,width,height;
-    private final int off = 10;
+    private final int offSpd = 10;
     private boolean sideMove;//is the character at the edge
     //character at center, move background instead of player
     public BKG(int offX, int offY, int width,int height){
@@ -48,10 +49,11 @@ public class BKG {
 //        return offX<=0&&offY<=0;
 //    }
     public boolean edgeX(){
-        return offX<0;
+        //background is either too far right or too far left
+        return offX>=offSpd||offX+width-WIDTH<=offSpd;
     }
     public boolean edgeY(){
-        return offY<0;
+        return offY<0||offY+height-HEIGHT>=offSpd;
     }
     public void move(int keyCode,boolean direction){
         //direction: true=up/down, false=left/right
@@ -66,18 +68,18 @@ public class BKG {
         // Movement of offset
         if(direction) {
             if (keyCode == W) {
-                offY += off;
+                offY += offSpd;
             }
             if (keyCode == S) {
-                offY -= off;
+                offY -= offSpd;
             }
         }
         else{
             if (keyCode == A) {
-                offX += off;
+                offX += offSpd;
             }
             if (keyCode == D) {
-                offX -= off;
+                offX -= offSpd;
             }
         }
         //will need to stop offset at edge of screen
@@ -88,13 +90,13 @@ public class BKG {
 
     public void moveDown(int keyCode) {
         if (keyCode == KeyEvent.VK_S) {
-            offY -= off;
+            offY -= offSpd;
         }
     }
 
     public void moveRight(int keyCode) {
         if (keyCode == KeyEvent.VK_D) {
-            offX += off;
+            offX += offSpd;
         }
     }
 

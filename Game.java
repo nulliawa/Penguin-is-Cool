@@ -17,12 +17,11 @@ public class Game extends BaseFrame {
         super(title, width, height);
 
         // bkg = new BKG(width / 2, height / 2);
-        bkg = new BKG(0,0,3000, 1000);//wip
+        bkg = new BKG(0,0,1500, 1000);//wip
         bkg.setUp();
         player = new Player(width/2, height/2);
         player.setX(width/2 - player.getRect().width/2);
         player.setY(height/2 - player.getRect().height/2);
-
     }
     private void pFixX(){
         player.setX(WIDTH/2-player.getRect().width/2);
@@ -38,15 +37,15 @@ public class Game extends BaseFrame {
         int pY=player.getRect().y;
         int[] coord= new int[]{bkgX, bkgY, pX, pY};
 
-        System.out.println(Arrays.toString(coord));
-        System.out.print(bkg.edgeX());
-        System.out.print(player.edgeX());
-        System.out.print(" ");
-        System.out.print(bkg.edgeY());
-        System.out.print(player.edgeY());
-        System.out.print(" ");
-        System.out.print(player.isFixed());
-        System.out.println();
+//        System.out.println(Arrays.toString(coord));
+//        System.out.print(bkg.edgeX());
+//        System.out.print(player.pushX());
+//        System.out.print(" ");
+//        System.out.print(bkg.edgeY());
+//        System.out.print(player.pushY());
+//        System.out.print(" ");
+//        System.out.print(player.isFixed());
+//        System.out.println();
 
 //        if(Math.abs(pX-WIDTH/2-player.getRect().width/2)<=10){
 //            pFixX();
@@ -56,12 +55,12 @@ public class Game extends BaseFrame {
 //        }
 
         if(player.isFixedX()){
-            bkg.move(e.getKeyCode(),true);
-        }
-        if(player.isFixedY()){
+            //player is fixed to middle line so not at an edge, can move background left/right
             bkg.move(e.getKeyCode(),false);
         }
-
+        if(player.isFixedY()){
+            bkg.move(e.getKeyCode(),true);
+        }
 
 //        if(!player.edgeX()){
 //            bkg.move(e.getKeyCode(),true);
@@ -71,11 +70,13 @@ public class Game extends BaseFrame {
 //            bkg.move(e.getKeyCode(),false);
 //            pFixY();
 //        }
-        if(bkg.edgeX()){
-            player.move(e.getKeyCode(),true);
+        if(bkg.edgeX()){//arrive at edge of background left/right direction
+            System.out.println(Arrays.toString(coord));//note
+            player.move(e.getKeyCode(),false);
+            //player itself can move left/right and background stops left/right movement
         }
         if(bkg.edgeY()){
-            player.move(e.getKeyCode(),false);
+            player.move(e.getKeyCode(),true);
         }
 
 
