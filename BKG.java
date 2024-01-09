@@ -9,13 +9,11 @@ public class BKG {
     private final int off = 10;
     private boolean sideMove;//is the character at the edge
     //character at center, move background instead of player
-    Rectangle backRect;
     public BKG(int offX, int offY, int width,int height){
         this.offX=offX;
         this.offY=offY;
         this.width=width;
         this.height=height;
-        this.backRect=new Rectangle(offX,offY,width,height);
         this.sideMove=false;
     }
     public void setUp(){
@@ -46,30 +44,41 @@ public class BKG {
 
         }
     }
-    public boolean atEdge(){//check if background top left corner is at starting position
-        return offX<=0&&offY<=0;
+//    public boolean atEdge(){//check if background top left corner is at starting position
+//        return offX<=0&&offY<=0;
+//    }
+    public boolean edgeX(){
+        return offX<0;
     }
-    public void move(int keyCode){
+    public boolean edgeY(){
+        return offY<0;
+    }
+    public void move(int keyCode,boolean direction){
+        //direction: true=up/down, false=left/right
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
 
 //        if(!sideMove){//switch for moving at side, turns back on with player x,y
 //            this.sideMove=this.atEdge();
 //        }
         for(BKG b:squares){
-            b.move(keyCode);
+            b.move(keyCode,direction);
         }
         // Movement of offset
-        if (keyCode == W) {
-            offY += off;
+        if(direction) {
+            if (keyCode == W) {
+                offY += off;
+            }
+            if (keyCode == S) {
+                offY -= off;
+            }
         }
-        if (keyCode == A) {
-            offX += off;
-        }
-        if (keyCode == S) {
-            offY -= off;
-        }
-        if (keyCode == D) {
-            offX -= off;
+        else{
+            if (keyCode == A) {
+                offX += off;
+            }
+            if (keyCode == D) {
+                offX -= off;
+            }
         }
         //will need to stop offset at edge of screen
         //if not at edge, player at center, move the background
@@ -105,9 +114,6 @@ public class BKG {
         this.offY = offY;
     }
 
-    public Rectangle getRect(){
-        return backRect;
-    }
     public void draw(Graphics g,Image img){
         g.setColor(Color.cyan);//placeholder
         g.fillRect(offX,offY,width,height);

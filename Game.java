@@ -1,6 +1,6 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Game extends BaseFrame {
 //    private final int WIDTH = 1920, HEIGHT = 1080;
@@ -17,19 +17,85 @@ public class Game extends BaseFrame {
         super(title, width, height);
 
         // bkg = new BKG(width / 2, height / 2);
-        bkg = new BKG(0,0,3000, 1000);
+        bkg = new BKG(0,0,3000, 1000);//wip
         bkg.setUp();
         player = new Player(width/2, height/2);
-        player.setX(width/2 - player.getRect().width);
-        player.setY(height/2 - player.getRect().height);
+        player.setX(width/2 - player.getRect().width/2);
+        player.setY(height/2 - player.getRect().height/2);
 
     }
-
+    private void pFixX(){
+        player.setX(WIDTH/2-player.getRect().width/2);
+    }
+    private void pFixY(){
+        player.setY(HEIGHT/2-player.getRect().height/2);
+    }
     public void move(KeyEvent e) {
         // If player gets to the edge of the background, stop moving the background, instead move the player
+        int bkgX=bkg.getOffX();
+        int bkgY=bkg.getOffY();
+        int pX=player.getRect().x;
+        int pY=player.getRect().y;
+        int[] coord= new int[]{bkgX, bkgY, pX, pY};
 
-        System.out.println(bkg.getOffX());
-        System.out.println(bkg.getOffY());
+        System.out.println(Arrays.toString(coord));
+        System.out.print(bkg.edgeX());
+        System.out.print(player.edgeX());
+        System.out.print(" ");
+        System.out.print(bkg.edgeY());
+        System.out.print(player.edgeY());
+        System.out.print(" ");
+        System.out.print(player.isFixed());
+        System.out.println();
+
+//        if(Math.abs(pX-WIDTH/2-player.getRect().width/2)<=10){
+//            pFixX();
+//        }
+//        if(Math.abs(pY-HEIGHT/2-player.getRect().height/2)<=10){
+//            pFixY();
+//        }
+
+        if(player.isFixedX()){
+            bkg.move(e.getKeyCode(),true);
+        }
+        if(player.isFixedY()){
+            bkg.move(e.getKeyCode(),false);
+        }
+
+
+//        if(!player.edgeX()){
+//            bkg.move(e.getKeyCode(),true);
+//            pFixX();
+//        }
+//        if(!player.edgeY()){
+//            bkg.move(e.getKeyCode(),false);
+//            pFixY();
+//        }
+        if(bkg.edgeX()){
+            player.move(e.getKeyCode(),true);
+        }
+        if(bkg.edgeY()){
+            player.move(e.getKeyCode(),false);
+        }
+
+
+//        if(bkg.edgeX()){
+//            player.move(e.getKeyCode(),true);
+//        }
+
+//        else{
+////            player.setX(WIDTH/2-player.getRect().width/2);
+////            player.setY(HEIGHT/2-player.getRect().height/2);
+//            bkg.move(e.getKeyCode(),true);//up/down movement possible
+//            //left/right movement not possible
+//        }
+
+//        if(bkg.edgeY()){
+//            player.move(e.getKeyCode(),false);
+//        }
+//        else{
+//            bkg.move(e.getKeyCode(),false);//left/right movement only
+//        }
 
 
         
@@ -67,6 +133,7 @@ public class Game extends BaseFrame {
         if (x < Math.abs(background.x - offsetDistance) || y < Math.abs(background.y - offsetDistance)) { // If the penguin is within the offset range
         if player distance is near the edge, then player.move(), else bkg.move()
          */
+        //old 2
 //        if(!sideMove){//at middle
 //            sideMove=bkg.atEdge();
 //        }
@@ -79,12 +146,14 @@ public class Game extends BaseFrame {
 //        else{//once both are true, then background will be fixed so check for when player not at edge
 //            sideMove=!player.atEdge();
 //        }
-//        System.out.println(sideMove);
+
+        //old code
 //        if (player.getRect().x < Math.abs(bkg.getOffX() + offsetDistance) || player.getRect().y < Math.abs(bkg.getRect().y - offsetDistance)) { // Check other 3 conditions
 //            player.move(e.getKeyCode());
 //        } else {
 //            bkg.move(e.getKeyCode());
 //        }
+        //old 2
 //        if(sideMove){
 //            player.move(e.getKeyCode());
 //        }
@@ -110,6 +179,7 @@ public class Game extends BaseFrame {
         bkg.draw(g, null);
         g.setColor(Color.red);
         player.draw(g);
+        g.setColor(Color.green);
     }
 
     public void draw(Graphics g) {//test

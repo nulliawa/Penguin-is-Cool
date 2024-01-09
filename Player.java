@@ -4,39 +4,58 @@ import java.awt.event.KeyEvent;
 public class Player {
     // Private vs. protected?
     private int x, y;
-    private final int WIDTH = 30, HEIGHT = 40;
+    private final int SIZE=30,WIDTH=1366,HEIGHT=768;;
     private int walkSpeed = 10;
     private int interactionDistance = 10, offsetDistance = 10; // Within interactionDistance
-    private boolean walkUp, walkLeft, walkDown, walkRight;
+//    private boolean walkUp, walkLeft, walkDown, walkRight;
 
     public Player(int x, int y) {
-        this.x = x;
+        this.x = x;//x and y on screen
         this.y = y;
     }
-    public boolean atEdge(){
-        return x<1366/2&&y<786/2;//resolution/2
+//    public boolean atEdge(){
+//        return x<1366/2&&y<786/2;//resolution/2
+//    }
+
+    public boolean edgeX(){
+        return x<WIDTH/2-SIZE/2;
+    }
+    public boolean edgeY(){
+        return y<HEIGHT/2-SIZE/2;
     }
 
-    public void move(int keyCode) {
+    public boolean isFixedX(){
+        return x==WIDTH/2-SIZE/2;
+    }
+    public boolean isFixedY(){
+        return y==HEIGHT/2-SIZE/2;
+    }
+    public boolean isFixed(){
+        return isFixedX()&&isFixedY();
+    }
+
+    public void move(int keyCode,boolean direction) {
+        //direction: true=up/down, false=left/right
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
 
         // Movement of penguin
-        if (keyCode == W) {
-            walkUp = true;
-            y -= walkSpeed;
+        if(direction) {
+            if (keyCode == W) {
+                y -= walkSpeed;
+            }
+            if (keyCode == S) {
+                y += walkSpeed;
+            }
         }
-        if (keyCode == A) {
-            walkLeft = true;
-            x -= walkSpeed;
+        else {
+            if (keyCode == A) {
+                x -= walkSpeed;
+            }
+            if (keyCode == D) {
+                x += walkSpeed;
+            }
         }
-        if (keyCode == S) {
-            walkDown = true;
-            y += walkSpeed;
-        }
-        if (keyCode == D) {
-            walkRight = true;
-            x += walkSpeed;
-        }
+
 
     }
 
@@ -58,21 +77,21 @@ public class Player {
 //    }
 
 
-    public boolean isWalkUp() {
-        return walkUp;
-    }
-
-    public boolean isWalkLeft() {
-        return walkLeft;
-    }
-
-    public boolean isWalkDown() {
-        return walkDown;
-    }
-
-    public boolean isWalkRight() {
-        return walkRight;
-    }
+//    public boolean isWalkUp() {
+//        return walkUp;
+//    }
+//
+//    public boolean isWalkLeft() {
+//        return walkLeft;
+//    }
+//
+//    public boolean isWalkDown() {
+//        return walkDown;
+//    }
+//
+//    public boolean isWalkRight() {
+//        return walkRight;
+//    }
 
 
     public void setX(int x){
@@ -82,13 +101,13 @@ public class Player {
         this.y=y;
     }
     public Rectangle getRect() {
-        return new Rectangle(x, y, WIDTH, HEIGHT);
+        return new Rectangle(x, y, SIZE,SIZE);
     }
 
     public void draw(Graphics g) {
         // Draw the penguin
         g.setColor(Color.BLACK);
-        g.fillRect(x, y, 30, 30);
+        g.fillRect(x, y, SIZE, SIZE);
     }
 
 }
