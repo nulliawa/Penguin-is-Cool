@@ -1,12 +1,14 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
+import java.util.ArrayList;
 
 public class Game extends BaseFrame {
 //    private final int WIDTH = 1920, HEIGHT = 1080;
     private final int WIDTH=1366,HEIGHT=768;
     public final int MENU = 0, GAME = 1;
-    int screen = GAME; // Change to MENU when done gameplay
+    int screen = MENU; // Change to MENU when done gameplay
     private Player player;
     private BKG bkg;
     private boolean sideMove=false;
@@ -150,31 +152,49 @@ public class Game extends BaseFrame {
     }
 
     public void drawMenu(Graphics g) {
-        Rectangle bg = new Rectangle(0, 0, WIDTH, HEIGHT);
+        final int X = 0, Y = 1, W = 2, H = 3; // Variables for button creation
+
         g.setColor(Color.WHITE);
-        g.fillRect(bg.x, bg.y, bg.width, bg.height);
+        g.fillRect(0, 0, WIDTH, HEIGHT);
 
         g.setFont(new Font("SnowtopCaps", Font.PLAIN, 150));
         g.setColor(Color.CYAN);
         g.drawString("Penguin is Cool",  WIDTH/2 - 550, 200);
 
-        // ARRAYS BELOW ?
-        int[][] buttons = {{WIDTH/2 - 200, 250, 400, 200}, {WIDTH/2 - 200, 500, 400, 200}};
+        // Arrays for buttons
+        int[][] buttonCoordinates = {{WIDTH/2 - 200, 275, 400, 150}, {WIDTH/2 - 200, 525, 400, 150}};
         String[] buttonText = {"Play", "Tutorial"};
-        int[][] textCoordinates = {{640, 365}, {600, 600}};
+        int[][] textCoordinates = {{640, 365}, {590, 620}};
+
+        // ArrayList<Button> buttons = new ArrayList<Button>();
 
 
-        for (int i = 0; i < buttons.length; i++) {
-            g.drawRect(buttons[i][0], buttons[i][1], buttons[i][2], buttons[i][3]);
+        // Button creation
+        for (int i = 0; i < buttonCoordinates.length; i++) {
+            g.setColor(Color.BLUE); //TEMP COLOUR
+            Button temp = new Button(buttonCoordinates[i][X], buttonCoordinates[i][Y], buttonCoordinates[i][W], buttonCoordinates[i][H]); // Creates a new button object with params
+
+            // buttons.add(temp);
+            g.fillRect(temp.getRect().x, temp.getRect().y, temp.getRect().width, temp.getRect().height); // Making new buttons
+
+            if (temp.isHover(mx, my)) {
+                 // System.out.println("HELP");
+
+                g.setColor(Color.DARK_GRAY);
+                g.fillRect(temp.getRect().x, temp.getRect().y, temp.getRect().width, temp.getRect().height);
+
+            }
+
+            if (temp.isClicked(mx, my, mb)) {
+                screen = GAME;
+            }
 
             g.setFont(new Font("Comic Sans MS", Font.BOLD, 50));
+            g.setColor(Color.WHITE);
             g.drawString(buttonText[i], textCoordinates[i][0], textCoordinates[i][1]);
         }
 
-//        for (int[] button : buttons) {
-//            g.drawRect(button[0], button[1], button[2], button[3]);
-//            g.drawString(, 100, 100);
-//        }
+        // WIP: NEED TO DIFFERENTIATE CLICKS
     }
 
     public void drawGame(Graphics g) {
@@ -198,6 +218,12 @@ public class Game extends BaseFrame {
         move(e);
         // player.keyPress(e.getKeyCode());
     }
+
+//    @Override
+//    public void mousePressed(MouseEvent e) {
+//        super.mousePressed(e);
+//
+//    }
 
 
     public static void main(String[] args) {

@@ -20,7 +20,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-class BaseFrame extends JFrame implements KeyListener, ActionListener{
+class BaseFrame extends JFrame implements KeyListener, ActionListener, MouseListener{
     protected int mx,my,mb;
     protected boolean[] keys;
 
@@ -80,6 +80,31 @@ class BaseFrame extends JFrame implements KeyListener, ActionListener{
         repaint(); 	// only draw
     }
 
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+
+    }
+
     class GamePane extends JPanel implements MouseMotionListener, MouseListener{
         BaseFrame main;
         private void updateMouse(MouseEvent e){
@@ -116,6 +141,7 @@ class BaseFrame extends JFrame implements KeyListener, ActionListener{
         public void paint(Graphics g){
             main.draw(g);
         }
+
     }
 
 }
