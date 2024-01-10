@@ -17,7 +17,7 @@ public class BKG {
         this.height=height;
         this.sideMove=false;
     }
-    public void setUp(){
+    public void setup(){
         for(int i=0;i<10;i++){
             for(int j=0;j<10;j++){
                 if(i%2==0) {
@@ -87,18 +87,6 @@ public class BKG {
 //        this.offX=p.getRect().x;
 //        this.offY=p.getRect().y;
     }
-
-//    public void moveDown(int keyCode) {
-//        if (keyCode == KeyEvent.VK_S) {
-//            offY -= offSpd;
-//        }
-//    }
-//
-//    public void moveRight(int keyCode) {
-//        if (keyCode == KeyEvent.VK_D) {
-//            offX += offSpd;
-//        }
-//    }
 
     public int getOffX() {
         return offX;

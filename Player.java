@@ -13,20 +13,6 @@ public class Player {
         this.x = x;//x and y on screen
         this.y = y;
     }
-
-    public boolean edgeX(){
-        return x<WIDTH/2-SIZE/2;
-    }
-    public boolean edgeY(){
-        return y<HEIGHT/2-SIZE/2;
-    }
-    public boolean pushX(){
-        //player is up against center line in x direction
-        return Math.abs(x-WIDTH/2-SIZE/2)<=10;
-    }
-    public boolean pushY(){
-        return Math.abs(y-HEIGHT/2-SIZE/2)<=10;
-    }
     public boolean isFixedX(){
         return x==WIDTH/2-SIZE/2;
     }
