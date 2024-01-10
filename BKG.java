@@ -53,7 +53,7 @@ public class BKG {
         return offX>=offSpd||offX+width-WIDTH<=offSpd;
     }
     public boolean edgeY(){
-        return offY<0||offY+height-HEIGHT>=offSpd;
+        return offY+height-HEIGHT<=offSpd||offY>=offSpd;
     }
     public void move(int keyCode,boolean direction){
         //direction: true=up/down, false=left/right
@@ -88,17 +88,17 @@ public class BKG {
 //        this.offY=p.getRect().y;
     }
 
-    public void moveDown(int keyCode) {
-        if (keyCode == KeyEvent.VK_S) {
-            offY -= offSpd;
-        }
-    }
-
-    public void moveRight(int keyCode) {
-        if (keyCode == KeyEvent.VK_D) {
-            offX += offSpd;
-        }
-    }
+//    public void moveDown(int keyCode) {
+//        if (keyCode == KeyEvent.VK_S) {
+//            offY -= offSpd;
+//        }
+//    }
+//
+//    public void moveRight(int keyCode) {
+//        if (keyCode == KeyEvent.VK_D) {
+//            offX += offSpd;
+//        }
+//    }
 
     public int getOffX() {
         return offX;

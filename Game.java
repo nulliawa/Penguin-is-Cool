@@ -6,7 +6,7 @@ public class Game extends BaseFrame {
 //    private final int WIDTH = 1920, HEIGHT = 1080;
     private final int WIDTH=1366,HEIGHT=768;
     public final int MENU = 0, GAME = 1;
-    int screen = MENU; // Change to MENU when done gameplay
+    int screen = GAME; // Change to MENU when done gameplay
     private Player player;
     private BKG bkg;
     private boolean sideMove=false;
@@ -37,22 +37,15 @@ public class Game extends BaseFrame {
         int pY=player.getRect().y;
         int[] coord= new int[]{bkgX, bkgY, pX, pY};
 
-//        System.out.println(Arrays.toString(coord));
-//        System.out.print(bkg.edgeX());
+        System.out.println(Arrays.toString(coord));
+        System.out.print(bkg.edgeX());
 //        System.out.print(player.pushX());
-//        System.out.print(" ");
-//        System.out.print(bkg.edgeY());
+        System.out.print(" ");
+        System.out.print(bkg.edgeY());
 //        System.out.print(player.pushY());
-//        System.out.print(" ");
-//        System.out.print(player.isFixed());
-//        System.out.println();
-
-//        if(Math.abs(pX-WIDTH/2-player.getRect().width/2)<=10){
-//            pFixX();
-//        }
-//        if(Math.abs(pY-HEIGHT/2-player.getRect().height/2)<=10){
-//            pFixY();
-//        }
+        System.out.print(" ");
+        System.out.print(player.isFixed());
+        System.out.println();
 
         if(player.isFixedX()){
             //player is fixed to middle line so not at an edge, can move background left/right
@@ -62,27 +55,13 @@ public class Game extends BaseFrame {
             bkg.move(e.getKeyCode(),true);
         }
 
-//        if(!player.edgeX()){
-//            bkg.move(e.getKeyCode(),true);
-//            pFixX();
-//        }
-//        if(!player.edgeY()){
-//            bkg.move(e.getKeyCode(),false);
-//            pFixY();
-//        }
         if(bkg.edgeX()){//arrive at edge of background left/right direction
-            System.out.println(Arrays.toString(coord));//note
             player.move(e.getKeyCode(),false);
             //player itself can move left/right and background stops left/right movement
         }
         if(bkg.edgeY()){
             player.move(e.getKeyCode(),true);
         }
-
-
-//        if(bkg.edgeX()){
-//            player.move(e.getKeyCode(),true);
-//        }
 
 //        else{
 ////            player.setX(WIDTH/2-player.getRect().width/2);

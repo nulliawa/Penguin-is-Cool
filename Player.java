@@ -5,7 +5,7 @@ public class Player {
     // Private vs. protected?
     private int x, y;
     private final int SIZE=30,WIDTH=1366,HEIGHT=768;
-    private int walkSpeed = 10;
+    private int walkSpd = 10;
     private int interactionDistance = 10, offsetDistance = 10; // Within interactionDistance
 //    private boolean walkUp, walkLeft, walkDown, walkRight;
 
@@ -13,9 +13,6 @@ public class Player {
         this.x = x;//x and y on screen
         this.y = y;
     }
-//    public boolean atEdge(){
-//        return x<1366/2&&y<786/2;//resolution/2
-//    }
 
     public boolean edgeX(){
         return x<WIDTH/2-SIZE/2;
@@ -47,18 +44,18 @@ public class Player {
         // Movement of penguin
         if(direction) {
             if (keyCode == W) {
-                y -= walkSpeed;
+                y -= walkSpd;
             }
             if (keyCode == S) {
-                y += walkSpeed;
+                y += walkSpd;
             }
         }
         else {
             if (keyCode == A) {
-                x -= walkSpeed;
+                x -= walkSpd;
             }
             if (keyCode == D) {
-                x += walkSpeed;
+                x += walkSpd;
             }
         }
 
