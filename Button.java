@@ -20,6 +20,6 @@ public class Button {
     }
 
     public boolean isClicked(int mx, int my, int mb) {
-        return rect.contains(mx, my) && mb == 1;
+        return isHover(mx, my) && mb == 1;
     }
 }
