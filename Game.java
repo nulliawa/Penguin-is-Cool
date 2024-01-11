@@ -1,16 +1,20 @@
+import com.sun.source.doctree.AttributeTree;
+
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
+import java.util.ArrayList;
 
 public class Game extends BaseFrame {
-    //    private final int WIDTH = 1920, HEIGHT = 1080;
-    private final int WIDTH = 1366, HEIGHT = 768;
-    public final int MENU = 0, GAME = 1, TUTORIAL = 2;
+//    private final int WIDTH = 1920, HEIGHT = 1080;
+    private final int WIDTH=1366,HEIGHT=768;
+    public final int MENU = 0, GAME = 1;
     int screen = MENU; // Change to MENU when done gameplay
     private Player player;
     private BKG bkg;
-    private boolean sideMove = false;
+    private boolean sideMoveX=true,sideMoveY=true;
     private int offsetDistance = 300; // How far from the edge of the offset
     // private ArrayList<Button> menuButtons = new ArrayList<>();
 
@@ -18,53 +22,65 @@ public class Game extends BaseFrame {
         super(title, width, height);
 
         // bkg = new BKG(width / 2, height / 2);
-        bkg = new BKG(0, 0, 1500, 1000);//wip
-        bkg.setUp();
-        player = new Player(width / 2, height / 2);
-        player.setX(width / 2 - player.getRect().width / 2);
-        player.setY(height / 2 - player.getRect().height / 2);
+        bkg = new BKG(0,0,1500, 1000);//wip
+        bkg.setup();
+        player = new Player(width/2, height/2);
+        player.setX(width/2 - player.getRect().width/2);
+        player.setY(height/2 - player.getRect().height/2);
     }
-
-    private void pFixX() {
-        player.setX(WIDTH / 2 - player.getRect().width / 2);
-    }
-
-    private void pFixY() {
-        player.setY(HEIGHT / 2 - player.getRect().height / 2);
-    }
-
-    public void move(KeyEvent e) {
+//    private void pFixX(){
+//        player.setX(WIDTH/2-player.getRect().width/2);
+//    }
+//    private void pFixY(){
+//        player.setY(HEIGHT/2-player.getRect().height/2);
+//    }
+    public void move() {
+        player.collision(new Rectangle());//WIP
         // If player gets to the edge of the background, stop moving the background, instead move the player
-        int bkgX = bkg.getOffX();
-        int bkgY = bkg.getOffY();
-        int pX = player.getRect().x;
-        int pY = player.getRect().y;
-        int[] coord = new int[]{bkgX, bkgY, pX, pY};
+        int bkgX=bkg.getOffX();
+        int bkgY=bkg.getOffY();
+        int pX=player.getRect().x;
+        int pY=player.getRect().y;
+        int[] coord= new int[]{bkgX, bkgY, pX, pY};
 
         System.out.println(Arrays.toString(coord));
-        System.out.print(bkg.edgeX());
+//        System.out.print(bkg.edgeX());
 //        System.out.print(player.pushX());
-        System.out.print(" ");
-        System.out.print(bkg.edgeY());
+//        System.out.println(sideMoveX);
+//        System.out.print(" ");
+//        System.out.println(sideMoveY);
+//        System.out.print(bkg.edgeY());
 //        System.out.print(player.pushY());
-        System.out.print(" ");
-        System.out.print(player.isFixed());
-        System.out.println();
+//        System.out.print(" ");
+//        System.out.print(player.isFixed());
+//        System.out.println();
 
-        if (player.isFixedX()) {
-            //player is fixed to middle line so not at an edge, can move background left/right
-            bkg.move(e.getKeyCode(), false);
-        }
-        if (player.isFixedY()) {
-            bkg.move(e.getKeyCode(), true);
-        }
-
-        if (bkg.edgeX()) {//arrive at edge of background left/right direction
-            player.move(e.getKeyCode(), false);
+//        if(bkg.edgeX()&&player.isFixedX()&&sideMoveX){//switch between true/false
+//            sideMoveX=false;
+//        }
+//        else if(bkg.edgeX()&&player.isFixedX()&&!sideMoveX){
+//            sideMoveX=true;
+//        }
+//        if(bkg.edgeY()&&player.isFixedY()&&sideMoveY){//switch between true/false
+//            sideMoveY=false;
+//        }
+//        else if(bkg.edgeY()&&player.isFixedY()&&!sideMoveY){
+//            sideMoveY=true;
+//        }
+        if(bkg.edgeX()){//arrive at edge of background left/right direction
+            player.move(keys,false);
             //player itself can move left/right and background stops left/right movement
         }
-        if (bkg.edgeY()) {
-            player.move(e.getKeyCode(), true);
+        if(bkg.edgeY()){
+            player.move(keys,true);
+        }
+
+        if(player.isFixedX()){
+            //player is fixed to middle line so not at an edge, can move background left/right
+            bkg.move(keys,false);
+        }
+        if(player.isFixedY()){
+            bkg.move(keys,true);
         }
 
 //        else{
@@ -79,44 +95,6 @@ public class Game extends BaseFrame {
 //        }
 //        else{
 //            bkg.move(e.getKeyCode(),false);//left/right movement only
-//        }
-
-
-//        if (bkg.getOffX() <= 0 && bkg.getOffY() <= 0) {
-//            System.out.println(player.getRect().x);
-//            System.out.println(WIDTH/2);
-//            if (player.getRect().x == WIDTH/2 - 30 && player.isWalkRight()) {
-//                bkg.move(e.getKeyCode());
-//            }
-//
-//        }
-//        if (bkg.getOffX() > -10) {
-//            player.move(e.getKeyCode());
-//            if (player.getRect().x == WIDTH/2) {
-//                bkg.moveRight(e.getKeyCode());
-//            }
-//        } else {
-//            bkg.moveRight(e.getKeyCode());
-//        }
-//
-//        if (bkg.getOffY() > -10) {
-//            player.move(e.getKeyCode());
-//            if (player.getRect().y == HEIGHT/2) {
-//                bkg.move(e.getKeyCode());
-//            }
-//        } else {
-//            bkg.moveDown(e.getKeyCode());
-//        }
-//        System.out.println(bkg.getOffX());
-//        System.out.println(bkg.getOffY());
-//
-//        if (bkg.getOffX() <= 0 || bkg.getOffY() <= 0) {
-//            bkg.move(e.getKeyCode());
-//            if (player.isWalkRight() || player.isWalkDown()) {
-//                player.move(e.getKeyCode());
-//            }
-//        } else {
-//            player.move(e.getKeyCode());
 //        }
 
 
@@ -156,49 +134,47 @@ public class Game extends BaseFrame {
     public void drawMenu(Graphics g) {
         final int X = 0, Y = 1, W = 2, H = 3; // Variables for button creation
 
-        // Background screen
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
-        // Title
         g.setFont(new Font("SnowtopCaps", Font.PLAIN, 150));
         g.setColor(Color.CYAN);
-        g.drawString("Penguin is Cool", WIDTH / 2 - 550, 200);
+        g.drawString("Penguin is Cool",  WIDTH/2 - 550, 200);
 
         // Arrays for buttons
-        int[][] buttonCoordinates = {{WIDTH / 2 - 200, 275, 400, 150}, {WIDTH / 2 - 200, 525, 400, 150}};
+        int[][] buttonCoordinates = {{WIDTH/2 - 200, 275, 400, 150}, {WIDTH/2 - 200, 525, 400, 150}};
         String[] buttonText = {"Play", "Tutorial"};
         int[][] textCoordinates = {{640, 365}, {590, 620}};
-        ArrayList<Button> buttons = new ArrayList<>();
+
+        // ArrayList<Button> buttons = new ArrayList<Button>();
 
 
         // Button creation
         for (int i = 0; i < buttonCoordinates.length; i++) {
-            g.setColor(Color.BLUE); // PLACEHOLDER
+            g.setColor(Color.BLUE); //TEMP COLOUR
+            Button temp = new Button(buttonCoordinates[i][X], buttonCoordinates[i][Y], buttonCoordinates[i][W], buttonCoordinates[i][H]); // Creates a new button object with params
 
-            // Creating new button
-            Button temp = new Button(buttonCoordinates[i][X], buttonCoordinates[i][Y], buttonCoordinates[i][W], buttonCoordinates[i][H]);
-            buttons.add(temp);
+            // buttons.add(temp);
+            g.fillRect(temp.getRect().x, temp.getRect().y, temp.getRect().width, temp.getRect().height); // Making new buttons
 
-            g.fillRect(temp.getRect().x, temp.getRect().y, temp.getRect().width, temp.getRect().height); // Drawing buttons
-
-            // Drawing buttons when hovered
             if (temp.isHover(mx, my)) {
-                g.setColor(Color.DARK_GRAY); // PLACEHOLDER
+                 // System.out.println("HELP");
+
+                g.setColor(Color.DARK_GRAY);
                 g.fillRect(temp.getRect().x, temp.getRect().y, temp.getRect().width, temp.getRect().height);
+
+            }
+
+            if (temp.isClicked(mx, my, mb)) {
+                screen = GAME;
             }
 
             g.setFont(new Font("Comic Sans MS", Font.BOLD, 50));
             g.setColor(Color.WHITE);
-            g.drawString(buttonText[i], textCoordinates[i][X], textCoordinates[i][Y]);
+            g.drawString(buttonText[i], textCoordinates[i][0], textCoordinates[i][1]);
         }
 
-        // Button function
-        if (buttons.get(0).isClicked(mx, my, mb)) {
-            screen = GAME;
-        } else if (buttons.get(1).isClicked(mx, my, mb)) {
-            screen = TUTORIAL;
-        }
+        // WIP: NEED TO DIFFERENTIATE CLICKS
     }
 
     public void drawGame(Graphics g) {
@@ -207,32 +183,27 @@ public class Game extends BaseFrame {
         player.draw(g);
         g.setColor(Color.green);
     }
-
-    public void drawTutorial(Graphics g) {
-        // Background
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0, WIDTH, HEIGHT);
-        // Controls
-
-        // WHAT TO DO
-    }
-
-    public void draw(Graphics g) {//test
+    @Override
+    public void draw(Graphics g) {
         if (screen == MENU) {
             drawMenu(g);
         } else if (screen == GAME) {
             drawGame(g);
-        } else if (screen == TUTORIAL) {
-            drawTutorial(g);
         }
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(KeyEvent e) {//constant new checking for keys[], based on actionPerformed()
         super.keyPressed(e);
-        move(e);
-        // player.keyPress(e.getKeyCode());
+        keys[e.getKeyCode()]=true;
     }
+    @Override
+    public void keyReleased(KeyEvent e){
+        super.keyPressed(e);
+        keys[e.getKeyCode()]=false;
+    }
+
+//        System.out.println(keys[KeyEvent.VK_W]);
 
 //    @Override
 //    public void mousePressed(MouseEvent e) {
