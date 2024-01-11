@@ -45,7 +45,7 @@ public class BKG {
 
         }
     }
-//    public boolean atEdge(){//check if background top left corner is at starting position
+    //    public boolean atEdge(){//check if background top left corner is at starting position
 //        return offX<=0&&offY<=0;
 //    }
     public boolean edgeX(){
@@ -110,7 +110,7 @@ public class BKG {
 
         for(int s=0;s<squares.size()-1;s++){//grid
             BKG b=squares.get(s);
-                g.fillRect(b.offX, b.offY, b.width, b.height);
+            g.fillRect(b.offX, b.offY, b.width, b.height);
         }
     }
 }
