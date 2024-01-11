@@ -13,42 +13,41 @@ public class Player {
         this.x = x;//x and y on screen
         this.y = y;
     }
-    public boolean isFixedX(){
+    public boolean isFixedX(){//in x direction, the midline
         return x==WIDTH/2-SIZE/2;
     }
-    public boolean isFixedY(){
+    public boolean isFixedY(){//at midline in y direction
         return y==HEIGHT/2-SIZE/2;
     }
-    public boolean isFixed(){
+    public boolean isFixed(){//both x y
         return isFixedX()&&isFixedY();
     }
 
-    public void move(int keyCode,boolean direction) {
+    public void move(boolean[] keys,boolean direction) {
         //direction: true=up/down, false=left/right
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
+//        System.out.println(keys[W]+", "+keys[A]+", "+keys[S]+", "+keys[D]);
 
         // Movement of penguin
         if(direction) {
-            if (keyCode == W) {
+            if (keys[W]) {
                 y -= walkSpd;
             }
-            if (keyCode == S) {
+            if (keys[S]) {
                 y += walkSpd;
             }
         }
         else {
-            if (keyCode == A) {
+            if (keys[A]) {
                 x -= walkSpd;
             }
-            if (keyCode == D) {
+            if (keys[D]) {
                 x += walkSpd;
             }
         }
-
-
     }
 
-    public void collision() {
+    public void collision(Rectangle block) {//with walls
 
     }
 
@@ -72,7 +71,7 @@ public class Player {
 
     public void draw(Graphics g) {
         // Draw the penguin
-        g.setColor(Color.BLACK);
+        g.setColor(Color.BLACK);//temp black square
         g.fillRect(x, y, SIZE, SIZE);
     }
 

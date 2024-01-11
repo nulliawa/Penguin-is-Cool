@@ -18,7 +18,7 @@ public class BKG {
         this.sideMove=false;
     }
     public void setup(){
-        for(int i=0;i<10;i++){
+        for(int i=0;i<10;i++){//temporary grid for easier visuals
             for(int j=0;j<10;j++){
                 if(i%2==0) {
                     if (j % 2 == 0) {
@@ -51,41 +51,40 @@ public class BKG {
     public boolean edgeX(){
         //background is either too far right or too far left
         return offX>=offSpd||offX+width-WIDTH<=offSpd;
+        //in terms of offSpd because the next action will move everything by 1 spd unit
     }
-    public boolean edgeY(){
+    public boolean edgeY(){//background y is on one of the edges
         return offY+height-HEIGHT<=offSpd||offY>=offSpd;
     }
-    public void move(int keyCode,boolean direction){
+    public void move(boolean[] keys,boolean direction){
         //direction: true=up/down, false=left/right
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
 
 //        if(!sideMove){//switch for moving at side, turns back on with player x,y
 //            this.sideMove=this.atEdge();
 //        }
-        for(BKG b:squares){
-            b.move(keyCode,direction);
+        for(BKG b:squares){//temporary background grid
+            b.move(keys,direction);
         }
         // Movement of offset
-        if(direction) {
-            if (keyCode == W) {
+        if(direction) {//true=up/down
+            if (keys[W]) {
                 offY += offSpd;
             }
-            if (keyCode == S) {
+            if (keys[S]) {
                 offY -= offSpd;
             }
         }
-        else{
-            if (keyCode == A) {
+        else{//false=left/right
+            if (keys[A]) {
                 offX += offSpd;
             }
-            if (keyCode == D) {
+            if (keys[D]) {
                 offX -= offSpd;
             }
         }
         //will need to stop offset at edge of screen
         //if not at edge, player at center, move the background
-//        this.offX=p.getRect().x;
-//        this.offY=p.getRect().y;
     }
 
     public int getOffX() {
@@ -105,11 +104,11 @@ public class BKG {
     }
 
     public void draw(Graphics g,Image img){
-        g.setColor(Color.cyan);//placeholder
+        g.setColor(Color.cyan);//placeholder large main rect
         g.fillRect(offX,offY,width,height);
         g.setColor(Color.blue);
 
-        for(int s=0;s<squares.size()-1;s++){
+        for(int s=0;s<squares.size()-1;s++){//grid
             BKG b=squares.get(s);
                 g.fillRect(b.offX, b.offY, b.width, b.height);
         }

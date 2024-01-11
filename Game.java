@@ -1,4 +1,7 @@
+import com.sun.source.doctree.AttributeTree;
+
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
@@ -25,13 +28,13 @@ public class Game extends BaseFrame {
         player.setX(width/2 - player.getRect().width/2);
         player.setY(height/2 - player.getRect().height/2);
     }
-    private void pFixX(){
-        player.setX(WIDTH/2-player.getRect().width/2);
-    }
-    private void pFixY(){
-        player.setY(HEIGHT/2-player.getRect().height/2);
-    }
-    public void move(KeyEvent e) {
+//    private void pFixX(){
+//        player.setX(WIDTH/2-player.getRect().width/2);
+//    }
+//    private void pFixY(){
+//        player.setY(HEIGHT/2-player.getRect().height/2);
+//    }
+    public void move() {
         // If player gets to the edge of the background, stop moving the background, instead move the player
         int bkgX=bkg.getOffX();
         int bkgY=bkg.getOffY();
@@ -42,9 +45,9 @@ public class Game extends BaseFrame {
         System.out.println(Arrays.toString(coord));
 //        System.out.print(bkg.edgeX());
 //        System.out.print(player.pushX());
-        System.out.println(sideMoveX);
-        System.out.print(" ");
-        System.out.println(sideMoveY);
+//        System.out.println(sideMoveX);
+//        System.out.print(" ");
+//        System.out.println(sideMoveY);
 //        System.out.print(bkg.edgeY());
 //        System.out.print(player.pushY());
 //        System.out.print(" ");
@@ -64,19 +67,19 @@ public class Game extends BaseFrame {
 //            sideMoveY=true;
 //        }
         if(bkg.edgeX()){//arrive at edge of background left/right direction
-            player.move(e.getKeyCode(),false);
+            player.move(keys,false);
             //player itself can move left/right and background stops left/right movement
         }
         if(bkg.edgeY()){
-            player.move(e.getKeyCode(),true);
+            player.move(keys,true);
         }
 
         if(player.isFixedX()){
             //player is fixed to middle line so not at an edge, can move background left/right
-            bkg.move(e.getKeyCode(),false);
+            bkg.move(keys,false);
         }
         if(player.isFixedY()){
-            bkg.move(e.getKeyCode(),true);
+            bkg.move(keys,true);
         }
 
 //        else{
@@ -179,8 +182,8 @@ public class Game extends BaseFrame {
         player.draw(g);
         g.setColor(Color.green);
     }
-
-    public void draw(Graphics g) {//test
+    @Override
+    public void draw(Graphics g) {
         if (screen == MENU) {
             drawMenu(g);
         } else if (screen == GAME) {
@@ -189,11 +192,17 @@ public class Game extends BaseFrame {
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(KeyEvent e) {//constant new checking for keys[], based on actionPerformed()
         super.keyPressed(e);
-        move(e);
-        // player.keyPress(e.getKeyCode());
+        keys[e.getKeyCode()]=true;
     }
+    @Override
+    public void keyReleased(KeyEvent e){
+        super.keyPressed(e);
+        keys[e.getKeyCode()]=false;
+    }
+
+//        System.out.println(keys[KeyEvent.VK_W]);
 
 //    @Override
 //    public void mousePressed(MouseEvent e) {
