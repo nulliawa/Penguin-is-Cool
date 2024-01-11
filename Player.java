@@ -47,8 +47,19 @@ public class Player {
         }
     }
 
-    public void collision(Rectangle block) {//with walls
-
+    public void collision(Rectangle block) {//with walls and border
+        if(x>=WIDTH-SIZE){
+            x=WIDTH-SIZE;
+        }
+        else if(x<=0){
+            x=0;
+        }
+        if(y>=HEIGHT+SIZE){
+            y=HEIGHT+SIZE;
+        }
+        else if(y<=0){
+            y=0;
+        }
     }
 
 //    public void interact(int keyCode, Puzzle puzzle) {

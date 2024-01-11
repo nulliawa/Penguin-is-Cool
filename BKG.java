@@ -18,8 +18,8 @@ public class BKG {
         this.sideMove=false;
     }
     public void setup(){
-        for(int i=0;i<10;i++){//temporary grid for easier visuals
-            for(int j=0;j<10;j++){
+        for(int i=0;i<15;i++){//temporary grid for easier visuals
+            for(int j=0;j<15;j++){
                 if(i%2==0) {
                     if (j % 2 == 0) {
                         squares.add(new BKG(i * 100, j * 100, 100, 100));

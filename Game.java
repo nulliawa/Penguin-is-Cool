@@ -35,6 +35,7 @@ public class Game extends BaseFrame {
 //        player.setY(HEIGHT/2-player.getRect().height/2);
 //    }
     public void move() {
+        player.collision(new Rectangle());//WIP
         // If player gets to the edge of the background, stop moving the background, instead move the player
         int bkgX=bkg.getOffX();
         int bkgY=bkg.getOffY();
