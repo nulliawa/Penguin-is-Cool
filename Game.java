@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -136,6 +137,13 @@ public class Game extends BaseFrame {
     public void keyReleased(KeyEvent e) {
         super.keyPressed(e);
         keys[e.getKeyCode()] = false;
+    }
+    @Override
+    public void actionPerformed(ActionEvent e){
+        if (screen == GAME) {
+            move();
+        }
+        repaint();
     }
 
 
