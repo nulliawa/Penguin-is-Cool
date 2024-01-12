@@ -184,11 +184,26 @@ public class Game extends BaseFrame {
 
     public void drawTutorial(Graphics g) {
         // Background
-        g.setColor(Color.WHITE);
+        g.setColor(Color.WHITE); // PLACEHOLDER
         g.fillRect(0, 0, WIDTH, HEIGHT);
         // Controls
+        g.setColor(Color.CYAN); // PLACEHOLDER
+        g.setFont(new Font("SnowtopCaps", Font.PLAIN, 70));
+        g.drawString("CONTROLS", 20, 100);
 
+        // Rectangle creation
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                g.drawRect(350 * i + 25, 250 * j + 200, 300, 200);
+            }
+        }
         // WHAT TO DO
+        /*
+        WASD - up left down right
+        SPACE - interact
+        */
+
+        Button next = new Button(100, 100, 200, 200);
     }
 
     public void draw(Graphics g) {//test
