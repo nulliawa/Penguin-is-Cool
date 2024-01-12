@@ -6,7 +6,7 @@ public class BKG {
     //background
     private final int WIDTH=1366,HEIGHT=768;
     private ArrayList<BKG> squares=new ArrayList<>();
-    private ArrayList<BKG> blocks=new ArrayList<>();
+    private ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
     private int offX, offY,width,height;
     private final int offSpd = 10;
     private boolean sideMove;//is the character at the edge
@@ -33,18 +33,72 @@ public class BKG {
                 }
             }
         }
-        blocks.add(new BKG(250,150,100,100));
+        //creation of grid array
+        for(int ad=0;ad<30;ad++) {
+            blocks.add(new ArrayList<BKG>());
+        }
+        //coords based on 100x100 sized squares
+        //30x  15y
+        String template=
+                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 1 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 1 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+        int row=0,col=0;
+        for(int loc=0;loc<template.length();loc++){
+            char type=template.charAt(loc);
+            if(type=='\n'){//next line/row
+                row++;
+                col=0;
+            }
+            else if(type=='1'){//default wall pattern
+                blocks.get(row).add(new BKG(col*100,row*100,100,100));
+                System.out.println(row+", "+col);
+            }
+            if(loc%2==0){//every odd is a space character
+                col++;
+            }
+        }
+        System.out.println(blocks);
+
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
     }
     public void collision(Player p){//called on the blocks that cannot be passed through
-
-        //top intersect
         int pX=p.getRect().x,pY=p.getRect().y,pW=p.getRect().width,pH=p.getRect().height;
-        if(pY+pH>=this.offY&&pX+pW<this.offX||pX>this.offX+this.width){
-            p.setY(this.offY+pH);
-        }
-        //bottom intersect
-        else if(pY<this.offY+this.height){
-
+        if(pX+pW>this.offX&&pX<this.offX+this.width) {//player within collision range based on squares
+            //top of player intersect bottom of block
+            if (pY + pH >= this.offY) {
+                p.setY(this.offY);
+            }
+            //bottom of p intersect
+            else if (pY < this.offY + this.height) {
+                p.setY(this.offY + this.height);
+            }
         }
     }
     //    public boolean atEdge(){//check if background top left corner is at starting position
@@ -68,8 +122,10 @@ public class BKG {
         for(BKG b:squares){//temporary background grid
             b.move(keys,direction);
         }
-        for(BKG wall:blocks){
-            wall.move(keys,direction);
+        for(ArrayList<BKG> row:blocks){
+            for(BKG block:row){
+                block.move(keys,direction);
+            }
         }
         // Movement of offset
         if(direction) {//true=up/down
@@ -113,14 +169,14 @@ public class BKG {
         g.fillRect(offX,offY,width,height);
         g.setColor(Color.blue);
 
-        for(int s=0;s<squares.size();s++){//grid
-            BKG b=squares.get(s);
+        for (BKG b : squares) {//grid
             g.fillRect(b.offX, b.offY, b.width, b.height);
         }
         g.setColor(Color.orange);
-        for(int b=0;b<blocks.size();b++){
-            BKG wall=blocks.get(b);
-            g.fillRect(wall.offX,wall.offY,wall.width,wall.height);
+        for(ArrayList<BKG> row:blocks){
+            for(BKG block:row){
+                g.fillRect(block.offX,block.offY,block.width,block.height);
+            }
         }
     }
 }
