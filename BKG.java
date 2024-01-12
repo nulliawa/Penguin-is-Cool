@@ -6,6 +6,7 @@ public class BKG {
     //background
     private final int WIDTH=1366,HEIGHT=768;
     private ArrayList<BKG> squares=new ArrayList<>();
+    private ArrayList<BKG> blocks=new ArrayList<>();
     private int offX, offY,width,height;
     private final int offSpd = 10;
     private boolean sideMove;//is the character at the edge
@@ -32,6 +33,7 @@ public class BKG {
                 }
             }
         }
+        blocks.add(new BKG(250,150,100,100));
     }
     public void collision(Player p){//called on the blocks that cannot be passed through
 
@@ -65,6 +67,9 @@ public class BKG {
 //        }
         for(BKG b:squares){//temporary background grid
             b.move(keys,direction);
+        }
+        for(BKG wall:blocks){
+            wall.move(keys,direction);
         }
         // Movement of offset
         if(direction) {//true=up/down
@@ -108,9 +113,14 @@ public class BKG {
         g.fillRect(offX,offY,width,height);
         g.setColor(Color.blue);
 
-        for(int s=0;s<squares.size()-1;s++){//grid
+        for(int s=0;s<squares.size();s++){//grid
             BKG b=squares.get(s);
             g.fillRect(b.offX, b.offY, b.width, b.height);
+        }
+        g.setColor(Color.orange);
+        for(int b=0;b<blocks.size();b++){
+            BKG wall=blocks.get(b);
+            g.fillRect(wall.offX,wall.offY,wall.width,wall.height);
         }
     }
 }
