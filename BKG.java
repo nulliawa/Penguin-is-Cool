@@ -106,11 +106,11 @@ public class BKG {
 //    }
     public boolean edgeX(){
         //background is either too far right or too far left
-        return offX>=offSpd||offX+width<=WIDTH+offSpd;
+        return offX>=0||offX+width<=WIDTH+offSpd;
         //in terms of offSpd because the next action will move everything by 1 spd unit
     }
     public boolean edgeY(){//background y is on one of the edges
-        return offY+height<=HEIGHT+offSpd||offY>=offSpd;
+        return offY+height<=HEIGHT+offSpd||offY>=0;
     }
     public void move(boolean[] keys,boolean direction){
         //direction: true=up/down, false=left/right
