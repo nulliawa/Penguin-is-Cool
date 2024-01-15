@@ -20,7 +20,7 @@ public class BKG {
     }
     public void setup(){
         for(int i=0;i<15;i++){//temporary grid for easier visuals
-            for(int j=0;j<15;j++){
+            for(int j=0;j<10;j++){
                 if(i%2==0) {
                     if (j % 2 == 0) {
                         squares.add(new BKG(i * 100, j * 100, 100, 100));
@@ -106,11 +106,11 @@ public class BKG {
 //    }
     public boolean edgeX(){
         //background is either too far right or too far left
-        return offX>=offSpd||offX+width-WIDTH<=offSpd;
+        return offX>=offSpd||offX+width<=WIDTH+offSpd;
         //in terms of offSpd because the next action will move everything by 1 spd unit
     }
     public boolean edgeY(){//background y is on one of the edges
-        return offY+height-HEIGHT<=offSpd||offY>=offSpd;
+        return offY+height<=HEIGHT+offSpd||offY>=offSpd;
     }
     public void move(boolean[] keys,boolean direction){
         //direction: true=up/down, false=left/right

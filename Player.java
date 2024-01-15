@@ -14,10 +14,10 @@ public class Player {
         this.y = y;
     }
     public boolean isFixedX(){//in x direction, the midline
-        return x==WIDTH/2-SIZE/2;
+        return x+SIZE/2==WIDTH/2;
     }
     public boolean isFixedY(){//at midline in y direction
-        return y==HEIGHT/2-SIZE/2;
+        return y+SIZE/2==HEIGHT/2;
     }
     public boolean isFixed(){//both x y
         return isFixedX()&&isFixedY();
