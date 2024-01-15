@@ -7,13 +7,15 @@ public class BKG {
     private final int WIDTH=1366,HEIGHT=768;
     private ArrayList<BKG> squares=new ArrayList<>();
     private ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
-    private int offX, offY,width,height;
+    private int initX, initY, offX, offY,width,height;
     private final int offSpd = 10;
     private boolean sideMove;//is the character at the edge
     //character at center, move background instead of player
     public BKG(int offX, int offY, int width,int height){
         this.offX=offX;
         this.offY=offY;
+        this.initX=offX;//checked initial only once and then stays
+        this.initY=offY;
         this.width=width;
         this.height=height;
         this.sideMove=false;
@@ -71,22 +73,6 @@ public class BKG {
             }
         }
         System.out.println(blocks);
-
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        //0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
     }
     public void collision(Player p){//called on the blocks that cannot be passed through
         int pX=p.getRect().x,pY=p.getRect().y,pW=p.getRect().width,pH=p.getRect().height;
@@ -101,10 +87,29 @@ public class BKG {
             }
         }
     }
-    //    public boolean atEdge(){//check if background top left corner is at starting position
-//        return offX<=0&&offY<=0;
-//    }
-    public boolean edgeX(){
+    public void fix(){//fix problem with scrolling, put background at fixed position if at wrong position
+//        for(BKG b:squares){//temporary background grid
+//            b.fix();
+//        }
+//        for(ArrayList<BKG> row:blocks){
+//            for(BKG block:row){
+//                block.fix();
+//            }
+//        }
+        if(offX>=initX){
+            offX=initX;
+        }
+        else if(offX+width<=WIDTH+offSpd+initY){
+            offX=WIDTH-width+offSpd+initX;
+        }
+        if(offY>=initY){
+            offY=initY;
+        }
+        else if(offY+height<=HEIGHT+offSpd+initY){
+            offY=HEIGHT-height+offSpd+initY;
+        }
+    }
+    public boolean edgeX(){//check if background top left corner is at starting position
         //background is either too far right or too far left
         return offX>=0||offX+width<=WIDTH+offSpd;
         //in terms of offSpd because the next action will move everything by 1 spd unit
@@ -116,9 +121,6 @@ public class BKG {
         //direction: true=up/down, false=left/right
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
 
-//        if(!sideMove){//switch for moving at side, turns back on with player x,y
-//            this.sideMove=this.atEdge();
-//        }
         for(BKG b:squares){//temporary background grid
             b.move(keys,direction);
         }

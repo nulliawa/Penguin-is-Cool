@@ -11,8 +11,6 @@ public class Game extends BaseFrame {
     private Player player;
     private BKG bkg;
     private boolean sideMoveX = true, sideMoveY = true;
-    private int offsetDistance = 300; // How far from the edge of the offset
-
     public Game(String title, int width, int height) {
         super(title, width, height);
 
@@ -22,7 +20,6 @@ public class Game extends BaseFrame {
         player.setX(width / 2 - player.getRect().width / 2);
         player.setY(height / 2 - player.getRect().height / 2);
     }
-
     public void move() {
         player.collision(new Rectangle());//WIP
         // If player gets to the edge of the background, stop moving the background, instead move the player
@@ -34,13 +31,7 @@ public class Game extends BaseFrame {
 
         System.out.println(Arrays.toString(coord));
 
-        if (bkg.edgeX()) {//arrive at edge of background left/right direction
-            player.move(keys, false);
-            //player itself can move left/right and background stops left/right movement
-        }
-        if (bkg.edgeY()) {
-            player.move(keys, true);
-        }
+        bkg.fix();
 
         if (player.isFixedX()) {
             //player is fixed to middle line so not at an edge, can move background left/right
@@ -49,6 +40,16 @@ public class Game extends BaseFrame {
         if (player.isFixedY()) {
             bkg.move(keys, true);
         }
+
+        if (bkg.edgeX()) {//arrive at edge of background left/right direction
+            player.move(keys, false);
+            //player itself can move left/right and background stops left/right movement
+        }
+        if (bkg.edgeY()) {
+            player.move(keys, true);
+        }
+
+
     }
 
     public void drawMenu(Graphics g) {
