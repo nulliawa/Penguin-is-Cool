@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class Game extends BaseFrame {
     private final int WIDTH = 1366, HEIGHT = 768;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2;
-    int screen = MENU; // Change to MENU when done gameplay
+    int screen = 3; // Change to MENU when done gameplay
     private Player player;
     private BKG bkg;
     private boolean sideMoveX = true, sideMoveY = true;
@@ -117,6 +117,18 @@ public class Game extends BaseFrame {
         // WHAT TO DO
     }
 
+    public void drawTest(Graphics g) {
+        g.setColor(Color.WHITE);
+        g.fillRect(0,0, WIDTH, HEIGHT);
+        ArrayList<Double> songTimes = new ArrayList<>(Arrays.asList(1.0, 3.0));
+        ArrayList<Integer> noteX = new ArrayList<>(Arrays.asList(300, 200, 400));
+        ArrayList<Integer> noteY = new ArrayList<>(Arrays.asList(500, 400, 200));
+
+        Song song1 = new Song(songTimes, noteX, noteY);
+        g.setColor(Color.BLACK);
+        song1.display(g);
+    }
+
     public void draw(Graphics g) {//test
         if (screen == MENU) {
             drawMenu(g);
@@ -124,6 +136,8 @@ public class Game extends BaseFrame {
             drawGame(g);
         } else if (screen == TUTORIAL) {
             drawTutorial(g);
+        } else if (screen == 3) {
+            drawTest(g);
         }
     }
 
