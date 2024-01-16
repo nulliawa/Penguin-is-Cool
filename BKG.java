@@ -42,13 +42,13 @@ public class BKG {
         //30x  15y
         String template=
                 "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 1 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 1 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 1 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
@@ -72,32 +72,32 @@ public class BKG {
             }
         }
     }
-    public void collision(){//called on the blocks that cannot be passed through
-//        int pX=p.getRect().x,pY=p.getRect().y,pW=p.getRect().width,pH=p.getRect().height;
+    //0=none,1=North,2=South,3=East,4=West
+    public int collision(Player p){//called on the blocks that cannot be passed through
+        //returns a number telling where the player is in relation to the block
+        int pX=p.getRect().x,pY=p.getRect().y,pW=p.getRect().width,pH=p.getRect().height;
 
-        if(edgeXL()||edgeXR()){
-            offSpdX=0;
+        for(ArrayList<BKG> row:blocks) {
+            for (BKG block : row) {
+                if (pX + pW > block.offX && pX < block.offX + block.width) {//player within sideCollide range based on squares
+                    //top of player meets bottom of block
+                    if (pY > block.offY+block.height&& pY + pH > block.offY) {
+                        System.out.println("2");
+                        return 2;
+                    }
+                    //bottom of p intersects top of block
+                    else if (pY + pH <block.offY + block.height && pY > block.offY + block.height) {
+                        System.out.println("1");
+                        return 1;
+                    }
+                }
+            }
         }
-//        else if(edgeXR()){
-//            offX=WIDTH-width;
-//        }
-        if(edgeYT()||edgeYB()){
-            offSpdY=0;
-        }
-//        else if(edgeYB()){
-//            offY=HEIGHT-height;
-//        }
-
-//        if(pX+pW>this.offX&&pX<this.offX+this.width) {//player within collision range based on squares
-//            //top of player intersect bottom of block
-//            if (pY + pH >= this.offY) {
-//                p.setY(this.offY);
-//            }
-//            //bottom of p intersect
-//            else if (pY < this.offY + this.height) {
-//                p.setY(this.offY + this.height);
-//            }
-//        }
+        System.out.println("0");
+        return 0;
+    }
+    public ArrayList<ArrayList<BKG>> getBlocks(){
+        return blocks;
     }
     public boolean edgeXL(){
         return offX>=0;
@@ -127,7 +127,7 @@ public class BKG {
         this.offX+=leader.offSpdX;
         this.offY+=leader.offSpdY;
     }
-    public void move(boolean[] keys,boolean direction){
+    public void move(boolean[] keys,boolean direction,Player player){
         //direction: true=up/down, false=left/right
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
         //when no keys pressed, speed 0, no movement
@@ -135,10 +135,10 @@ public class BKG {
         offSpdY=0;
         // Movement of offset
         if(direction) {//true=up/down
-            if (keys[W]&&!edgeYT()) {
+            if (keys[W]&&!edgeYT()&&collision(player)!=1) {
                 offSpdY=10;
             }
-            if (keys[S]&&!edgeYB()) {
+            if (keys[S]&&!edgeYB()&&collision(player)!=2) {
                 offSpdY=-10;
             }
         }
@@ -162,23 +162,6 @@ public class BKG {
                 block.moveHelp(this);
             }
         }
-        // Movement of offset
-//        if(direction) {//true=up/down
-//            if (keys[W]) {
-//                offY += offSpdY;
-//            }
-//            if (keys[S]) {
-//                offY -= offSpdY;
-//            }
-//        }
-//        else{//false=left/right
-//            if (keys[A]) {
-//                offX += offSpdX;
-//            }
-//            if (keys[D]) {
-//                offX -= offSpdX;
-//            }
-//        }
         //will need to stop offset at edge of screen
         //if not at edge, player at center, move the background
     }
@@ -188,6 +171,12 @@ public class BKG {
     }
     public int getOffY() {
         return offY;
+    }
+    public int getWidth(){
+        return this.width;
+    }
+    public int getHeight(){
+        return this.height;
     }
 
     public void draw(Graphics g,Image img){

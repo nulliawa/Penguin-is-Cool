@@ -20,8 +20,10 @@ public class Game extends BaseFrame {
         player.setX(width / 2 - player.getRect().width / 2);
         player.setY(height / 2 - player.getRect().height / 2);
     }
+    public void collide(){
+
+    }
     public void move() {
-//        player.collision(new Rectangle());//WIP
         // If player gets to the edge of the background, stop moving the background, instead move the player
         int bkgX = bkg.getOffX();
         int bkgY = bkg.getOffY();
@@ -29,25 +31,24 @@ public class Game extends BaseFrame {
         int pY = player.getRect().y;
         int[] coord = new int[]{bkgX, bkgY, pX, pY};
 
-        System.out.println(Arrays.toString(coord));
+//        System.out.println(Arrays.toString(coord));
 
         if (player.isFixedX()) {
             //player is fixed to middle line, can move background left/right
-            bkg.move(keys, false);
+            bkg.move(keys, false,player);
         }
         if (player.isFixedY()) {
-            bkg.move(keys, true);
+            bkg.move(keys, true,player);
         }
 
         if (bkg.edgeX()) {//arrive at edge of background left/right direction
-            player.move(keys, false);
+            player.move(keys, false,bkg);
             //player itself can move left/right and background stops
             // left/right movement as it will no longer be at a midline
         }
         if (bkg.edgeY()) {
-            player.move(keys, true);
+            player.move(keys, true,bkg);
         }
-
 
     }
 
@@ -142,6 +143,7 @@ public class Game extends BaseFrame {
     public void actionPerformed(ActionEvent e){
         if (screen == GAME) {
             move();
+            collide();
         }
         repaint();
     }

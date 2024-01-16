@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class Player {
     // Private vs. protected?
@@ -7,7 +8,6 @@ public class Player {
     private final int SIZE=30,WIDTH=1366,HEIGHT=768;
     private int walkSpdX=0,walkSpdY=0,walkSpd=10;
     private int interactionDistance = 10, offsetDistance = 10; // Within interactionDistance
-//    private boolean walkUp, walkLeft, walkDown, walkRight;
 
     public Player(int x, int y) {
         this.x = x;//x and y on screen
@@ -27,46 +27,22 @@ public class Player {
     }
     public boolean isFixedX(){//in x direction, the midline
         return x+SIZE/2==WIDTH/2;
-//        return x+SIZE/2>=WIDTH/2-walkSpd&&x+SIZE/2<=WIDTH/2+walkSpd;
     }
     public boolean isFixedY(){//at midline in y direction
         return y+SIZE/2==HEIGHT/2;
-//        return y+SIZE/2>=HEIGHT/2-walkSpd&&y+SIZE/2<=HEIGHT/2+walkSpd;
     }
-    public boolean isFixed(){//both x y
-        return isFixedX()&&isFixedY();
-    }
-
-    public void move(boolean[] keys,boolean direction) {
+    public void move(boolean[] keys,boolean direction,BKG bkg) {
         //direction: true=up/down, false=left/right
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
-//        System.out.println(keys[W]+", "+keys[A]+", "+keys[S]+", "+keys[D]);
 
-        // Movement of penguin
-//        if(direction) {//changes the x and y directly
-//            if (keys[W]) {
-//                y -= walkSpd;
-//            }
-//            if (keys[S]) {
-//                y += walkSpd;
-//            }
-//        }
-//        else {
-//            if (keys[A]) {
-//                x -= walkSpd;
-//            }
-//            if (keys[D]) {
-//                x += walkSpd;
-//            }
-//        }
         walkSpdX=0;
         walkSpdY=0;
         // Movement of penguin
         if(direction) {
-            if (keys[W]&&!edgeYT()) {
+            if (keys[W]&&!edgeYT()&&collision(bkg)!=2) {
                 walkSpdY=-10;
             }
-            if (keys[S]&&!edgeYB()) {
+            if (keys[S]&&!edgeYB()&&collision(bkg)!=1) {
                 walkSpdY=10;
             }
         }
@@ -82,20 +58,26 @@ public class Player {
         this.x+=walkSpdX;
         this.y+=walkSpdY;
     }
-
-    public void collision(Rectangle block) {//with walls and border
-        if(x>=WIDTH-SIZE){
-            x=WIDTH-SIZE;
+    //returns a number telling where the player is in relation to a block
+    //0=none,1=North,2=South,3=East,4=West
+    public int collision(BKG bkg) {//with blocks
+        ArrayList<ArrayList<BKG>> blocks = bkg.getBlocks();
+        for (ArrayList<BKG> row : blocks) {
+            for (BKG block : row) {
+                int bX = block.getOffX(), bY = block.getOffY(), bW = block.getWidth(), bH = block.getHeight();
+                if ((x + SIZE > bX &&x+SIZE<bX+bH)||(x < bX + bW&&x>bX)) {//player within sideCollide range based on squares
+                    //top of player meets bottom of block
+                    if (y > bY+bH && y + SIZE > bY) {
+                        return 2;
+                    }
+                    //bottom of p intersects top of block
+                    else if (y + SIZE < bY + bH && y > bY + bH) {
+                        return 1;
+                    }
+                }
+            }
         }
-        else if(x<=0){
-            x=0;
-        }
-        if(y>=HEIGHT+SIZE){
-            y=HEIGHT+SIZE;
-        }
-        else if(y<=0){
-            y=0;
-        }
+        return 0;
     }
 
 //    public void interact(int keyCode, Puzzle puzzle) {
