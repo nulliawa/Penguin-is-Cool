@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class Song {
     private final int RADIUS = 150;
@@ -11,14 +12,14 @@ public class Song {
     private ArrayList<Integer> noteX; // X-coordinates for notes on the screen
     private ArrayList<Integer> noteY;
 
-    public Song(ArrayList<Double> notes, ArrayList<Integer> x, ArrayList<Integer> y) {
-        this.notes = notes;
+    public Song(ArrayList<Double> note, ArrayList<Integer> x, ArrayList<Integer> y) {
+        notes = note;
         noteX = x;
         noteY = y;
     }
 
     public void display(Graphics g) {
         // TIMER
-        g.drawOval(noteX.get(0), noteY.get(0), RADIUS, RADIUS);
+        g.fillOval(noteX.get(0), noteY.get(0), RADIUS, RADIUS); // PLACEHOLDER
     }
 }
