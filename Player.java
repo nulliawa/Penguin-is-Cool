@@ -13,6 +13,18 @@ public class Player {
         this.x = x;//x and y on screen
         this.y = y;
     }
+    private boolean edgeXL(){
+        return x<=0;
+    }
+    private boolean edgeXR(){
+        return x+SIZE>=WIDTH;
+    }
+    private boolean edgeYT(){
+        return y<=0;
+    }
+    private boolean edgeYB(){
+        return y+SIZE>=HEIGHT;
+    }
     public boolean isFixedX(){//in x direction, the midline
         return x+SIZE/2==WIDTH/2;
 //        return x+SIZE/2>=WIDTH/2-walkSpd&&x+SIZE/2<=WIDTH/2+walkSpd;
@@ -31,44 +43,44 @@ public class Player {
 //        System.out.println(keys[W]+", "+keys[A]+", "+keys[S]+", "+keys[D]);
 
         // Movement of penguin
-        if(direction) {//changes the x and y directly
-            if (keys[W]) {
-                y -= walkSpd;
-            }
-            if (keys[S]) {
-                y += walkSpd;
-            }
-        }
-        else {
-            if (keys[A]) {
-                x -= walkSpd;
-            }
-            if (keys[D]) {
-                x += walkSpd;
-            }
-        }
-//        walkSpdX=0;
-//        walkSpdY=0;
-//        // Movement of penguin
-//        if(direction) {
+//        if(direction) {//changes the x and y directly
 //            if (keys[W]) {
-//                walkSpdY=-10;
+//                y -= walkSpd;
 //            }
 //            if (keys[S]) {
-//                walkSpdY=10;
+//                y += walkSpd;
 //            }
 //        }
 //        else {
 //            if (keys[A]) {
-//                walkSpdX=-10;
+//                x -= walkSpd;
 //            }
 //            if (keys[D]) {
-//                walkSpdX=10;
+//                x += walkSpd;
 //            }
 //        }
-//        //enacting the movement
-//        this.x+=walkSpdX;
-//        this.y+=walkSpdY;
+        walkSpdX=0;
+        walkSpdY=0;
+        // Movement of penguin
+        if(direction) {
+            if (keys[W]&&!edgeYT()) {
+                walkSpdY=-10;
+            }
+            if (keys[S]&&!edgeYB()) {
+                walkSpdY=10;
+            }
+        }
+        else {
+            if (keys[A]&&!edgeXL()) {
+                walkSpdX=-10;
+            }
+            if (keys[D]&&!edgeXR()) {
+                walkSpdX=10;
+            }
+        }
+        //enacting the movement
+        this.x+=walkSpdX;
+        this.y+=walkSpdY;
     }
 
     public void collision(Rectangle block) {//with walls and border
