@@ -130,15 +130,7 @@ public class BKG {
     public void move(boolean[] keys,boolean direction){
         //direction: true=up/down, false=left/right
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
-
-//        for(BKG b:squares){//temporary background grid
-//            b.move(keys,direction);
-//        }
-//        for(ArrayList<BKG> row:blocks){
-//            for(BKG block:row){
-//                block.move(keys,direction);
-//            }
-//        }
+        //when no keys pressed, speed 0, no movement
         offSpdX=0;
         offSpdY=0;
         // Movement of offset
@@ -158,6 +150,7 @@ public class BKG {
                 offSpdX=-10;
             }
         }
+        //updating offX and offY
         offX+=offSpdX;
         offY+=offSpdY;
 
@@ -193,27 +186,8 @@ public class BKG {
     public int getOffX() {
         return offX;
     }
-
     public int getOffY() {
         return offY;
-    }
-
-    public void setOffX(int offX) {
-        this.offX = offX;
-    }
-
-    public void setOffY(int offY) {
-        this.offY = offY;
-    }
-    private void setOffSpd(int xSpd,int ySpd){
-        offSpdX=xSpd;
-        offSpdY=ySpd;
-    }
-    private void setOffSpdX(int speed){
-        offSpdX=speed;
-    }
-    private void setOffSpdY(int speed){
-        offSpdY=speed;
     }
 
     public void draw(Graphics g,Image img){

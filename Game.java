@@ -31,12 +31,8 @@ public class Game extends BaseFrame {
 
         System.out.println(Arrays.toString(coord));
 
-//        bkg.move(keys, false);
-//        bkg.move(keys, true);
-
-
         if (player.isFixedX()) {
-            //player is fixed to middle line so not at an edge, can move background left/right
+            //player is fixed to middle line, can move background left/right
             bkg.move(keys, false);
         }
         if (player.isFixedY()) {
@@ -45,7 +41,8 @@ public class Game extends BaseFrame {
 
         if (bkg.edgeX()) {//arrive at edge of background left/right direction
             player.move(keys, false);
-            //player itself can move left/right and background stops left/right movement
+            //player itself can move left/right and background stops
+            // left/right movement as it will no longer be at a midline
         }
         if (bkg.edgeY()) {
             player.move(keys, true);

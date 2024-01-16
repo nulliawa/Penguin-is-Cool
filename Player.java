@@ -31,7 +31,7 @@ public class Player {
 //        System.out.println(keys[W]+", "+keys[A]+", "+keys[S]+", "+keys[D]);
 
         // Movement of penguin
-        if(direction) {
+        if(direction) {//changes the x and y directly
             if (keys[W]) {
                 y -= walkSpd;
             }
