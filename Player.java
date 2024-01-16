@@ -5,7 +5,7 @@ public class Player {
     // Private vs. protected?
     private int x, y;
     private final int SIZE=30,WIDTH=1366,HEIGHT=768;
-    private int walkSpd = 10;
+    private int walkSpdX=0,walkSpdY=0,walkSpd=10;
     private int interactionDistance = 10, offsetDistance = 10; // Within interactionDistance
 //    private boolean walkUp, walkLeft, walkDown, walkRight;
 
@@ -15,9 +15,11 @@ public class Player {
     }
     public boolean isFixedX(){//in x direction, the midline
         return x+SIZE/2==WIDTH/2;
+//        return x+SIZE/2>=WIDTH/2-walkSpd&&x+SIZE/2<=WIDTH/2+walkSpd;
     }
     public boolean isFixedY(){//at midline in y direction
         return y+SIZE/2==HEIGHT/2;
+//        return y+SIZE/2>=HEIGHT/2-walkSpd&&y+SIZE/2<=HEIGHT/2+walkSpd;
     }
     public boolean isFixed(){//both x y
         return isFixedX()&&isFixedY();
@@ -45,6 +47,28 @@ public class Player {
                 x += walkSpd;
             }
         }
+//        walkSpdX=0;
+//        walkSpdY=0;
+//        // Movement of penguin
+//        if(direction) {
+//            if (keys[W]) {
+//                walkSpdY=-10;
+//            }
+//            if (keys[S]) {
+//                walkSpdY=10;
+//            }
+//        }
+//        else {
+//            if (keys[A]) {
+//                walkSpdX=-10;
+//            }
+//            if (keys[D]) {
+//                walkSpdX=10;
+//            }
+//        }
+//        //enacting the movement
+//        this.x+=walkSpdX;
+//        this.y+=walkSpdY;
     }
 
     public void collision(Rectangle block) {//with walls and border
