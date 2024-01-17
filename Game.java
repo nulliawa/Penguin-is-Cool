@@ -18,9 +18,6 @@ public class Game extends BaseFrame {
         bkg.setup();
         player = new Player(width / 2, height / 2);
     }
-    public void collide(){
-
-    }
     public void move() {
         // If player gets to the edge of the background, stop moving the background, instead move the player
         int bkgX = bkg.getOffX();
@@ -139,7 +136,6 @@ public class Game extends BaseFrame {
     public void actionPerformed(ActionEvent e){
         if (screen == GAME) {
             move();
-            collide();
         }
         repaint();
     }
