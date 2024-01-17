@@ -11,6 +11,10 @@ public class Game extends BaseFrame {
     private Player player;
     private BKG bkg;
     private boolean sideMoveX = true, sideMoveY = true;
+
+    private ArrayList<Integer> noteX = new ArrayList<>(Arrays.asList(300));
+    private ArrayList<Integer> noteY = new ArrayList<>(Arrays.asList(400));
+    private ArrayList<Note> notes = new ArrayList<>();
     public Game(String title, int width, int height) {
         super(title, width, height);
 
@@ -112,7 +116,23 @@ public class Game extends BaseFrame {
     }
 
     public void drawTest(Graphics g){
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, WIDTH, HEIGHT);
+        createNotes();
+        drawNotes(g);
+    }
 
+    public void createNotes() {
+        for (int i = 0; i < noteX.size(); i++) {
+            Note newNote = new Note(noteX.get(i), noteY.get(i));
+            notes.add(newNote);
+        }
+    }
+
+    public void drawNotes(Graphics g) {
+        for (Note note : notes) {
+            note.draw(g);
+        }
     }
 
     public void draw(Graphics g) {//test
