@@ -111,13 +111,18 @@ public class Game extends BaseFrame {
         // WHAT TO DO
     }
 
+    public void drawTest(Graphics g){
+
+    }
+
     public void draw(Graphics g) {//test
         if (screen == MENU) {
             drawMenu(g);
         } else if (screen == GAME) {
             drawGame(g);
         } else if (screen == TUTORIAL) {
-            drawTutorial(g);
+            drawTest(g); // TEMPORARY
+            // drawTutorial(g);
         }
     }
 
