@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Player {
     // Private vs. protected?
     private int x, y;
-    private final int SIZE=30,WIDTH=1366,HEIGHT=768;
+    private final int SIZE=30,WIDTH = 1400, HEIGHT = 800;
     private int walkSpdX=0,walkSpdY=0,walkSpd=10;
     private int interactionDistance = 10, offsetDistance = 10; // Within interactionDistance
 
@@ -25,33 +25,39 @@ public class Player {
     private boolean edgeYB(){
         return y+SIZE>=HEIGHT;
     }
-    public boolean isFixedX(){//in x direction, the midline
-        return x+SIZE/2==WIDTH/2;
+    public boolean isFixedX(){//in x direction, the line where background can scroll
+        return x<=WIDTH/2-50||x>=WIDTH/2+50;
     }
-    public boolean isFixedY(){//at midline in y direction
-        return y+SIZE/2==HEIGHT/2;
+    public boolean isFixedY(){//in y direction, line where background can start scrolling
+        return y<=HEIGHT/2-50||y>=HEIGHT/2+50;
     }
     public void move(boolean[] keys,boolean direction,BKG bkg) {
         //direction: true=up/down, false=left/right
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
+        int collideX=collisionX(bkg);
+        int collideY=collisionY(bkg);
 
         walkSpdX=0;
         walkSpdY=0;
         // Movement of penguin
         if(direction) {
-            if (keys[W]&&!edgeYT()&&collision(bkg)!=2) {
-                walkSpdY=-10;
-            }
-            if (keys[S]&&!edgeYB()&&collision(bkg)!=1) {
-                walkSpdY=10;
+            if(!(keys[W]&&keys[S])) {//no more "vibrating" with quick switch spd -10 to 10
+                if (keys[W] && !edgeYT() && collideY != 2) {
+                    walkSpdY = -10;
+                }
+                if (keys[S] && !edgeYB() && collideY != 1) {
+                    walkSpdY = 10;
+                }
             }
         }
         else {
-            if (keys[A]&&!edgeXL()) {
-                walkSpdX=-10;
-            }
-            if (keys[D]&&!edgeXR()) {
-                walkSpdX=10;
+            if(!(keys[A]&&keys[D])) {
+                if (keys[A] && !edgeXL() && collideX != 4) {
+                    walkSpdX = -10;
+                }
+                if (keys[D] && !edgeXR() && collideX != 3) {
+                    walkSpdX = 10;
+                }
             }
         }
         //enacting the movement
@@ -60,24 +66,43 @@ public class Player {
     }
     //returns a number telling where the player is in relation to a block
     //0=none,1=North,2=South,3=East,4=West
-    public int collision(BKG bkg) {//with blocks
+    public int collisionY(BKG bkg) {//with blocks
         ArrayList<ArrayList<BKG>> blocks = bkg.getBlocks();
         for (ArrayList<BKG> row : blocks) {
             for (BKG block : row) {
                 int bX = block.getOffX(), bY = block.getOffY(), bW = block.getWidth(), bH = block.getHeight();
-                if ((x + SIZE > bX &&x+SIZE<bX+bH)||(x < bX + bW&&x>bX)) {//player within sideCollide range based on squares
+                if ((x + SIZE > bX &&x+SIZE<bX+bW)||(x < bX + bW&&x>bX)) {//player within side collisionY range
                     //top of player meets bottom of block
-                    if (y > bY+bH && y + SIZE > bY) {
+                    if (y <= bY+bH&&y>=bY) {
                         return 2;
                     }
                     //bottom of p intersects top of block
-                    else if (y + SIZE < bY + bH && y > bY + bH) {
+                    else if (y + SIZE >=bY && y+SIZE <= bY + bH) {
                         return 1;
                     }
                 }
             }
         }
-        return 0;
+        return 0;//no collisionY on top/bottom
+    }
+    public int collisionX(BKG bkg) {
+        ArrayList<ArrayList<BKG>> blocks = bkg.getBlocks();
+        for (ArrayList<BKG> row : blocks) {
+            for (BKG block : row) {
+                int bX = block.getOffX(), bY = block.getOffY(), bW = block.getWidth(), bH = block.getHeight();
+                if ((y + SIZE > bY && y < bY + bH) || (y < bY + bH && y > bY)) {//player within bounds for up/down collisionY
+                    //right of player intersects left of block
+                    if (x + SIZE >= bX && x + SIZE <= bX + bW) {
+                        return 3;
+                    }
+                    //left side of player intersects right of block
+                    else if (x <= bX + bW && x >= bX) {
+                        return 4;
+                    }
+                }
+            }
+        }
+        return 0;//no collisionY on either side
     }
 
 //    public void interact(int keyCode, Puzzle puzzle) {

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class BKG {
     //background
-    private final int WIDTH=1366,HEIGHT=768;
+    private final int WIDTH = 1400, HEIGHT = 800;
     private ArrayList<BKG> squares=new ArrayList<>();
     private ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
     private int offX, offY,width,height;
@@ -44,11 +44,11 @@ public class BKG {
                 "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 1 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 1 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 1 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
@@ -73,27 +73,44 @@ public class BKG {
         }
     }
     //0=none,1=North,2=South,3=East,4=West
-    public int collision(Player p){//called on the blocks that cannot be passed through
+    public int collisionY(Player p){//called on the blocks that cannot be passed through
         //returns a number telling where the player is in relation to the block
         int pX=p.getRect().x,pY=p.getRect().y,pW=p.getRect().width,pH=p.getRect().height;
 
         for(ArrayList<BKG> row:blocks) {
             for (BKG block : row) {
-                if (pX + pW > block.offX && pX < block.offX + block.width) {//player within sideCollide range based on squares
+                int bX = block.getOffX(), bY = block.getOffY(), bW = block.getWidth(), bH = block.getHeight();
+                if ((pX + pW > bX && pX+pW<bX+bW)||(pX < bX +bW && pX>bX)) {//player within colliding range based on squares
                     //top of player meets bottom of block
-                    if (pY > block.offY+block.height&& pY + pH > block.offY) {
-                        System.out.println("2");
+                    if (pY <= bY+bH&&pY>= bY) {
                         return 2;
                     }
                     //bottom of p intersects top of block
-                    else if (pY + pH <block.offY + block.height && pY > block.offY + block.height) {
-                        System.out.println("1");
+                    else if (pY + pH >=bY && pY+pH <= bY + bH) {
                         return 1;
                     }
                 }
             }
         }
-        System.out.println("0");
+        return 0;
+    }
+    public int collisionX(Player p) {
+        int pX = p.getRect().x, pY = p.getRect().y, pW = p.getRect().width, pH = p.getRect().height;
+        for (ArrayList<BKG> row : blocks) {
+            for (BKG block : row) {
+                int bX = block.getOffX(), bY = block.getOffY(), bW = block.getWidth(), bH = block.getHeight();
+                if ((pY+ pH > bY && pY < bY + bH) || (pY < bY + bH && pY > bY)) {//player within bounds for up/down collision
+                    //right of player intersects left of block
+                    if (pX + pW >= bX && pX + pW <= bX + bW) {
+                        return 3;
+                    }
+                    //left side of player intersects right of block
+                    else if (pX <= bX + bW && pX >= bX) {
+                        return 4;
+                    }
+                }
+            }
+        }
         return 0;
     }
     public ArrayList<ArrayList<BKG>> getBlocks(){
@@ -103,19 +120,17 @@ public class BKG {
         return offX>=0;
     }
     public boolean edgeXR(){
-        return offX+width<=WIDTH+offSpd;
+        return offX+width<=WIDTH;
     }
     public boolean edgeX(){//check if background top left corner is at starting position
         //background is either too far right or too far left
-//        return offX>=offSpd||offX+width<=WIDTH+offSpd;
         return edgeXL()||edgeXR();
-        //in terms of offSpd because the next action will move everything by 1 spd unit
     }
     public boolean edgeYT(){
         return offY>=0;
     }
     public boolean edgeYB(){
-        return offY+height<=HEIGHT+offSpd;
+        return offY+height<=HEIGHT;
     }
     public boolean edgeY(){//background y is on one of the edges
 //        return offY+height<=HEIGHT+offSpd||offY>=0;
@@ -131,23 +146,29 @@ public class BKG {
         //direction: true=up/down, false=left/right
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
         //when no keys pressed, speed 0, no movement
+        int collideY=collisionY(player);
+        int collideX=collisionX(player);
         offSpdX=0;
         offSpdY=0;
         // Movement of offset
         if(direction) {//true=up/down
-            if (keys[W]&&!edgeYT()&&collision(player)!=1) {
-                offSpdY=10;
-            }
-            if (keys[S]&&!edgeYB()&&collision(player)!=2) {
-                offSpdY=-10;
+            if(!(keys[W]&&keys[S])) {
+                if (keys[W] && !edgeYT() && collideY != 2) {
+                    offSpdY = 10;
+                }
+                if (keys[S] && !edgeYB() && collideY != 1) {
+                    offSpdY = -10;
+                }
             }
         }
         else{//false=left/right
-            if (keys[A]&&!edgeXL()) {
-                offSpdX=10;
-            }
-            if (keys[D]&&!edgeXR()) {
-                offSpdX=-10;
+            if(!(keys[A]&&keys[D])) {
+                if (keys[A] && !edgeXL() && collideX != 4) {
+                    offSpdX = 10;
+                }
+                if (keys[D] && !edgeXR() && collideX != 3) {
+                    offSpdX = -10;
+                }
             }
         }
         //updating offX and offY

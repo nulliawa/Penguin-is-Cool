@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Game extends BaseFrame {
-    private final int WIDTH = 1366, HEIGHT = 768;
+    private final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2;
     int screen = MENU; // Change to MENU when done gameplay
     private Player player;
@@ -17,8 +17,6 @@ public class Game extends BaseFrame {
         bkg = new BKG(0, 0, 1500, 1000);//wip
         bkg.setup();
         player = new Player(width / 2, height / 2);
-        player.setX(width / 2 - player.getRect().width / 2);
-        player.setY(height / 2 - player.getRect().height / 2);
     }
     public void collide(){
 
@@ -30,8 +28,6 @@ public class Game extends BaseFrame {
         int pX = player.getRect().x;
         int pY = player.getRect().y;
         int[] coord = new int[]{bkgX, bkgY, pX, pY};
-
-//        System.out.println(Arrays.toString(coord));
 
         if (player.isFixedX()) {
             //player is fixed to middle line, can move background left/right
@@ -150,6 +146,6 @@ public class Game extends BaseFrame {
 
 
     public static void main(String[] args) {
-        Game game = new Game("Penguin Is Cool", 1366, 768);
+        Game game = new Game("Penguin Is Cool", 1400, 800);
     }
 }
