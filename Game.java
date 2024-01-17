@@ -66,7 +66,7 @@ public class Game extends BaseFrame {
         // Arrays for buttons
         int[][] buttonCoordinates = {{WIDTH / 2 - 200, 275, 400, 150}, {WIDTH / 2 - 200, 525, 400, 150}};
         String[] buttonText = {"Play", "Tutorial"};
-        int[][] textCoordinates = {{640, 365}, {590, 620}};
+        int[][] textCoordinates = {{WIDTH/2 - 45, 365}, {WIDTH/2 - 95, 620}};
         ArrayList<Button> buttons = new ArrayList<>();
 
 
