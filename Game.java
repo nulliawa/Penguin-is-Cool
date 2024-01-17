@@ -14,7 +14,7 @@ public class Game extends BaseFrame {
     public Game(String title, int width, int height) {
         super(title, width, height);
 
-        bkg = new BKG(0, 0, 1500, 1000);//wip
+        bkg = new BKG(0, 0, 2000, 1500);//wip
         bkg.setup();
         player = new Player(width / 2, height / 2);
     }

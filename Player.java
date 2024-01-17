@@ -25,11 +25,11 @@ public class Player {
     private boolean edgeYB(){
         return y+SIZE>=HEIGHT;
     }
-    public boolean isFixedX(){//in x direction, the line where background can scroll
-        return x<=WIDTH/2-50||x>=WIDTH/2+50;
+    public boolean isFixedX(){//in x direction, lines where background can scroll
+        return x>=WIDTH/2-50&&x<=WIDTH/2+50;
     }
-    public boolean isFixedY(){//in y direction, line where background can start scrolling
-        return y<=HEIGHT/2-50||y>=HEIGHT/2+50;
+    public boolean isFixedY(){//in y direction, lines where background can start scrolling
+        return y>=HEIGHT/2-50&&y<=HEIGHT/2+50;
     }
     public void move(boolean[] keys,boolean direction,BKG bkg) {
         //direction: true=up/down, false=left/right
