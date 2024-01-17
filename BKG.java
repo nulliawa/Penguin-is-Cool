@@ -198,6 +198,12 @@ public class BKG {
     public int getHeight(){
         return this.height;
     }
+    public int getOffSpdX(){
+        return offSpdX;
+    }
+    public int getOffSpdY(){
+        return offSpdY;
+    }
 
     public void draw(Graphics g,Image img){
         g.setColor(Color.cyan);//placeholder large main rect

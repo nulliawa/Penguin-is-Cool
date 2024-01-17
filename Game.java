@@ -6,10 +6,11 @@ import java.util.Arrays;
 
 public class Game extends BaseFrame {
     private final int WIDTH = 1400, HEIGHT = 800;
-    public final int MENU = 0, GAME = 1, TUTORIAL = 2;
+    public final int MENU = 0, GAME = 1, TUTORIAL = 2,BATTLE=4;
     int screen = MENU; // Change to MENU when done gameplay
     private Player player;
     private BKG bkg;
+    private Enemy enemy;
     private boolean sideMoveX = true, sideMoveY = true;
     public Game(String title, int width, int height) {
         super(title, width, height);
@@ -17,6 +18,8 @@ public class Game extends BaseFrame {
         bkg = new BKG(0, 0, 2000, 1500);//wip
         bkg.setup();
         player = new Player(width / 2, height / 2);
+        enemy=new Enemy(0,0,0,0);
+        enemy.setUp();
     }
     public void move() {
         // If player gets to the edge of the background, stop moving the background, instead move the player
@@ -29,9 +32,13 @@ public class Game extends BaseFrame {
         if (player.isFixedX()) {
             //player is fixed to middle line, can move background left/right
             bkg.move(keys, false,player);
+            enemy.move(bkg);
+
         }
         if (player.isFixedY()) {
             bkg.move(keys, true,player);
+            enemy.move(bkg);
+
         }
 
         if (bkg.edgeX()) {//arrive at edge of background left/right direction
@@ -42,7 +49,6 @@ public class Game extends BaseFrame {
         if (bkg.edgeY()) {
             player.move(keys, true,bkg);
         }
-
     }
 
     public void drawMenu(Graphics g) {
@@ -95,9 +101,8 @@ public class Game extends BaseFrame {
 
     public void drawGame(Graphics g) {
         bkg.draw(g, null);
-        g.setColor(Color.red);
         player.draw(g);
-        g.setColor(Color.green);
+        enemy.draw(g);
     }
 
     public void drawTutorial(Graphics g) {
@@ -136,6 +141,9 @@ public class Game extends BaseFrame {
     public void actionPerformed(ActionEvent e){
         if (screen == GAME) {
             move();
+            if(enemy.pCollision(player)){
+                screen=BATTLE;
+            }
         }
         repaint();
     }
