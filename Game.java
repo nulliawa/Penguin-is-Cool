@@ -18,11 +18,12 @@ public class Game extends BaseFrame {
 
         bkg = new BKG(0, 0, 2000, 1500);//wip
         bkg.setup();
-        battle=new Battle();
-        battle.setUp();
+
         player = new Player(width / 2, height / 2);
         enemy=new Enemy(0,0,0,0);
         enemy.setUp();
+        battle=new Battle();
+        battle.setUp();
     }
     public void move() {
         // If player gets to the edge of the background, stop moving the background, instead move the player
@@ -119,7 +120,7 @@ public class Game extends BaseFrame {
         // WHAT TO DO
     }
     public void doBattle(Graphics g){
-        battle.move();
+        battle.move(keys);
         battle.draw(g);
     }
 

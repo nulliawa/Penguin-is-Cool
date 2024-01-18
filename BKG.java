@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class BKG {
     //background
     private final int WIDTH = 1400, HEIGHT = 800;
+
     private ArrayList<BKG> squares=new ArrayList<>();
     private ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
     private int offX, offY,width,height;

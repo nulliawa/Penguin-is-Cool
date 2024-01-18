@@ -64,6 +64,33 @@ public class Player {
         this.x+=walkSpdX;
         this.y+=walkSpdY;
     }
+    public void move(boolean[] keys) {//movement for battle (no bkg movement considered)
+        //direction: true=up/down, false=left/right
+        final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
+
+        walkSpdX=0;
+        walkSpdY=0;
+        // Movement of penguin
+        if(!(keys[W]&&keys[S])) {//no more "vibrating" with quick switch spd -10 to 10
+            if (keys[W] && !edgeYT()) {
+                walkSpdY = -10;
+            }
+            if (keys[S] && !edgeYB()) {
+                walkSpdY = 10;
+            }
+        }
+        if(!(keys[A]&&keys[D])) {
+            if (keys[A] && !edgeXL()) {
+                walkSpdX = -10;
+            }
+            if (keys[D] && !edgeXR()) {
+                walkSpdX = 10;
+            }
+        }
+        //enacting the movement
+        this.x+=walkSpdX;
+        this.y+=walkSpdY;
+    }
     //returns a number telling where the player is in relation to a block
     //0=none,1=North,2=South,3=East,4=West
     public int collisionY(BKG bkg) {//with blocks
