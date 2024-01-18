@@ -11,14 +11,11 @@ public class BKG {
     private int offX, offY,width,height;
     private int offSpdX=10,offSpdY=10;
     private final int offSpd=10;
-    private boolean sideMove;//is the character at the edge
-    //character at center, move background instead of player
     public BKG(int offX, int offY, int width,int height){
         this.offX=offX;
         this.offY=offY;
         this.width=width;
         this.height=height;
-        this.sideMove=false;
     }
     public void setup(){
         for(int i=0;i<20;i++){//temporary grid for easier visuals

@@ -1,4 +1,7 @@
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 public class Battle {
     private final double PI=Math.PI;
@@ -7,6 +10,12 @@ public class Battle {
     private int hp;
     private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
     private Player player=new Player(WIDTH/2,HEIGHT/2);
+    Timer bTimer = new Timer(100, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+
+        }
+    });
     public Battle(){
         //new screen with new projectiles, player set to middle
         this.hp=100;

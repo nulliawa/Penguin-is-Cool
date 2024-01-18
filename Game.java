@@ -12,7 +12,6 @@ public class Game extends BaseFrame {
     private BKG bkg;
     private Enemy enemy;
     private Battle battle;
-    private boolean sideMoveX = true, sideMoveY = true;
     public Game(String title, int width, int height) {
         super(title, width, height);
 
