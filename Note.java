@@ -6,37 +6,51 @@ import java.awt.geom.Ellipse2D;
 
 public class Note {
     private int x, y;
-    private int ax, ay;
-    private int approachRadius = 200;
+    private int approachRadius = 250;
     private final int RADIUS = 150;
     private Ellipse2D.Double circle;
-    Timer timer = new Timer(20, new ActionListener() {
+    private boolean visible = true;
+    private boolean game = false;
+    Timer timer = new Timer(15, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            shrinkCircle();
+            if (visible && game) {
+                shrinkCircle();
+            }
         }
     });
 
     public Note(int x, int y) {
         this.x = x;
         this.y = y;
-        ax = x;
-        ay = y;
         timer.start();
-        circle = new Ellipse2D.Double(this.x, this.y, RADIUS, RADIUS);
+        circle = new Ellipse2D.Double(this.x - (double) RADIUS / 2, this.y - (double) RADIUS / 2, RADIUS, RADIUS);
     }
 
     public void shrinkCircle() {
-        approachRadius -= 2;
+        approachRadius--;
     }
 
-    public boolean isHit(int mx, int my) {
+    public boolean isHovered(int mx, int my) {
         return circle.contains(mx, my);
     }
 
     public void draw(Graphics g) {
         g.setColor(Color.GRAY);
-        g.fillOval(x - RADIUS / 2, y - RADIUS / 2, RADIUS, RADIUS);
-        g.drawOval(ax - approachRadius / 2, ay - approachRadius / 2, approachRadius, approachRadius);
+        miss();
+        if (visible) {
+            g.fillOval(x - RADIUS / 2, y - RADIUS / 2, RADIUS, RADIUS);
+            g.drawOval(x - approachRadius / 2, y - approachRadius / 2, approachRadius, approachRadius);
+        }
+    }
+
+    public void miss() {
+        if (approachRadius <= RADIUS) {
+            visible = false;
+        }
+    }
+
+    public void setGame(boolean game) {
+        this.game = game;
     }
 }
