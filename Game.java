@@ -1,6 +1,9 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -10,6 +13,22 @@ public class Game extends BaseFrame {
     int screen = MENU; // Change to MENU when done gameplay
     private Player player;
     private BKG bkg;
+    private boolean sideMoveX = true, sideMoveY = true;
+
+    private ArrayList<Integer> noteX = new ArrayList<>(Arrays.asList(300, 700));
+    private ArrayList<Integer> noteY = new ArrayList<>(Arrays.asList(400, 200));
+    private ArrayList<Note> notes = new ArrayList<>();
+
+    private double[] times = {30.0, 200.0};
+    private int time = 0;
+
+    Timer timer = new Timer(time, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            time = (int) times[time];
+            time++;
+        }
+    });
     private Enemy enemy;
     private Battle battle;
     public Game(String title, int width, int height) {
@@ -23,6 +42,7 @@ public class Game extends BaseFrame {
         enemy.setUp();
         battle=new Battle();
         battle.setUp();
+        createNotes();
     }
     public void move() {
         // If player gets to the edge of the background, stop moving the background, instead move the player
@@ -52,6 +72,7 @@ public class Game extends BaseFrame {
         if (bkg.edgeY()) {
             player.move(keys, true,bkg);
         }
+
     }
 
     public void drawMenu(Graphics g) {
@@ -123,13 +144,43 @@ public class Game extends BaseFrame {
         battle.draw(g);
     }
 
+    public void drawTest(Graphics g){
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, WIDTH, HEIGHT);
+
+        drawNotes(g);
+    }
+
+    public void createNotes() {
+        for (int i = 0; i < noteX.size(); i++) {
+            Note newNote = new Note(noteX.get(i), noteY.get(i));
+            notes.add(newNote);
+        }
+    }
+
+    public void drawNotes(Graphics g) {
+
+        for (Note note : notes) {
+            note.draw(g);
+            note.setGame(true);
+        }
+
+        for (int i = notes.size() - 1; i >= 0; i--) {
+            if (notes.get(i).isHovered(mx, my) && mb == 1) {
+                notes.remove(i);
+            }
+        }
+        // DO TIMING
+    }
+
     public void draw(Graphics g) {//test
         if (screen == MENU) {
             drawMenu(g);
         } else if (screen == GAME) {
             drawGame(g);
         } else if (screen == TUTORIAL) {
-            drawTutorial(g);
+            drawTest(g); // TEMPORARY
+            // drawTutorial(g);
         }
         else if(screen==BATTLE){
             doBattle(g);
