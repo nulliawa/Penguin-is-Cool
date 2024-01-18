@@ -120,6 +120,13 @@ public class Game extends BaseFrame {
         g.fillRect(0, 0, WIDTH, HEIGHT);
         createNotes();
         drawNotes(g);
+        int count = 0;
+        for (Note note : notes) {
+            if (note.isHit(mx, my)) {
+                System.out.println("RAHH" + count);
+            }
+            count++;
+        }
     }
 
     public void createNotes() {
