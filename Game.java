@@ -116,8 +116,6 @@ public class Game extends BaseFrame {
     }
 
     public void drawTest(Graphics g){
-        long timeStart = System.currentTimeMillis();
-        System.out.println(timeStart);
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, WIDTH, HEIGHT);
         createNotes();
