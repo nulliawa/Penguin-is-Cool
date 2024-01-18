@@ -17,7 +17,7 @@ public class Enemy {
     public void setUp(){
         enemies.add(new Enemy(1000,30,40,40));
         enemies.add(new Enemy(510,340,50,50));
-
+        enemies.add(new Enemy(WIDTH-200,HEIGHT-200,10,10));
     }
 
     public void move(BKG bkg){//moves according to background offset

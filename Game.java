@@ -11,12 +11,15 @@ public class Game extends BaseFrame {
     private Player player;
     private BKG bkg;
     private Enemy enemy;
+    private Battle battle;
     private boolean sideMoveX = true, sideMoveY = true;
     public Game(String title, int width, int height) {
         super(title, width, height);
 
         bkg = new BKG(0, 0, 2000, 1500);//wip
         bkg.setup();
+        battle=new Battle();
+        battle.setUp();
         player = new Player(width / 2, height / 2);
         enemy=new Enemy(0,0,0,0);
         enemy.setUp();
@@ -115,6 +118,10 @@ public class Game extends BaseFrame {
 
         // WHAT TO DO
     }
+    public void doBattle(Graphics g){
+        battle.move();
+        battle.draw(g);
+    }
 
     public void draw(Graphics g) {//test
         if (screen == MENU) {
@@ -123,6 +130,9 @@ public class Game extends BaseFrame {
             drawGame(g);
         } else if (screen == TUTORIAL) {
             drawTutorial(g);
+        }
+        else if(screen==BATTLE){
+            doBattle(g);
         }
     }
 
