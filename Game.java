@@ -1,57 +1,16 @@
 import javax.swing.*;
-import javax.sound.sampled.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-/*
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import java.io.File;
-
-public class AudioExample {
-
-    public static void main(String[] args) {
-        try {
-            // Specify the path to your audio file
-            String audioFilePath = "path/to/your/audio/file.wav";
-
-            // Create an AudioInputStream from the file
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(audioFilePath));
-
-            // Get a Clip to play the audio
-            Clip clip = AudioSystem.getClip();
-
-            // Open the audioInputStream to the clip
-            clip.open(audioInputStream);
-
-            // Add a listener to handle the end of the audio playback
-            clip.addLineListener(new LineListener() {
-                @Override
-                public void update(LineEvent event) {
-                    if (event.getType() == LineEvent.Type.STOP) {
-                        clip.close();
-                    }
-                }
-            });
-
-            // Start playing the audio
-            clip.start();
-
-            // Optionally, you can delay the program to allow the audio to play
-            Thread.sleep(clip.getMicrosecondLength() / 1000);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-}
- */
 
 public class Game extends BaseFrame {
     private final int WIDTH = 1400, HEIGHT = 800;
@@ -197,6 +156,24 @@ public class Game extends BaseFrame {
     }
 
     public void drawTest(Graphics g) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("The Barber.wav"));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.addLineListener(new LineListener() {
+                @Override
+                public void update(LineEvent event) {
+                    if (event.getType() == LineEvent.Type.STOP) {
+                        clip.close();
+                    }
+                }
+            });
+            clip.start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         timer.start();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, WIDTH, HEIGHT);
