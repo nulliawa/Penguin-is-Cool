@@ -54,13 +54,11 @@ public class AudioExample {
  */
 
 public class Game extends BaseFrame {
-    private final int WIDTH = 1400, HEIGHT = 800;
-    public final int MENU = 0, GAME = 1, TUTORIAL = 2, BATTLE = 4;
+    private static final int WIDTH = 1400, HEIGHT = 800;
+    public static final int MENU = 0, GAME = 1, TUTORIAL = 2, BATTLE = 4;
     int screen = MENU; // Change to MENU when done gameplay
     private Player player;
     private BKG bkg;
-    private boolean sideMoveX = true, sideMoveY = true;
-
     private ArrayList<Integer> noteX = new ArrayList<>(Arrays.asList(300, 700, 800, 900, 100));
     private ArrayList<Integer> noteY = new ArrayList<>(Arrays.asList(400, 200, 300, 320, 100));
     private ArrayList<Note> notes = new ArrayList<>();

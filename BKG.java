@@ -9,7 +9,7 @@ public class BKG {
     private ArrayList<BKG> squares=new ArrayList<>();
     private ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
     private int offX, offY,width,height;
-    private static int offSpdX=10,offSpdY=10;
+    private static int offSpdX,offSpdY;
     private final int offSpd=10;
     public BKG(int offX, int offY, int width,int height){
         this.offX=offX;
@@ -149,20 +149,20 @@ public class BKG {
         if(direction) {//true=up/down
             if(!(keys[W]&&keys[S])) {
                 if (keys[W] && !edgeYT() && collideY != 2) {
-                    offSpdY = 10;
+                    offSpdY = offSpd;
                 }
                 if (keys[S] && !edgeYB() && collideY != 1) {
-                    offSpdY = -10;
+                    offSpdY = -offSpd;
                 }
             }
         }
         else{//false=left/right
             if(!(keys[A]&&keys[D])) {
                 if (keys[A] && !edgeXL() && collideX != 4) {
-                    offSpdX = 10;
+                    offSpdX = offSpd;
                 }
                 if (keys[D] && !edgeXR() && collideX != 3) {
-                    offSpdX = -10;
+                    offSpdX = -offSpd;
                 }
             }
         }
