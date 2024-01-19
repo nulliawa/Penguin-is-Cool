@@ -6,7 +6,7 @@ public class Player {
     // Private vs. protected?
     private int x, y;
     private final int SIZE=30,WIDTH = 1400, HEIGHT = 800, LEFT=180,RIGHT=0,UP=90,DOWN=270,HALF=45;;
-    private int walkSpdX=0,walkSpdY=0,walkSpd=10;
+    private int spdX =0, spdY =0,walkSpd=10;
     private int interactionDistance = 10, offsetDistance = 10; // Within interactionDistance
 
     public Player(int x, int y) {
@@ -44,109 +44,105 @@ public class Player {
         int collideX=collisionX(bkg);
         int collideY=collisionY(bkg);
 
-        walkSpdX=0;
-        walkSpdY=0;
+        spdX =0;
+        spdY =0;
         // Movement of penguin
         if(direction) {
-            if(!(keys[W]&&keys[S])) {//no more "vibrating" with quick switch spd -10 to 10
-                if (keys[W] && !edgeYT() && collideY != 2) {
-                    walkSpdY = -10;
+            if(!(keys[W]&&keys[S])) {//no more "vibrating" with quick switch of spd from +/-
+                if (keys[W] && collideY != 2) {
+                    spdY = -walkSpd;
                 }
-                if (keys[S] && !edgeYB() && collideY != 1) {
-                    walkSpdY = 10;
+                if (keys[S] && collideY != 1) {
+                    spdY = walkSpd;
                 }
             }
         }
         else {
             if(!(keys[A]&&keys[D])) {
-                if (keys[A] && !edgeXL() && collideX != 4) {
-                    walkSpdX = -10;
+                if (keys[A] && collideX != 4) {
+                    spdX = -walkSpd;
                 }
-                if (keys[D] && !edgeXR() && collideX != 3) {
-                    walkSpdX = 10;
+                if (keys[D] && collideX != 3) {
+                    spdX = walkSpd;
                 }
             }
         }
         //enacting the movement
-        this.x+=walkSpdX;
-        this.y+=walkSpdY;
+        this.x+= spdX;
+        this.y+= spdY;
+        border();//player cannot go off screen
+    }
+    private void border(){
+        if(edgeYT()){
+            y=0;
+        }
+        if(edgeYB()){
+            y=HEIGHT-SIZE;
+        }
+        if(edgeXL()){
+            x=0;
+        }
+        if(edgeXR()){
+            x=WIDTH-SIZE;
+        }
     }
     private void setSpeeds(int heading){
-        walkSpdX=(int)Math.round(10*Math.cos(rad(heading)));
-        walkSpdY=-(int)Math.round(10*Math.sin(rad(heading)));
+        spdX =(int)Math.round(walkSpd*Math.cos(rad(heading)));
+        spdY =-(int)Math.round(walkSpd*Math.sin(rad(heading)));
     }
     public void move(boolean[] keys) {//movement for battle (no bkg movement considered)
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
-        walkSpdX=0;
-        walkSpdY=0;
+        spdX =0;
+        spdY =0;
         // movement of penguin is uniform across all directions in battle
-        if(keys[W]&&!edgeYT()){//UP [W] KEY
+        if(keys[W]){//UP [W] KEY
             if(!(keys[S]||keys[A]||keys[D])){
                 setSpeeds(UP);
             }
-            if(keys[D]&&!edgeXR()&&!keys[A]){
+            if(keys[D]&&!keys[A]){
                 setSpeeds((UP+RIGHT)/2);
             }
-            if(keys[A]&&!edgeXL()&&!keys[D]){
+            if(keys[A]&&!keys[D]){
                 setSpeeds((UP+LEFT)/2);
             }
         }
-        if(keys[S]&&!edgeYB()){//DOWN [S] KEY
+        if(keys[S]){//DOWN [S] KEY
             if(!(keys[W]||keys[A]||keys[D])){
                 setSpeeds(DOWN);
             }
-            if(keys[D]&&!edgeXR()&&!keys[A]){
+            if(keys[D]&&!keys[A]){
                 setSpeeds(-HALF);//half between a full x/y axis direction
             }
-            if(keys[A]&&!edgeXL()&&!keys[D]){
+            if(keys[A]&&!keys[D]){
                 setSpeeds((DOWN+LEFT)/2);
             }
         }
-        if(keys[A]&&!edgeXL()){//LEFT [A] KEY
+        if(keys[A]){//LEFT [A] KEY
             if(!(keys[W]||keys[S]||keys[D])){
                 setSpeeds(LEFT);
             }
-            if(keys[W]&&!edgeYT()&&!keys[S]){
+            if(keys[W]&&!keys[S]){
                 setSpeeds((UP+LEFT)/2);
             }
-            if(keys[S]&&!edgeYB()&&!keys[W]){
+            if(keys[S]&&!keys[W]){
                 setSpeeds((DOWN+LEFT)/2);
             }
         }
-        if(keys[D]&&!edgeXR()){//RIGHT [D] KEY
+        if(keys[D]){//RIGHT [D] KEY
             if(!(keys[W]||keys[S]||keys[A])){
                 setSpeeds(RIGHT);
             }
-            if(keys[W]&&!edgeYT()&&!keys[S]){
+            if(keys[W]&&!keys[S]){
                 setSpeeds((UP+RIGHT)/2);
             }
-            if(keys[S]&&!edgeYB()&&!keys[W]){
+            if(keys[S]&&!keys[W]){
                 setSpeeds(-HALF);
             }
         }
-
-
-//        else {
-//            if (!(keys[W] && keys[S])) {//no more "vibrating" with quick switch spd -10 to 10
-//                if (keys[W] && !edgeYT()) {
-//                    walkSpdY = -10;
-//                }
-//                if (keys[S] && !edgeYB()) {
-//                    walkSpdY = 10;
-//                }
-//            }
-//            if (!(keys[A] && keys[D])) {
-//                if (keys[A] && !edgeXL()) {
-//                    walkSpdX = -10;
-//                }
-//                if (keys[D] && !edgeXR()) {
-//                    walkSpdX = 10;
-//                }
-//            }
-//        }
         //enacting the movement
-        this.x+=walkSpdX;
-        this.y+=walkSpdY;
+        this.x+= spdX;
+        this.y+= spdY;
+        border();//resets player to border if past it
     }
     //returns a number telling where the player is in relation to a block
     //0=none,1=North,2=South,3=East,4=West
