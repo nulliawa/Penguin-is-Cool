@@ -14,8 +14,8 @@ import java.io.File;
 
 public class Game extends BaseFrame {
     private final int WIDTH = 1400, HEIGHT = 800;
-    public final int MENU = 0, GAME = 1, TUTORIAL = 2, BATTLE = 4;
-    int screen = MENU; // Change to MENU when done gameplay
+    public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4;
+    int screen = MENU;
     private Player player;
     private BKG bkg;
     private boolean sideMoveX = true, sideMoveY = true;
@@ -24,19 +24,21 @@ public class Game extends BaseFrame {
     private ArrayList<Integer> noteY = new ArrayList<>(Arrays.asList(400, 200, 300, 320, 100));
     private ArrayList<Note> notes = new ArrayList<>();
 
-    private int[] times = {500, 200, 50, 50, 50};
+    private final int[] times = {500, 200, 50, 50, 50};
     private int timeCounter = 0;
 
-    Timer timer = new Timer(times[timeCounter], new ActionListener() {
+    Timer timer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            System.out.println(times[timeCounter]);
+            // System.out.println(times[timeCounter]);
             if (timeCounter < times.length - 1) {
                 createNotes();
                 timeCounter++;
             }
         }
     });
+
+    private boolean playingSong = false;
     private Enemy enemy;
     private Battle battle;
 
@@ -51,7 +53,6 @@ public class Game extends BaseFrame {
         enemy.setUp();
         battle = new Battle();
         battle.setUp();
-        // createNotes();
     }
 
     public void move() {
@@ -156,24 +157,10 @@ public class Game extends BaseFrame {
     }
 
     public void drawTest(Graphics g) {
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("The Barber.wav"));
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            clip.addLineListener(new LineListener() {
-                @Override
-                public void update(LineEvent event) {
-                    if (event.getType() == LineEvent.Type.STOP) {
-                        clip.close();
-                    }
-                }
-            });
-            clip.start();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!playingSong) {
+            playMusic();
+            playingSong = true;
         }
-
         timer.start();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, WIDTH, HEIGHT);
@@ -182,14 +169,9 @@ public class Game extends BaseFrame {
     }
 
     public void createNotes() {
-        System.out.println(timeCounter);
+        // System.out.println(timeCounter);
         Note newNote = new Note(noteX.get(timeCounter), noteY.get(timeCounter));
         notes.add(newNote);
-
-//        for (int i = 0; i < noteX.size(); i++) {
-//            Note newNote = new Note(noteX.get(i), noteY.get(i));
-//            notes.add(newNote);
-//        }
     }
 
     public void drawNotes(Graphics g) {
@@ -205,14 +187,45 @@ public class Game extends BaseFrame {
         }
     }
 
+    public void playMusic() {
+        try {
+            // Create an AudioInputStream from the file
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("The Barber.wav"));
+
+            // Get a Clip to play the audio
+            Clip clip = AudioSystem.getClip();
+
+            // Open the audioInputStream to the clip
+            clip.open(audioInputStream);
+
+            // Add a listener to handle the end of the audio playback
+            clip.addLineListener(new LineListener() {
+                @Override
+                public void update(LineEvent event) {
+                    if (event.getType() == LineEvent.Type.STOP) {
+                        clip.close();
+                        playingSong = false;
+                    }
+                }
+            });
+
+            // Start playing the audio
+            clip.start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void draw(Graphics g) {//test
         if (screen == MENU) {
             drawMenu(g);
         } else if (screen == GAME) {
             drawGame(g);
         } else if (screen == TUTORIAL) {
-            drawTest(g); // TEMPORARY
-            // drawTutorial(g);
+            drawTutorial(g);
+        } else if (screen == MUSIC) {
+            drawTest(g);
         } else if (screen == BATTLE) {
             doBattle(g);
         }
