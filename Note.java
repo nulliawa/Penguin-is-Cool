@@ -11,7 +11,7 @@ public class Note {
     private Ellipse2D.Double circle;
     private boolean visible = true;
     private boolean game = false;
-    Timer timer = new Timer(15, new ActionListener() {
+    Timer timer = new Timer(20, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             if (visible && game) {
@@ -28,7 +28,7 @@ public class Note {
     }
 
     public void shrinkCircle() {
-        approachRadius--;
+        approachRadius -= 3;
     }
 
     public boolean isHovered(int mx, int my) {
