@@ -5,7 +5,7 @@ public class Enemy {
     private final int WIDTH = 1400, HEIGHT = 800;
     private int x, y, width, height,spdX,spdY;
     private ArrayList<Enemy> enemies=new ArrayList<>();
-
+    
     public Enemy(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;

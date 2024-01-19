@@ -9,7 +9,7 @@ public class BKG {
     private ArrayList<BKG> squares=new ArrayList<>();
     private ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
     private int offX, offY,width,height;
-    private int offSpdX=10,offSpdY=10;
+    private static int offSpdX=10,offSpdY=10;
     private final int offSpd=10;
     public BKG(int offX, int offY, int width,int height){
         this.offX=offX;
@@ -133,11 +133,9 @@ public class BKG {
 //        return offY+height<=HEIGHT+offSpd||offY>=0;
         return edgeYT()||edgeYB();
     }
-    private void moveHelp(BKG leader){//all other background elements follow "leader" main background image
-        this.offSpdX=leader.offSpdX;
-        this.offSpdY= leader.offSpdY;
-        this.offX+=leader.offSpdX;
-        this.offY+=leader.offSpdY;
+    private void moveHelp(BKG leader){//all other background elements follow movement of main background image
+        this.offX+=offSpdX;
+        this.offY+=offSpdY;
     }
     public void move(boolean[] keys,boolean direction,Player player){
         //direction: true=up/down, false=left/right
