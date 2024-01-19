@@ -76,12 +76,12 @@ public class Battle {
     private ArrayList<Projectile> snow=new ArrayList<>();
     private Player player=new Player(WIDTH/2,HEIGHT/2);
 
-    Timer snowTimer = new Timer(200, new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-            createSnow(500,0);
-        }
-    });
+//    Timer snowTimer = new Timer(200, new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent actionEvent) {
+//            createSnow(500,0);
+//        }
+//    });
     public void timerStart(Timer timer){
         timer.start();
     }
