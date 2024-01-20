@@ -14,12 +14,11 @@ import java.io.File;
 
 public class Game extends BaseFrame {
     private final int WIDTH = 1400, HEIGHT = 800;
-    public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4;
+    public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5;
     int screen = MENU;
     private Player player;
     private BKG bkg;
     private boolean sideMoveX = true, sideMoveY = true;
-
     private ArrayList<Integer> noteX = new ArrayList<>(Arrays.asList(300, 700, 800, 900, 100));
     private ArrayList<Integer> noteY = new ArrayList<>(Arrays.asList(400, 200, 300, 320, 100));
     private ArrayList<Note> notes = new ArrayList<>();
@@ -42,6 +41,8 @@ public class Game extends BaseFrame {
     private Enemy enemy;
     private Battle battle;
 
+    private Puzzle puzzle = new Puzzle();
+
     public Game(String title, int width, int height) {
         super(title, width, height);
 
@@ -53,6 +54,7 @@ public class Game extends BaseFrame {
         enemy.setUp();
         battle = new Battle();
         battle.setUp();
+        puzzle.createButton();
     }
 
     public void move() {
@@ -149,12 +151,17 @@ public class Game extends BaseFrame {
         g.setFont(new Font("SnowtopCaps", Font.PLAIN, 70));
         g.drawString("CONTROLS", 20, 100);
 
+        String[] instructions = {"W - UP", "A - LEFT", "S - DOWN", "D - RIGHT"};
         // Rectangle creation
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
                 g.drawRect(350 * i + 25, 250 * j + 200, 300, 200);
             }
         }
+
+        g.setFont(new Font("Comic Sans MS", Font.PLAIN, 50));
+        g.drawString(instructions[0], 20, 100);
+        g.drawString(instructions[1], 50, 200);
         // WHAT TO DO
         /*
         WASD - up left down right
@@ -230,6 +237,10 @@ public class Game extends BaseFrame {
         }
     }
 
+    public void drawPuzzle(Graphics g) {
+        puzzle.draw(g);
+    }
+
     public void draw(Graphics g) {//test
         if (screen == MENU) {
             drawMenu(g);
@@ -241,6 +252,8 @@ public class Game extends BaseFrame {
             drawTest(g);
         } else if (screen == BATTLE) {
             doBattle(g);
+        } else if (screen == PUZZLE) {
+
         }
     }
 
