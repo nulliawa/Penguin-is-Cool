@@ -23,8 +23,10 @@ public class Game extends BaseFrame {
     private final ArrayList<Note> notes = new ArrayList<>();
     private final int[] times = {500, 200, 50, 50, 50};
     private int timeCounter = 0;
-    private static ImageInit imgInit;
-    private static Image[] blocks;
+    private static final String[] blockNames =new String[]{"iceTileBasic","iceTileWall",
+            "iceTileLeft","iceTileRight","iceTileTop","iceTileBot","iceTileTopLeft","iceTileTopRight","iceTileBotLeft","iceTileBotRight",
+            "iceTileWater","iceTileWater","iceTileStair"};
+    private static final Image[] blocks =new Image[blockNames.length];
     Timer timer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
@@ -42,9 +44,11 @@ public class Game extends BaseFrame {
 
     public Game(String title, int width, int height) {
         super(title, width, height);
-        imgInit=new ImageInit();
-        blocks=imgInit.getBlocks();
-
+//        imgInit=new ImageInit();
+//        blocks=imgInit.getBlocks();
+        for(int i = 0; i< blockNames.length; i++){
+            blocks[i]= new ImageIcon(blockNames[i]+".png").getImage().getScaledInstance(100,100,Image.SCALE_SMOOTH);
+        }
         bkg = new BKG(0, 0, 2000, 1500,null);//wip
         bkg.setup(blocks);
 
