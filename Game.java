@@ -22,15 +22,6 @@ public class Game extends BaseFrame {
     private ArrayList<Integer> noteX = new ArrayList<>(Arrays.asList(300, 700, 800, 900, 100));
     private ArrayList<Integer> noteY = new ArrayList<>(Arrays.asList(400, 200, 300, 320, 100));
     private ArrayList<Note> notes = new ArrayList<>();
-
-    private static final int WIDTH = 1400, HEIGHT = 800;//dimensions of screen
-    public static final int MENU = 0, GAME = 1, TUTORIAL = 2,MUSIC=3, BATTLE = 4;
-    int screen = MENU; // Change to MENU when done gameplay
-    private final Player player;
-    private final BKG bkg;
-    private final ArrayList<Integer> noteX = new ArrayList<>(Arrays.asList(300, 700, 800, 900, 100));
-    private final ArrayList<Integer> noteY = new ArrayList<>(Arrays.asList(400, 200, 300, 320, 100));
-    private final ArrayList<Note> notes = new ArrayList<>();
     private final int[] times = {500, 200, 50, 50, 50};
     private int timeCounter = 0;
     private static ImageInit imgInit;
