@@ -5,29 +5,33 @@ import java.util.ArrayList;
 public class BKG {
     //background
     private static final int WIDTH = 1400, HEIGHT = 800;
-
+    private static final int WALL=1;
+    private static Image[] blockCover;
     private ArrayList<BKG> squares=new ArrayList<>();
     private ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
     private int offX, offY,width,height;
     private static int offSpdX,offSpdY;
     private final int offSpd=10;
-    public BKG(int offX, int offY, int width,int height){
+    private final Image cover;
+    public BKG(int offX, int offY, int width,int height,Image cover){
         this.offX=offX;
         this.offY=offY;
         this.width=width;
         this.height=height;
+        this.cover=cover;
     }
-    public void setup(){
+    public void setup(Image[] images){
+        blockCover=images;
         for(int i=0;i<20;i++){//temporary grid for easier visuals
             for(int j=0;j<15;j++){
                 if(i%2==0) {
                     if (j % 2 == 0) {
-                        squares.add(new BKG(i * 100, j * 100, 100, 100));
+                        squares.add(new BKG(i * 100, j * 100, 100, 100,null));
                     }
                 }
                 else{
                     if(j%2==1){
-                        squares.add(new BKG(i * 100, j * 100, 100, 100));
+                        squares.add(new BKG(i * 100, j * 100, 100, 100,null));
                     }
                 }
             }
@@ -62,7 +66,7 @@ public class BKG {
                 col=0;
             }
             else if(type=='1'){//default wall pattern
-                blocks.get(row).add(new BKG(col*100,row*100,100,100));
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[WALL]));
             }
             if(loc%2==0){//every odd is a space character
                 col++;
@@ -130,10 +134,9 @@ public class BKG {
         return offY+height<=HEIGHT;
     }
     public boolean edgeY(){//background y is on one of the edges
-//        return offY+height<=HEIGHT+offSpd||offY>=0;
         return edgeYT()||edgeYB();
     }
-    private void moveHelp(){//all other background elements follow movement of main background image
+    private void moveHelp(BKG leader){//all other background elements follow movement of main background image
         this.offX+=offSpdX;
         this.offY+=offSpdY;
     }
@@ -171,11 +174,11 @@ public class BKG {
         offY+=offSpdY;
 
         for(BKG b:squares){//temporary background grid
-            b.moveHelp();
+            b.moveHelp(this);
         }
         for(ArrayList<BKG> row:blocks){
             for(BKG block:row){
-                block.moveHelp();
+                block.moveHelp(this);
             }
         }
         //will need to stop offset at edge of screen
@@ -212,7 +215,8 @@ public class BKG {
         g.setColor(Color.orange);
         for(ArrayList<BKG> row:blocks){
             for(BKG block:row){
-                g.fillRect(block.offX,block.offY,block.width,block.height);
+//                g.fillRect(block.offX,block.offY,block.width,block.height);
+                g.drawImage(block.cover,block.offX,block.offY,null);
             }
         }
     }

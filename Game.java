@@ -23,7 +23,8 @@ public class Game extends BaseFrame {
     private final ArrayList<Note> notes = new ArrayList<>();
     private final int[] times = {500, 200, 50, 50, 50};
     private int timeCounter = 0;
-
+    private static ImageInit imgInit;
+    private static Image[] blocks;
     Timer timer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
@@ -41,15 +42,19 @@ public class Game extends BaseFrame {
 
     public Game(String title, int width, int height) {
         super(title, width, height);
+        imgInit=new ImageInit();
+        blocks=imgInit.getBlocks();
 
-        bkg = new BKG(0, 0, 2000, 1500);//wip
-        bkg.setup();
+        bkg = new BKG(0, 0, 2000, 1500,null);//wip
+        bkg.setup(blocks);
 
         player = new Player(width / 2, height / 2);
         enemy = new Enemy(0, 0, 0, 0);
         enemy.setUp();
         battle = new Battle();
 //        battle.setUp();
+
+
     }
 
     public void move() {
