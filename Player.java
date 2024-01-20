@@ -46,7 +46,7 @@ public class Player {
 
         spdX =0;
         spdY =0;
-        // Movement of penguin
+        // Movement of penguin in overworld (scrolling/side movement)
         if(direction) {
             if(!(keys[W]&&keys[S])) {//no more "vibrating" with quick switch of spd from +/-
                 if (keys[W] && collideY != 2) {

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class BKG {
     //background
-    private final int WIDTH = 1400, HEIGHT = 800;
+    private static final int WIDTH = 1400, HEIGHT = 800;
 
     private ArrayList<BKG> squares=new ArrayList<>();
     private ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
@@ -133,7 +133,7 @@ public class BKG {
 //        return offY+height<=HEIGHT+offSpd||offY>=0;
         return edgeYT()||edgeYB();
     }
-    private void moveHelp(BKG leader){//all other background elements follow movement of main background image
+    private void moveHelp(){//all other background elements follow movement of main background image
         this.offX+=offSpdX;
         this.offY+=offSpdY;
     }
@@ -171,11 +171,11 @@ public class BKG {
         offY+=offSpdY;
 
         for(BKG b:squares){//temporary background grid
-            b.moveHelp(this);
+            b.moveHelp();
         }
         for(ArrayList<BKG> row:blocks){
             for(BKG block:row){
-                block.moveHelp(this);
+                block.moveHelp();
             }
         }
         //will need to stop offset at edge of screen

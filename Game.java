@@ -16,12 +16,11 @@ public class Game extends BaseFrame {
     private static final int WIDTH = 1400, HEIGHT = 800;//dimensions of screen
     public static final int MENU = 0, GAME = 1, TUTORIAL = 2,MUSIC=3, BATTLE = 4;
     int screen = MENU; // Change to MENU when done gameplay
-    private Player player;
-    private BKG bkg;
-    private ArrayList<Integer> noteX = new ArrayList<>(Arrays.asList(300, 700, 800, 900, 100));
-    private ArrayList<Integer> noteY = new ArrayList<>(Arrays.asList(400, 200, 300, 320, 100));
-    private ArrayList<Note> notes = new ArrayList<>();
-
+    private final Player player;
+    private final BKG bkg;
+    private final ArrayList<Integer> noteX = new ArrayList<>(Arrays.asList(300, 700, 800, 900, 100));
+    private final ArrayList<Integer> noteY = new ArrayList<>(Arrays.asList(400, 200, 300, 320, 100));
+    private final ArrayList<Note> notes = new ArrayList<>();
     private final int[] times = {500, 200, 50, 50, 50};
     private int timeCounter = 0;
 
@@ -50,16 +49,16 @@ public class Game extends BaseFrame {
         enemy = new Enemy(0, 0, 0, 0);
         enemy.setUp();
         battle = new Battle();
-        battle.setUp();
+//        battle.setUp();
     }
 
     public void move() {
         // If player gets to the edge of the background, stop moving the background, instead move the player
-        int bkgX = bkg.getOffX();
-        int bkgY = bkg.getOffY();
-        int pX = player.getRect().x;
-        int pY = player.getRect().y;
-        int[] coord = new int[]{bkgX, bkgY, pX, pY};
+//        int bkgX = bkg.getOffX();
+//        int bkgY = bkg.getOffY();
+//        int pX = player.getRect().x;
+//        int pY = player.getRect().y;
+//        int[] coord = new int[]{bkgX, bkgY, pX, pY};
 
         if (player.isFixedX()) {
             //player is fixed to middle line, can move background left/right
@@ -165,6 +164,9 @@ public class Game extends BaseFrame {
     public void doBattle(Graphics g) {
         battle.move(keys);
         battle.draw(g);
+        if(!battle.inBattle()){
+            battle.start();
+        }
     }
 
     public void drawTest(Graphics g) {
