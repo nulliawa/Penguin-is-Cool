@@ -4,30 +4,33 @@ import java.util.ArrayList;
 
 public class BKG {
     //background
-    private final int WIDTH = 1400, HEIGHT = 800;
-
-    private ArrayList<BKG> squares=new ArrayList<>();
-    private ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
+    private static final int WIDTH = 1400, HEIGHT = 800;
+    private static final int DEFAULT=0,WALL=1,WATER=2,TOP=3,BOT=4,LEFT=5,RIGHT=6,STAIR=7;
+    private final ArrayList<BKG> squares=new ArrayList<>();//TEMP
+    private final ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
+    private final ArrayList<ArrayList<BKG>> walls=new ArrayList<>();
     private int offX, offY,width,height;
-    private static int offSpdX=10,offSpdY=10;
+    private static int offSpdX,offSpdY;
     private final int offSpd=10;
-    public BKG(int offX, int offY, int width,int height){
+    private final Image cover;
+    public BKG(int offX, int offY, int width,int height,Image cover){
         this.offX=offX;
         this.offY=offY;
         this.width=width;
         this.height=height;
+        this.cover=cover;
     }
-    public void setup(){
+    public void setup(Image[] images){
         for(int i=0;i<20;i++){//temporary grid for easier visuals
             for(int j=0;j<15;j++){
                 if(i%2==0) {
                     if (j % 2 == 0) {
-                        squares.add(new BKG(i * 100, j * 100, 100, 100));
+                        squares.add(new BKG(i * 100, j * 100, 100, 100,null));
                     }
                 }
                 else{
                     if(j%2==1){
-                        squares.add(new BKG(i * 100, j * 100, 100, 100));
+                        squares.add(new BKG(i * 100, j * 100, 100, 100,null));
                     }
                 }
             }
@@ -35,6 +38,7 @@ public class BKG {
         //creation of grid array
         for(int ad=0;ad<30;ad++) {
             blocks.add(new ArrayList<BKG>());
+            walls.add(new ArrayList<BKG>());
         }
         //coords based on 100x100 sized squares
         //30x  15y
@@ -44,11 +48,11 @@ public class BKG {
                 "0 0 0 0 0 0 0 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 0 0 0 0 0 1 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 1 1 1 0 0 0 0 1 7 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 1 0 0 0 0 1 7 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 1 0 0 4 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0 6 2 2 5 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0 0 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
                 "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
@@ -61,8 +65,30 @@ public class BKG {
                 row++;
                 col=0;
             }
+            else if(type=='0'){//blank snow tile
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[DEFAULT]));
+            }
             else if(type=='1'){//default wall pattern
-                blocks.get(row).add(new BKG(col*100,row*100,100,100));
+                walls.get(row).add(new BKG(col*100,row*100,100,100,images[WALL]));
+            }
+            else if(type=='2'){//water acts as wall
+                walls.get(row).add(new BKG(col*100,row*100,100,100,images[WATER]));
+
+            }
+            else if(type=='3'){
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[TOP]));
+            }
+            else if(type=='4'){
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[BOT]));
+            }
+            else if(type=='5'){
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[LEFT]));
+            }
+            else if(type=='6'){
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[RIGHT]));
+            }
+            else if(type=='7'){
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[STAIR]));
             }
             if(loc%2==0){//every odd is a space character
                 col++;
@@ -74,9 +100,9 @@ public class BKG {
         //returns a number telling where the player is in relation to the block
         int pX=p.getRect().x,pY=p.getRect().y,pW=p.getRect().width,pH=p.getRect().height;
 
-        for(ArrayList<BKG> row:blocks) {
-            for (BKG block : row) {
-                int bX = block.getOffX(), bY = block.getOffY(), bW = block.getWidth(), bH = block.getHeight();
+        for(ArrayList<BKG> row:walls) {
+            for (BKG wall : row) {
+                int bX = wall.getOffX(), bY = wall.getOffY(), bW = wall.getWidth(), bH = wall.getHeight();
                 if ((pX + pW > bX && pX+pW<bX+bW)||(pX < bX +bW && pX>bX)) {//player within colliding range based on squares
                     //top of player meets bottom of block
                     if (pY <= bY+bH&&pY>= bY) {
@@ -93,9 +119,9 @@ public class BKG {
     }
     public int collisionX(Player p) {
         int pX = p.getRect().x, pY = p.getRect().y, pW = p.getRect().width, pH = p.getRect().height;
-        for (ArrayList<BKG> row : blocks) {
-            for (BKG block : row) {
-                int bX = block.getOffX(), bY = block.getOffY(), bW = block.getWidth(), bH = block.getHeight();
+        for (ArrayList<BKG> row : walls) {
+            for (BKG wall : row) {
+                int bX = wall.getOffX(), bY = wall.getOffY(), bW = wall.getWidth(), bH = wall.getHeight();
                 if ((pY+ pH > bY && pY < bY + bH) || (pY < bY + bH && pY > bY)) {//player within bounds for up/down collision
                     //right of player intersects left of block
                     if (pX + pW >= bX && pX + pW <= bX + bW) {
@@ -110,8 +136,8 @@ public class BKG {
         }
         return 0;
     }
-    public ArrayList<ArrayList<BKG>> getBlocks(){
-        return blocks;
+    public ArrayList<ArrayList<BKG>> getWalls(){
+        return walls;
     }
     public boolean edgeXL(){
         return offX>=0;
@@ -130,7 +156,6 @@ public class BKG {
         return offY+height<=HEIGHT;
     }
     public boolean edgeY(){//background y is on one of the edges
-//        return offY+height<=HEIGHT+offSpd||offY>=0;
         return edgeYT()||edgeYB();
     }
     private void moveHelp(BKG leader){//all other background elements follow movement of main background image
@@ -149,20 +174,20 @@ public class BKG {
         if(direction) {//true=up/down
             if(!(keys[W]&&keys[S])) {
                 if (keys[W] && !edgeYT() && collideY != 2) {
-                    offSpdY = 10;
+                    offSpdY = offSpd;
                 }
                 if (keys[S] && !edgeYB() && collideY != 1) {
-                    offSpdY = -10;
+                    offSpdY = -offSpd;
                 }
             }
         }
         else{//false=left/right
             if(!(keys[A]&&keys[D])) {
                 if (keys[A] && !edgeXL() && collideX != 4) {
-                    offSpdX = 10;
+                    offSpdX = offSpd;
                 }
                 if (keys[D] && !edgeXR() && collideX != 3) {
-                    offSpdX = -10;
+                    offSpdX = -offSpd;
                 }
             }
         }
@@ -173,9 +198,14 @@ public class BKG {
         for(BKG b:squares){//temporary background grid
             b.moveHelp(this);
         }
-        for(ArrayList<BKG> row:blocks){
+        for(ArrayList<BKG> row:blocks){//blocks and walls will also move according to speed
             for(BKG block:row){
                 block.moveHelp(this);
+            }
+        }
+        for(ArrayList<BKG> row:walls){
+            for(BKG wall:row){
+                wall.moveHelp(this);
             }
         }
         //will need to stop offset at edge of screen
@@ -202,17 +232,22 @@ public class BKG {
     }
 
     public void draw(Graphics g,Image img){
-        g.setColor(Color.cyan);//placeholder large main rect
-        g.fillRect(offX,offY,width,height);
-        g.setColor(Color.blue);
+//        g.setColor(Color.cyan);//placeholder large main rect
+//        g.fillRect(offX,offY,width,height);
+//        g.setColor(Color.blue);
 
-        for (BKG b : squares) {//grid
-            g.fillRect(b.offX, b.offY, b.width, b.height);
-        }
-        g.setColor(Color.orange);
+//        for (BKG b : squares) {//grid
+//            g.fillRect(b.offX, b.offY, b.width, b.height);
+//        }
+//        g.setColor(Color.orange);
         for(ArrayList<BKG> row:blocks){
             for(BKG block:row){
-                g.fillRect(block.offX,block.offY,block.width,block.height);
+                g.drawImage(block.cover,block.offX,block.offY,null);
+            }
+        }
+        for(ArrayList<BKG> row:walls){
+            for(BKG wall:row){
+                g.drawImage(wall.cover,wall.offX,wall.offY,null);
             }
         }
     }
