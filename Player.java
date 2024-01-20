@@ -147,7 +147,7 @@ public class Player {
     //returns a number telling where the player is in relation to a block
     //0=none,1=North,2=South,3=East,4=West
     public int collisionY(BKG bkg) {//with blocks
-        ArrayList<ArrayList<BKG>> blocks = bkg.getBlocks();
+        ArrayList<ArrayList<BKG>> blocks = bkg.getWalls();
         for (ArrayList<BKG> row : blocks) {
             for (BKG block : row) {
                 int bX = block.getOffX(), bY = block.getOffY(), bW = block.getWidth(), bH = block.getHeight();
@@ -166,7 +166,7 @@ public class Player {
         return 0;//no collisionY on top/bottom
     }
     public int collisionX(BKG bkg) {
-        ArrayList<ArrayList<BKG>> blocks = bkg.getBlocks();
+        ArrayList<ArrayList<BKG>> blocks = bkg.getWalls();
         for (ArrayList<BKG> row : blocks) {
             for (BKG block : row) {
                 int bX = block.getOffX(), bY = block.getOffY(), bW = block.getWidth(), bH = block.getHeight();

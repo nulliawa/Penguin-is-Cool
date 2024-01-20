@@ -2,9 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ImageInit {//initialize all images
-    private static final String[] blockNames =new String[]{"iceTileBasic","iceTileWall",
-            "iceTileLeft","iceTileRight","iceTileTop","iceTileBot","iceTileTopLeft","iceTileTopRight","iceTileBotLeft","iceTileBotRight",
-            "iceTileWater","iceTileWater","iceTileStair"};
+    private static final String[] blockNames =new String[]{"iceTileBasic","iceTileWall","iceTileWater","iceTileTop","iceTileBot",
+            "iceTileLeft","iceTileRight","iceTileStair",
+            "iceTileTopLeft","iceTileTopRight","iceTileBotLeft","iceTileBotRight",
+
+            };
     private static final Image[] blocks =new Image[blockNames.length];
     public ImageInit(){
         for(int i = 0; i< blockNames.length; i++){
