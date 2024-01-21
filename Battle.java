@@ -134,6 +134,13 @@ public class Battle {
     public void start(){
         betweenTimer.start();
     }
+    public void stop(){
+        betweenTimer.stop();
+        destroyCloud();
+        if(!snow.isEmpty()){
+            snow.clear();
+        }
+    }
     public static void setUp(Image[] images){//happens once to initialize all images
         covers=images;
     }
@@ -146,6 +153,7 @@ public class Battle {
     }
     public boolean result(){//constantly called to see if battle has ended
         if(lose||win){
+            this.stop();
             return true;
         }
         return false;
