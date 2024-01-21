@@ -1,7 +1,9 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-
+//background includes walls
+//made of many tiles so can be easily customizable
+//has scrolling based on player's position in the overworld vs on the screen - offset
 public class BKG {
     //background
     private static final int WIDTH = 1400, HEIGHT = 800;

@@ -11,7 +11,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import java.io.File;
-
+//main game, start at menu
 public class Game extends BaseFrame {
     private final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5;
@@ -26,6 +26,7 @@ public class Game extends BaseFrame {
     private static ImageInit imgInit;
     private static Image[] blocks;
     private static Image[] projectiles;
+    private static Image[] golems;
     Timer timer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
@@ -45,16 +46,17 @@ public class Game extends BaseFrame {
 
     public Game(String title, int width, int height) {
         super(title, width, height);
-        imgInit=new ImageInit();
-        blocks=imgInit.getBlocks();
-        projectiles=imgInit.getProjectiles();
+        ImageInit.setUp();
+        blocks=ImageInit.getBlocks();
+        projectiles=ImageInit.getProjectiles();
+        golems=ImageInit.getGolems();
 
         bkg = new BKG(0, 0, 2000, 1500,null);//wip
         BKG.setup(blocks);
 
         player = new Player(width / 2, height / 2);
         enemy = new Enemy(0, 0, 0, 0);
-        enemy.setUp();
+        enemy.setUp(golems);
         battle = new Battle(1);
         Battle.setUp(projectiles);
 

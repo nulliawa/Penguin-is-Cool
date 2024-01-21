@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+//class to organize image getting
 /*
 SOURCES:
 Tiles - https://graphicriver.net/item/winterland-top-down-tileset/17565368?ref=evtheme
@@ -15,15 +16,18 @@ public class ImageInit {//initialize all images
     private static final Image[] blocks =new Image[blockNames.length];
     private static final String[] projNames=new String[]{"snowCloud"};
     private static final Image[] projectiles=new Image[projNames.length+7];
-
-    public ImageInit(){
+    private static final Image[] golems=new Image[7];
+    public static void setUp(){
         for(int i = 0; i< blockNames.length; i++){
-            blocks[i]= new ImageIcon(blockNames[i]+".png").getImage().getScaledInstance(100,100,Image.SCALE_SMOOTH);
+            blocks[i]= new ImageIcon("iceTile/"+blockNames[i]+".png").getImage().getScaledInstance(100,100,Image.SCALE_SMOOTH);
         }
         for(int j=1;j<8;j++){//7 snowflake variants
-            projectiles[j]=new ImageIcon("snowFlake"+j+".png").getImage().getScaledInstance(10,10,Image.SCALE_SMOOTH);
+            projectiles[j]=new ImageIcon("snow/snowFlake"+j+".png").getImage().getScaledInstance(10,10,Image.SCALE_SMOOTH);
         }
         projectiles[0]=new ImageIcon(projNames[0]+".png").getImage().getScaledInstance(500,100,Image.SCALE_SMOOTH);
+        for(int k=1;k<7;k++){
+            golems[k]=new ImageIcon("golems/golemIdle"+k+".png").getImage().getScaledInstance(40,60,Image.SCALE_SMOOTH);
+        }
     }
     public static Image[] getBlocks(){
         return blocks;
@@ -31,5 +35,7 @@ public class ImageInit {//initialize all images
     public static Image[] getProjectiles(){
         return projectiles;
     }
-
+    public static Image[] getGolems(){
+        return golems;
+    }
 }

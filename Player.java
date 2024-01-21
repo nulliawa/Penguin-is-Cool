@@ -1,7 +1,8 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-
+//player movement controlled by wasd in both battle and overworld
+//penguin is cool :)
 public class Player {
     // Private vs. protected?
     private int x, y;

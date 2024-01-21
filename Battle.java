@@ -4,7 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
-
+//switch to battle screen when you touch an enemy
+//win the battle by waiting enough time
+//lose when hp goes to 0 and return to game's overworld
 public class Battle {
     private class Projectile{
         private int x,y,spdX,spdY,spdScale;
@@ -230,7 +232,7 @@ public class Battle {
         return dist;
     }
 
-//    public void setUp(){
+//    public void setUp(){//old setup tester
 //        projectiles.add(new Projectile(500,500,10,10,1, rad(350)));
 //        projectiles.add(new Projectile(100,100,10,10,1,rad(280)));
 //    }
