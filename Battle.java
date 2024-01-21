@@ -107,6 +107,7 @@ public class Battle {
         }
         public void draw(Graphics g,Image cover){
             g.fillRect(x,y,width,height);
+            g.drawImage(cover,x,y,null);
         }
     }
     private static Image[] covers;
@@ -262,7 +263,6 @@ public class Battle {
             flake.draw(g,null);
         }
         for(Projectile nimbus:clouds){
-            g.setColor(Color.gray);
             nimbus.draw(g,covers[0]);
         }
     }

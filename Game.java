@@ -47,6 +47,7 @@ public class Game extends BaseFrame {
         super(title, width, height);
         imgInit=new ImageInit();
         blocks=imgInit.getBlocks();
+        projectiles=imgInit.getProjectiles();
 
         bkg = new BKG(0, 0, 2000, 1500,null);//wip
         BKG.setup(blocks);

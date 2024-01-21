@@ -19,8 +19,11 @@ public class ImageInit {//initialize all images
         }
         projectiles[0]=projectiles[0].getScaledInstance(500,50,Image.SCALE_SMOOTH);
     }
-    public Image[] getBlocks(){
+    public static Image[] getBlocks(){
         return blocks;
+    }
+    public static Image[] getProjectiles(){
+        return projectiles;
     }
 
 }
