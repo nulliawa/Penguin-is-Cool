@@ -24,10 +24,10 @@ public class Game extends BaseFrame {
     private ArrayList<Note> notes = new ArrayList<>();
     private final int[] times = {500, 200, 50, 50, 50};
     private int timeCounter = 0;
-    private static ImageInit imgInit;
     private static Image[] blocks;
     private static Image[] projectiles;
     private static Image[] golems;
+    private static Image[] spirits;
     Timer timer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
@@ -51,13 +51,14 @@ public class Game extends BaseFrame {
         blocks=ImageInit.getBlocks();
         projectiles=ImageInit.getProjectiles();
         golems=ImageInit.getGolems();
+        spirits=ImageInit.getSpirits();
 
         bkg = new BKG(0, 0, 3000, 1500,null);//wip
         BKG.setup(blocks);
 
         player = new Player(width / 2, height / 2);
         enemy = new Enemy(0, 0, 0, 0);
-        enemy.setUp(golems);
+        enemy.setUp(spirits);
         battle = new Battle(1);
         Battle.setUp(projectiles,ImageInit.getBacks()[0]);
 
@@ -140,8 +141,8 @@ public class Game extends BaseFrame {
 
     public void drawGame(Graphics g) {
         bkg.draw(g, null);
-        player.draw(g);
         enemy.draw(g);
+        player.draw(g);
     }
 
     public void drawTutorial(Graphics g) {

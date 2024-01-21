@@ -7,9 +7,8 @@ public class Enemy {
     private int x, y, width, height,spdX,spdY;
     private ArrayList<Enemy> enemies=new ArrayList<>();
     private int current;
-    private static int frame=0;
-    private static final int FRAME=100;
-    private static final int IDLE=0;
+    public static int frame=0;
+    private static final int IDLETIME=5;
     private int[] animation=new int[]{10};
     private int idleAnimation=0;
     private long[] memTime=new long[4];
@@ -25,16 +24,19 @@ public class Enemy {
     }
     public void setUp(Image[] images){
         covers=images;
-//        System.arraycopy(covers, 1, idles, 0, 6);//copies section of all images to idle animation array
-        for(int i=0;i<6;i++){
+        for(int i=0;i<6;i++){//copies section of all images to idle animation array
             idles[i]=covers[i];
         }
-        enemies.add(new Enemy(1000,30,50,70));
-        enemies.add(new Enemy(510,340,50,70));
-        enemies.add(new Enemy(WIDTH-200,HEIGHT-200,50,70));
+//        enemies.add(new Enemy(1000,30,50,70));
+//        enemies.add(new Enemy(510,340,50,70));
+//        enemies.add(new Enemy(WIDTH-200,HEIGHT-200,50,70));
+        enemies.add(new Enemy(1000,30,50,55));
+        enemies.add(new Enemy(510,340,50,55));
+        enemies.add(new Enemy(WIDTH-200,HEIGHT-200,50,50));
     }
-    public void end(Enemy enemy){
-        enemies.remove(enemy);
+    public boolean dead(){
+        return true;
+//        enemies.remove();
     }
 
     public void move(BKG bkg){//moves according to background offset
@@ -44,14 +46,11 @@ public class Enemy {
             e.x+=e.spdX;
             e.y+=e.spdY;
         }
-
     }
-
     public boolean pCollision(Player p){
         for(Enemy e:enemies){
-            if(p.getRect().intersects(e.getRect())){
-                enemies.remove(e);
-//                this.current=enemies.indexOf(e);
+            if(p.getRect().intersects(e.getRect())&&e.dead()){
+                enemies.remove(e);//enemy is taken out
                 //if player's rectangle colliding with enemy's rectangle
                 return true;
             }
@@ -62,16 +61,17 @@ public class Enemy {
         return new Rectangle(x, y, width, height);
     }
     private void idle(Graphics g,Enemy e){
-        int eX=e.getRect().x,eY=e.getRect().y,eW=e.getRect().width,eH=e.getRect().height;
-
-        int index=frame/10%idles.length;//gets a number 0 to 5
+        int eX=e.getRect().x,eY=e.getRect().y;
+        int index=frame/IDLETIME%idles.length;//gets a number 0 to 5
         g.drawImage(idles[index],eX,eY,null);
     }
     public void draw(Graphics g){
-        frame++;//which frame needs to be put up
+        frame++;//which frame needs to be put up, constantly increasing
+        if(frame==2147483647){//limit on ints
+            frame=0;
+        }
         for(Enemy e:enemies){
             idle(g,e);
         }
     }
-
 }
