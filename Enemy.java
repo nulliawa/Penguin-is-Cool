@@ -8,12 +8,14 @@ public class Enemy {
     private ArrayList<Enemy> enemies=new ArrayList<>();
     private int current;
     public static int frame=0;
-    private static final int IDLETIME=5;
+    private static final int IDLETIME=5,DEATHTIME=5;
     private int[] animation=new int[]{10};
     private int idleAnimation=0;
     private long[] memTime=new long[4];
     private static Image[] covers;
     private static Image[] idles=new Image[6];
+    private static Image[] deaths=new Image[6];
+    private boolean dead;
     public Enemy(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
@@ -21,11 +23,15 @@ public class Enemy {
         this.spdY=0;
         this.width = width;
         this.height = height;
+        this.dead=false;
     }
     public void setUp(Image[] images){
         covers=images;
         for(int i=0;i<6;i++){//copies section of all images to idle animation array
             idles[i]=covers[i];
+        }
+        for(int j=6;j<12;j++){
+            deaths[j-6]=covers[j];
         }
 //        enemies.add(new Enemy(1000,30,50,70));
 //        enemies.add(new Enemy(510,340,50,70));
@@ -38,6 +44,14 @@ public class Enemy {
         return true;
 //        enemies.remove();
     }
+    public void destroy(){//destroys once death animation is over
+        for(int i=0;i<enemies.size();i++){
+            if(frame/DEATHTIME%deaths.length==5&&enemies.get(i).dead){
+                enemies.remove(enemies.get(i));
+                i--;
+            }
+        }
+    }
 
     public void move(BKG bkg){//moves according to background offset
         for(Enemy e:enemies){
@@ -49,8 +63,9 @@ public class Enemy {
     }
     public boolean pCollision(Player p){
         for(Enemy e:enemies){
-            if(p.getRect().intersects(e.getRect())&&e.dead()){
-                enemies.remove(e);//enemy is taken out
+            if(p.getRect().intersects(e.getRect())&&!e.dead){
+                frame=0;
+                e.dead=true;//stops checking collisions once enemy initiates battle with player
                 //if player's rectangle colliding with enemy's rectangle
                 return true;
             }
@@ -65,13 +80,23 @@ public class Enemy {
         int index=frame/IDLETIME%idles.length;//gets a number 0 to 5
         g.drawImage(idles[index],eX,eY,null);
     }
+    private void death(Graphics g, Enemy e){
+        int eX=e.getRect().x,eY=e.getRect().y;
+        int index=frame/DEATHTIME%deaths.length;
+        g.drawImage(deaths[index],eX,eY,null);
+    }
     public void draw(Graphics g){
         frame++;//which frame needs to be put up, constantly increasing
         if(frame==2147483647){//limit on ints
             frame=0;
         }
         for(Enemy e:enemies){
-            idle(g,e);
+            if(e.dead){
+                death(g,e);
+            }
+            else{
+                idle(g,e);
+            }
         }
     }
 }

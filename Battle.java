@@ -187,7 +187,7 @@ public class Battle {
     }
     public void destroyCloud(){
         if(!clouds.isEmpty()) {
-            clouds.removeFirst();
+            clouds.clear();
         }
         cloudTimer.stop();
     }

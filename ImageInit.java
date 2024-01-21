@@ -9,6 +9,7 @@ Tiles - https://graphicriver.net/item/winterland-top-down-tileset/17565368?ref=e
 Cloud - https://www.reddit.com/r/PixelArt/comments/dhdgab/storm_clouds_practice/
 Snowflakes - https://opengameart.org/content/pixel-art-snowflakes
 Golem - https://craftpix.net/product/golem-character-sprite-sheets-pixel-art/?num=1&count=35&sq=snow%20golem&pos=0
+Spirit - https://www.spriters-resource.com/fullview/118500/
  */
 public class ImageInit {//initialize all images
     private static final int WIDTH = 1400, HEIGHT = 800;
@@ -22,7 +23,7 @@ public class ImageInit {//initialize all images
     private static final String[] projNames=new String[]{"snowCloud"};
     private static final Image[] projectiles=new Image[projNames.length+7];
     private static final Image[] golems=new Image[6];
-    private static final Image[] spirits=new Image[6];
+    private static final Image[] spirits=new Image[12];
     public static void setUp(){
         for(int h=0;h<backNames.length;h++){
             backgrounds[h]=new ImageIcon(backNames[h]+".png").getImage().getScaledInstance(WIDTH,HEIGHT,Image.SCALE_SMOOTH);
@@ -37,6 +38,10 @@ public class ImageInit {//initialize all images
         for(int k=1;k<7;k++){//6 idle frames
             golems[k-1]=new ImageIcon("golem/golemIdle"+k+".png").getImage().getScaledInstance(50,70,Image.SCALE_SMOOTH);
             spirits[k-1]=new ImageIcon("spirit/spiritIdle"+k+".png").getImage().getScaledInstance(50,50,Image.SCALE_SMOOTH);
+        }
+        for(int m=6;m<12;m++){
+            int ind=m-6;
+            spirits[m]=new ImageIcon("spirit/spiritDeath"+ind+".png").getImage().getScaledInstance(50,50,Image.SCALE_SMOOTH);
         }
     }
     public static Image[] getBlocks(){

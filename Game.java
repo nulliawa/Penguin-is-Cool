@@ -275,6 +275,7 @@ public class Game extends BaseFrame {
     public void actionPerformed(ActionEvent e) {
         if (screen == GAME) {
             move();
+            enemy.destroy();
             if (enemy.pCollision(player)) {
                 screen = BATTLE;
                 battle=new Battle(battle.getHP());//new battle carries over hp
