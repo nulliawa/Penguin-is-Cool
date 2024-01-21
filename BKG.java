@@ -6,9 +6,9 @@ public class BKG {
     //background
     private static final int WIDTH = 1400, HEIGHT = 800;
     private static final int DEFAULT=0,WALL=1,WATER=2,TOP=3,BOT=4,LEFT=5,RIGHT=6,STAIR=7;
-    private final ArrayList<BKG> squares=new ArrayList<>();//TEMP
-    private final ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
-    private final ArrayList<ArrayList<BKG>> walls=new ArrayList<>();
+    private static final ArrayList<BKG> squares=new ArrayList<>();//TEMP
+    private static final ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
+    private static final ArrayList<ArrayList<BKG>> walls=new ArrayList<>();
     private int offX, offY,width,height;
     private static int offSpdX,offSpdY;
     private final int offSpd=10;
@@ -20,7 +20,7 @@ public class BKG {
         this.height=height;
         this.cover=cover;
     }
-    public void setup(Image[] images){
+    public static void setup(Image[] images){
         for(int i=0;i<20;i++){//temporary grid for easier visuals
             for(int j=0;j<15;j++){
                 if(i%2==0) {

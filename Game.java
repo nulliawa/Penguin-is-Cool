@@ -16,9 +16,8 @@ public class Game extends BaseFrame {
     private final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5;
     int screen = MENU;
-    private Player player;
-    private BKG bkg;
-    private boolean sideMoveX = true, sideMoveY = true;
+    private final Player player;
+    private final BKG bkg;
     private ArrayList<Integer> noteX = new ArrayList<>(Arrays.asList(300, 700, 800, 900, 100));
     private ArrayList<Integer> noteY = new ArrayList<>(Arrays.asList(400, 200, 300, 320, 100));
     private ArrayList<Note> notes = new ArrayList<>();
@@ -26,6 +25,7 @@ public class Game extends BaseFrame {
     private int timeCounter = 0;
     private static ImageInit imgInit;
     private static Image[] blocks;
+    private static Image[] projectiles;
     Timer timer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
@@ -38,7 +38,7 @@ public class Game extends BaseFrame {
     });
 
     private boolean playingSong = false;
-    private Enemy enemy;
+    private final Enemy enemy;
     private Battle battle;
 
     private Puzzle puzzle = new Puzzle();
@@ -49,16 +49,16 @@ public class Game extends BaseFrame {
         blocks=imgInit.getBlocks();
 
         bkg = new BKG(0, 0, 2000, 1500,null);//wip
-        bkg.setup(blocks);
+        BKG.setup(blocks);
 
         player = new Player(width / 2, height / 2);
         enemy = new Enemy(0, 0, 0, 0);
         enemy.setUp();
-        battle = new Battle();
+        battle = new Battle(1);
+        Battle.setUp(projectiles);
 
-//        battle.setUp();
+
         puzzle.createButton();
-//        battle.setUp();
     }
 
     public void move() {
@@ -175,12 +175,8 @@ public class Game extends BaseFrame {
         Button next = new Button(100, 100, 200, 200);
     }
 
-    public void doBattle(Graphics g) {
-        battle.move(keys);
+    public void drawBattle(Graphics g){
         battle.draw(g);
-        if(!battle.inBattle()){
-            battle.start();
-        }
     }
 
     public void drawTest(Graphics g) {
@@ -258,7 +254,7 @@ public class Game extends BaseFrame {
         } else if (screen == MUSIC) {
             drawTest(g);
         } else if (screen == BATTLE) {
-            doBattle(g);
+            drawBattle(g);
         } else if (screen == PUZZLE) {
 
         }
@@ -282,6 +278,16 @@ public class Game extends BaseFrame {
             move();
             if (enemy.pCollision(player)) {
                 screen = BATTLE;
+                battle=new Battle(battle.getHP());//new battle carries over hp
+                battle.start();
+            }
+        }
+        if(screen==BATTLE){
+            if(battle.result()){
+                screen=GAME;
+            }
+            else{
+                battle.move(keys);
             }
         }
         repaint();

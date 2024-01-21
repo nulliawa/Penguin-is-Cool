@@ -105,18 +105,18 @@ public class Battle {
                 }
             }
         }
-        public void draw(Graphics g){
+        public void draw(Graphics g,Image cover){
             g.fillRect(x,y,width,height);
         }
     }
+    private static Image[] covers;
     private final Random random=new Random();
     private boolean iFrame=false;
     private boolean win,lose;
-    private boolean inBattle;
     private final long[] memTime=new long[10];
     private static final double PI=Math.PI;
     private static final int WIDTH = 1400, HEIGHT = 800,SIZE=30,RIGHT=0,LEFT=180,UP=90,DOWN=270;
-    private static final int SNOWGEN=100,CLOUDSTALL=1000,ICESTALL=1000,GENERATE=2000;
+    private static final int SNOWGEN=100,CLOUDSTALL=5000,ICESTALL=1000,GENERATE=2000;
     private static final int ATK=0,SNOW=1,CLOUD=2,BLINK=3;
     private BKG batBKG;
     private int hp,blinks=0;
@@ -124,37 +124,43 @@ public class Battle {
     private static final ArrayList<Projectile> clouds=new ArrayList<>();
     private static final ArrayList<Projectile> snow=new ArrayList<>();
     private Player player=new Player(WIDTH/2,HEIGHT/2);
-    public Battle(){
+    public Battle(int hp){//create new battle
         this.win=false;
         this.lose=false;
+        this.hp=hp;
         //new screen with new projectiles, player set to middle
-        this.hp=100;
-    }
-    public boolean inBattle(){
-        return inBattle;
     }
     public void start(){
-        inBattle=true;
-        nextAtk();
+        betweenTimer.start();
     }
-    public void stop(){
-        destroyCloud();
-        inBattle=false;
+    public static void setUp(Image[] images){//happens once to initialize all images
+        covers=images;
+    }
+    public int getHP(){
+        return hp;
     }
     private void nextAtk(){
-        betweenTimer.stop();
+        betweenTimer.stop();//stop timer for next time
         createCloud();
+    }
+    public boolean result(){//constantly called to see if battle has ended
+        if(lose||win){
+            return true;
+        }
+        return false;
     }
     //rest period in between attacks
     private final Timer betweenTimer = new Timer(1000, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
+            System.out.println("new atk");
             nextAtk();//start next attack (random)
         }
     });
-    private final Timer cloudTimer = new Timer(3000, new ActionListener() {//duration of cloud 10s
+    private final Timer cloudTimer = new Timer(CLOUDSTALL, new ActionListener() {//duration of cloud 10s
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
+            System.out.println("new cloud");
             //stops cloud by removing it
             destroyCloud();
             betweenTimer.start();//start next sequence
@@ -166,7 +172,9 @@ public class Battle {
         cloudTimer.start();
     }
     public void destroyCloud(){
-        clouds.removeFirst();
+        if(!clouds.isEmpty()) {
+            clouds.removeFirst();
+        }
         cloudTimer.stop();
     }
     public boolean timeMill(int delay,int index){
@@ -209,6 +217,7 @@ public class Battle {
 
         return dist;
     }
+
 //    public void setUp(){
 //        projectiles.add(new Projectile(500,500,10,10,1, rad(350)));
 //        projectiles.add(new Projectile(100,100,10,10,1,rad(280)));
@@ -246,15 +255,15 @@ public class Battle {
             player.draw(g);
         }
         for(Projectile p:projectiles){
-            p.draw(g);
+            p.draw(g,null);
         }
-        for(Projectile flake:snow){
+        for(Projectile flake:snow){///NEED IMAGE
             g.setColor(Color.white);
-            flake.draw(g);
+            flake.draw(g,null);
         }
         for(Projectile nimbus:clouds){
             g.setColor(Color.gray);
-            nimbus.draw(g);
+            nimbus.draw(g,covers[0]);
         }
     }
 }

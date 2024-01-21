@@ -5,7 +5,7 @@ public class Enemy {
     private final int WIDTH = 1400, HEIGHT = 800;
     private int x, y, width, height,spdX,spdY;
     private ArrayList<Enemy> enemies=new ArrayList<>();
-    
+    private int current;
     public Enemy(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
@@ -18,6 +18,9 @@ public class Enemy {
         enemies.add(new Enemy(1000,30,40,40));
         enemies.add(new Enemy(510,340,50,50));
         enemies.add(new Enemy(WIDTH-200,HEIGHT-200,10,10));
+    }
+    public void end(Enemy enemy){
+        enemies.remove(enemy);
     }
 
     public void move(BKG bkg){//moves according to background offset
@@ -33,6 +36,8 @@ public class Enemy {
     public boolean pCollision(Player p){
         for(Enemy e:enemies){
             if(p.getRect().intersects(e.getRect())){
+                enemies.remove(e);
+//                this.current=enemies.indexOf(e);
                 //if player's rectangle colliding with enemy's rectangle
                 return true;
             }
