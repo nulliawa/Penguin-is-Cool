@@ -11,7 +11,8 @@ public class Battle {
         private final int width,height;
 //        private int elli;
         private double heading;
-        public Projectile(int x,int y,int width,int height,int spdScale,double heading){
+        private Image cover;
+        public Projectile(int x,int y,int width,int height,int spdScale,double heading,Image cover){
             this.x=x;
             this.y=y;
             this.spdX=0;
@@ -20,6 +21,7 @@ public class Battle {
             this.height=height;
             this.heading=heading;
             this.spdScale=5;
+            this.cover=cover;
         }
 //        //ellipse version
 //        public Projectile(int x,int y,int width,int height,double heading,int elli){
@@ -105,8 +107,8 @@ public class Battle {
                 }
             }
         }
-        public void draw(Graphics g,Image cover){
-            g.fillRect(x,y,width,height);
+        public void draw(Graphics g){
+//            g.fillRect(x,y,width,height);
             g.drawImage(cover,x,y,null);
         }
     }
@@ -118,7 +120,7 @@ public class Battle {
     private static final double PI=Math.PI;
     private static final int WIDTH = 1400, HEIGHT = 800,SIZE=30,RIGHT=0,LEFT=180,UP=90,DOWN=270;
     private static final int SNOWGEN=100,CLOUDSTALL=5000,ICESTALL=1000,GENERATE=2000;
-    private static final int ATK=0,SNOW=1,CLOUD=2,BLINK=3;
+    private static final int CLOUD=0,SNOW=1,BLINK=3;
     private BKG batBKG;
     private int hp,blinks=0;
     private final ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
@@ -177,7 +179,7 @@ public class Battle {
     });
     //create main cloud that is above snow
     public void createCloud(){
-        clouds.add(new Projectile(random(0,900),0,500,50,2,rad(RIGHT)));
+        clouds.add(new Projectile(random(0,900),0,500,100,2,rad(RIGHT),covers[CLOUD]));
         cloudTimer.start();
     }
     public void destroyCloud(){
@@ -204,8 +206,9 @@ public class Battle {
     //snow generates at a random x under a cloud
     private void createSnow(Projectile cloud){
         Rectangle cRect=cloud.getRect();
-        snow.add(new Projectile(cRect.x+random(0,49)*10,cRect.y,10,10,5,rad(DOWN)));//snow per tick
-        snow.add(new Projectile(cRect.x+random(0,49)*10,cRect.y,10,10,5,rad(DOWN)));
+        //snow starts appearing in middle of cloud with random x along cloud's width
+        snow.add(new Projectile(cRect.x+random(0,49)*10,cRect.y+50,10,10,5,rad(DOWN),covers[random(1,7)]));//snow per tick
+        snow.add(new Projectile(cRect.x+random(0,49)*10,cRect.y+50,10,10,5,rad(DOWN),covers[random(1,7)]));
     }
 
     private void runProj(ArrayList<Projectile> pList) {
@@ -264,14 +267,14 @@ public class Battle {
             player.draw(g);
         }
         for(Projectile p:projectiles){
-            p.draw(g,null);
+            p.draw(g);
         }
         for(Projectile flake:snow){///NEED IMAGE
-            g.setColor(Color.white);
-            flake.draw(g,null);
+//            g.setColor(Color.white);
+            flake.draw(g);//section 1-7 inclusive are snowflake variations
         }
         for(Projectile nimbus:clouds){
-            nimbus.draw(g,covers[0]);
+            nimbus.draw(g);
         }
     }
 }
