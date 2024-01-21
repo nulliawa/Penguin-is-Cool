@@ -12,8 +12,9 @@ import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import java.io.File;
 //main game, start at menu
+
 public class Game extends BaseFrame {
-    private final int WIDTH = 1400, HEIGHT = 800;
+    private static final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5;
     int screen = MENU;
     private final Player player;
@@ -58,19 +59,13 @@ public class Game extends BaseFrame {
         enemy = new Enemy(0, 0, 0, 0);
         enemy.setUp(golems);
         battle = new Battle(1);
-        Battle.setUp(projectiles);
-
+        Battle.setUp(projectiles,ImageInit.getBacks()[0]);
 
         puzzle.createButton();
     }
 
     public void move() {
         // If player gets to the edge of the background, stop moving the background, instead move the player
-//        int bkgX = bkg.getOffX();
-//        int bkgY = bkg.getOffY();
-//        int pX = player.getRect().x;
-//        int pY = player.getRect().y;
-//        int[] coord = new int[]{bkgX, bkgY, pX, pY};
 
         if (player.isFixedX()) {
             //player is fixed to middle line, can move background left/right

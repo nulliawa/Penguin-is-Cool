@@ -115,6 +115,7 @@ public class Battle {
         }
     }
     private static Image[] covers;
+    private static Image battleBack;
     private final Random random=new Random();
     private boolean iFrame=false;
     private boolean win,lose;
@@ -123,7 +124,6 @@ public class Battle {
     private static final int WIDTH = 1400, HEIGHT = 800,SIZE=30,RIGHT=0,LEFT=180,UP=90,DOWN=270;
     private static final int SNOWGEN=100,CLOUDSTALL=5000,ICESTALL=1000,GENERATE=2000;
     private static final int CLOUD=0,SNOW=1,BLINK=3;
-    private BKG batBKG;
     private int hp,blinks=0;
     private final ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
     private static final ArrayList<Projectile> clouds=new ArrayList<>();
@@ -145,7 +145,8 @@ public class Battle {
             snow.clear();
         }
     }
-    public static void setUp(Image[] images){//happens once to initialize all images
+    public static void setUp(Image[] images,Image background){//happens once to initialize all images
+        battleBack=background;
         covers=images;
     }
     public int getHP(){
@@ -193,7 +194,7 @@ public class Battle {
     public boolean timeMill(int delay,int index){
         //difference between current time and last recorded time is greater than delay, proceed with action (true)
         //always performs action on first use
-        if(System.currentTimeMillis()-memTime[index]>delay+random(0,200)){
+        if(System.currentTimeMillis()-memTime[index]>delay){
             memTime[index]=System.currentTimeMillis();
             return true;
         }
@@ -209,8 +210,8 @@ public class Battle {
     private void createSnow(Projectile cloud){
         Rectangle cRect=cloud.getRect();
         //snow starts appearing in middle of cloud with random x along cloud's width
-        snow.add(new Projectile(cRect.x+random(0,49)*10,cRect.y+50,10,10,5,rad(DOWN),covers[random(1,7)]));//snow per tick
-        snow.add(new Projectile(cRect.x+random(0,49)*10,cRect.y+50,10,10,5,rad(DOWN),covers[random(1,7)]));
+        snow.add(new Projectile(cRect.x+random(0,49)*10,cRect.y+50,15,15,5,rad(DOWN),covers[random(1,7)]));//snow per tick
+        snow.add(new Projectile(cRect.x+random(0,49)*10,cRect.y+50,15,15,5,rad(DOWN),covers[random(1,7)]));
     }
 
     private void runProj(ArrayList<Projectile> pList) {
@@ -257,8 +258,10 @@ public class Battle {
         player.move(keys);
     }
     public void draw(Graphics g){
-        g.setColor(Color.blue);
-        g.fillRect(0,0,WIDTH,HEIGHT);
+//        g.setColor(Color.blue);
+//        g.fillRect(0,0,WIDTH,HEIGHT);
+        //background
+        g.drawImage(battleBack,0,0,null);
         if(iFrame) {
             if (timeMill(100, BLINK)) {
                 blinks++;
