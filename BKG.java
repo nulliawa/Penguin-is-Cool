@@ -7,7 +7,8 @@ import java.util.ArrayList;
 public class BKG {
     //background
     private static final int WIDTH = 1400, HEIGHT = 800;
-    private static final int DEFAULT=0,WALL=1,WATER=2,TOP=3,BOT=4,LEFT=5,RIGHT=6,STAIR=7;
+    private static final char DEFAULT='0',TOP='1',BOT='2',LEFT='3',RIGHT='4',STAIR='5',TOPL='6',TOPR='7',BOTL='8',BOTR='9';
+    private static final char WALL='A',WATER='W';
     private static final ArrayList<BKG> squares=new ArrayList<>();//TEMP
     private static final ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
     private static final ArrayList<ArrayList<BKG>> walls=new ArrayList<>();
@@ -44,22 +45,23 @@ public class BKG {
         }
         //coords based on 100x100 sized squares
         //30x  15y
+        //DEFAULT=0,TOP=1,BOT=2,LEFT=3,RIGHT=4,STAIR=5,TOPL=6,TOPR=7,BOTL=8,BOTR=9;
         String template=
-                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 1 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 1 1 1 0 0 0 0 1 7 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 1 0 0 0 0 1 7 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 1 0 0 4 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 6 2 2 5 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 0 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+                "6 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 7\n" +
+                "3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 0 A A A A 0 A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 0 0 0 0 A 0 A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 A # 0 0 A A A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 A A A 0 0 0 0 A 5 A A 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 0 0 A 0 0 0 0 A 5 A A 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 0 0 A 0 0 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 0 0 0 0 4 W W 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "8 2 2 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "W W W W W W W W W W 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "W W W W W W W W W W 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "W W W W W W W W W W 8 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 9";
         int row=0,col=0;
         for(int loc=0;loc<template.length();loc++){
             char type=template.charAt(loc);
@@ -67,30 +69,42 @@ public class BKG {
                 row++;
                 col=0;
             }
-            else if(type=='0'){//blank snow tile
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[DEFAULT]));
+            else if(type==DEFAULT){//blank snow tile
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[0]));
             }
-            else if(type=='1'){//default wall pattern
-                walls.get(row).add(new BKG(col*100,row*100,100,100,images[WALL]));
+            else if(type==WALL){//default wall pattern
+                walls.get(row).add(new BKG(col*100,row*100,100,100,images[1]));
             }
-            else if(type=='2'){//water acts as wall
-                walls.get(row).add(new BKG(col*100,row*100,100,100,images[WATER]));
+            else if(type==WATER){//water acts as wall
+                walls.get(row).add(new BKG(col*100,row*100,100,100,images[2]));
 
             }
-            else if(type=='3'){
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[TOP]));
+            else if(type==TOP){//pattern at top
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[3]));
             }
-            else if(type=='4'){
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[BOT]));
+            else if(type==BOT){//patern at bottom
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[4]));
             }
-            else if(type=='5'){
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[LEFT]));
+            else if(type==LEFT){//pattern on left
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[5]));
             }
-            else if(type=='6'){
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[RIGHT]));
+            else if(type==RIGHT){//pattern on right
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[6]));
             }
-            else if(type=='7'){
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[STAIR]));
+            else if(type==STAIR){//stair (needs walls on both sides)
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[7]));
+            }
+            else if(type==TOPL){//pattern on top left
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[8]));
+            }
+            else if(type==TOPR){//pattern on top right
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[9]));
+            }
+            else if(type==BOTL){//pattern on bottom left
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[10]));
+            }
+            else if(type==BOTR){//pattern on bottom right
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[11]));
             }
             if(loc%2==0){//every odd is a space character
                 col++;

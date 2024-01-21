@@ -4,6 +4,7 @@ import java.awt.*;
 //class to organize image getting
 /*
 SOURCES:
+Battle background - https://www.gameassetdeals.com/asset/254988/2d-parallax-background-parallax-2d-parallax-effect
 Tiles - https://graphicriver.net/item/winterland-top-down-tileset/17565368?ref=evtheme
 Cloud - https://www.reddit.com/r/PixelArt/comments/dhdgab/storm_clouds_practice/
 Snowflakes - https://opengameart.org/content/pixel-art-snowflakes

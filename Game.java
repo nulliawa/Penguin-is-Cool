@@ -52,7 +52,7 @@ public class Game extends BaseFrame {
         projectiles=ImageInit.getProjectiles();
         golems=ImageInit.getGolems();
 
-        bkg = new BKG(0, 0, 2000, 1500,null);//wip
+        bkg = new BKG(0, 0, 3000, 1500,null);//wip
         BKG.setup(blocks);
 
         player = new Player(width / 2, height / 2);

@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
-//enemies are golems or the boss
+//enemies are golems
+//collide with them to initiate battle
 public class Enemy {
     private static final int WIDTH = 1400, HEIGHT = 800;
     private int x, y, width, height,spdX,spdY;
@@ -60,15 +61,6 @@ public class Enemy {
     public Rectangle getRect() {
         return new Rectangle(x, y, width, height);
     }
-    public boolean timeMill(int delay,int index){
-        //difference between current time and last recorded time is greater than delay, proceed with action (true)
-        //always performs action on first use
-        if(System.currentTimeMillis()-memTime[index]>delay){
-            memTime[index]=System.currentTimeMillis();
-            return true;
-        }
-        return false;
-    }
     private void idle(Graphics g,Enemy e){
         int eX=e.getRect().x,eY=e.getRect().y,eW=e.getRect().width,eH=e.getRect().height;
 
@@ -76,10 +68,8 @@ public class Enemy {
         g.drawImage(idles[index],eX,eY,null);
     }
     public void draw(Graphics g){
-//        g.setColor(Color.red);
         frame++;//which frame needs to be put up
         for(Enemy e:enemies){
-//            g.fillRect(eX,eY,eW,eH);
             idle(g,e);
         }
     }
