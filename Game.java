@@ -43,11 +43,6 @@ public class Game extends BaseFrame {
 
     public Game(String title, int width, int height) {
         super(title, width, height);
-        ImageInit.setUp();
-//        blocks=ImageInit.getBlocks();
-//        projectiles=ImageInit.getProjectiles();
-//        golems=ImageInit.getGolems();
-//        spirits=ImageInit.getSpirits();
 
         bkg = new BKG(0, 0, 3000, 1500,null);//wip
         BKG.setup();
@@ -55,7 +50,7 @@ public class Game extends BaseFrame {
         player = new Player(width / 2, height / 2);
         enemy = new Enemy();
         Enemy.setUp();
-        battle = new Battle(100);
+        battle = new Battle(1);
         Battle.setUp();
 
         puzzle.createButton();

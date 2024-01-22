@@ -15,7 +15,6 @@ public class BKG {
             "iceTileTopLeft","iceTileTopRight","iceTileBotLeft","iceTileBotRight",
     };
     private static final Image[] blockImgs=new Image[blockNames.length];
-    private static final ArrayList<BKG> squares=new ArrayList<>();//TEMP
     private static final ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
     private static final ArrayList<ArrayList<BKG>> walls=new ArrayList<>();
     private int offX, offY,width,height;
@@ -33,20 +32,6 @@ public class BKG {
         for(int i = 0; i< blockNames.length; i++){//make image list
             blockImgs[i]= new ImageIcon("iceTile/"+blockNames[i]+".png").getImage().getScaledInstance(100,100,Image.SCALE_SMOOTH);
         }
-//        for(int i=0;i<20;i++){//temporary grid for easier visuals
-//            for(int j=0;j<15;j++){
-//                if(i%2==0) {
-//                    if (j % 2 == 0) {
-//                        squares.add(new BKG(i * 100, j * 100, 100, 100,null));
-//                    }
-//                }
-//                else{
-//                    if(j%2==1){
-//                        squares.add(new BKG(i * 100, j * 100, 100, 100,null));
-//                    }
-//                }
-//            }
-//        }
         //creation of grid array
         for(int ad=0;ad<30;ad++) {
             blocks.add(new ArrayList<BKG>());
@@ -219,10 +204,6 @@ public class BKG {
         //updating offX and offY
         offX+=offSpdX;
         offY+=offSpdY;
-
-        for(BKG b:squares){//temporary background grid
-            b.moveHelp(this);
-        }
         for(ArrayList<BKG> row:blocks){//blocks and walls will also move according to speed
             for(BKG block:row){
                 block.moveHelp(this);

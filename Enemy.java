@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 //enemies are golems
 //collide with them to initiate battle
@@ -9,8 +10,8 @@ public class Enemy {
     private static final ArrayList<Enemy> enemies=new ArrayList<>();
     public static int frame=0;
     private static final int IDLETIME=5,DEATHTIME=5;
-    private static Image[] idles=new Image[6];
-    private static Image[] deaths=new Image[6];
+    private static final Image[] idles=new Image[6];
+    private static final Image[] deaths=new Image[6];
     private boolean dead;
     public Enemy(){
 
@@ -25,15 +26,19 @@ public class Enemy {
         this.dead=false;
     }
     public static void setUp(){
+        //buffered image so first load does is not chunky
         for(int i=1;i<7;i++){//idle animation pics
-            idles[i-1]=new ImageIcon("spirit/spiritIdle"+i+".png").getImage().getScaledInstance(50,50,Image.SCALE_SMOOTH);
+            Image file=new ImageIcon("spirit/spiritIdle"+i+".png").getImage();//getScaledInstance(50,50,Image.SCALE_SMOOTH);
+            BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+            bufferedImage.getGraphics().drawImage(file, 0, 0, null);
+            idles[i-1]=bufferedImage.getScaledInstance(50,50,Image.SCALE_SMOOTH);;
         }
         for(int j=1;j<7;j++){//death animation pics
-            deaths[j-1]=new ImageIcon("spirit/spiritDeath"+j+".png").getImage().getScaledInstance(50,50,Image.SCALE_SMOOTH);
+            Image file=new ImageIcon("spirit/spiritDeath"+j+".png").getImage();
+            BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+            bufferedImage.getGraphics().drawImage(file, 0, 0, null);
+            deaths[j-1]=bufferedImage.getScaledInstance(50,50,Image.SCALE_SMOOTH);;
         }
-//        enemies.add(new Enemy(1000,30,50,70));
-//        enemies.add(new Enemy(510,340,50,70));
-//        enemies.add(new Enemy(WIDTH-200,HEIGHT-200,50,70));
         enemies.add(new Enemy(1000,30,50,55));
         enemies.add(new Enemy(510,340,50,55));
         enemies.add(new Enemy(WIDTH-200,HEIGHT-200,50,50));
