@@ -103,7 +103,7 @@ public class Battle {
             this.move(getAngle(x+50,y+50,player),5);
             for(Projectile ice:seekers){
                 for (int rota = 0; rota < 4; rota++) {//rotates base image according to which heading it was created with
-                    ice.seekerImgs[rota]=rotateImage(seekersBase[rota],ice.heading).getScaledInstance(100,100,Image.SCALE_SMOOTH);
+                    ice.seekerImgs[rota]=rotateImage(seekersBase[rota],ice.height,ice.width,ice.heading);
                 }
             }
         }
@@ -165,6 +165,7 @@ public class Battle {
         betweenTimer.stop();
         destroyCloud();
         icicleTimer.stop();
+        seekerTimer.stop();
         if(!snow.isEmpty()){
             snow.clear();
         }
@@ -184,7 +185,7 @@ public class Battle {
         Graphics2D g2d = rotatedImage.createGraphics();
         AffineTransform transform = new AffineTransform();
         //rotate based on given angle (radians)
-        transform.rotate(-angle,width/2,height/2);
+        transform.rotate(-angle,width/2.0,height/2.0);
         //center rotation at center of image
         g2d.setTransform(transform);//perform transformation
 
@@ -195,23 +196,51 @@ public class Battle {
 
         return rotatedImage;
     }
+    //help from ChatGPT3.5
+    //other rotation for seekers that does not cut off on original image size
+    private static Image rotateImage(Image image, int scaleX,int scaleY, double angle){
+        //input image must be scaled to correct size first
+        int width = image.getWidth(null);
+        int height = image.getHeight(null);
+        //new
+        //get the translation distance of where the new rotate image will be drawn onto buffered image
+        int transX=Math.abs(width-scaleX)/2;
+        int transY=Math.abs(height-scaleY)/2;
+
+        //convert to buffered image for rotation
+        BufferedImage rotatedImage = new BufferedImage(scaleX,scaleY, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = rotatedImage.createGraphics();
+        AffineTransform transform = new AffineTransform();
+        //new
+        //moves the image over to the center
+        transform.translate(transX,transY);
+        //rotate based on given angle (radians)
+        transform.rotate(-angle, width/2.0,height/2.0);
+        //center rotation at center of original image
+        g2d.setTransform(transform);//perform transformation
+
+        // Draw the rotated image onto the BufferedImage
+        g2d.drawImage(image, 0, 0,null);
+
+        g2d.dispose();
+
+        return rotatedImage;
+    }
     public static void setUp(){//happens once to initialize all images
         battleBack=new ImageIcon("battleBack.png").getImage().getScaledInstance(WIDTH,HEIGHT,Image.SCALE_SMOOTH);
-//        for(int ice=1;ice<5;ice++){//icicle projectile
-//            iciclesBase[ice-1]=new ImageIcon("icicle"+ice+".png").getImage();
-//        }
-        for(int ice=1;ice<11;ice++){
-            iciclesBase[ice-1]=new ImageIcon(("icicle/VFX 1 Repeatable"+ice+".png")).getImage();
+        for(int ice=1;ice<11;ice++){//icicle projectile 10 frames
+            iciclesBase[ice-1]=new ImageIcon(("icicle/VFX 1 Repeatable"+ice+".png")).getImage();//.getScaledInstance(150,75,Image.SCALE_SMOOTH);
         }
         for(int j=1;j<8;j++){//7 snowflake variants
             snows[j]=new ImageIcon("snow/snowFlake"+j+".png").getImage().getScaledInstance(15,15,Image.SCALE_SMOOTH);
         }
         snows[0]=new ImageIcon("snowCloud.png").getImage().getScaledInstance(500,100,Image.SCALE_SMOOTH);
-        for(int s=1;s<9;s++) {
-            spikesBase[s-1] = new ImageIcon("icicle/Ice VFX 2 Active"+s+".png").getImage();
+        for(int s=1;s<9;s++) {//spike projectile 8 frames
+            spikesBase[s-1] = new ImageIcon("icicle/Ice VFX 2 Active"+s+".png").getImage();//.getScaledInstance(100,100,Image.SCALE_SMOOTH);
         }
-        for(int q=1;q<5;q++){
-            seekersBase[q-1]=new ImageIcon("icicle/icicle"+q+".png").getImage();
+        for(int q=1;q<5;q++){//seeker projectile 4 frames
+            seekersBase[q-1]=new ImageIcon("icicle/icicle"+q+".png").getImage().getScaledInstance(100,100,Image.SCALE_SMOOTH);
         }
     }
 
@@ -219,12 +248,9 @@ public class Battle {
         return hp;
     }
     private void hit(Projectile projectile){
-        if(blinks>=10){//10 blinks/1 second later
-            blinks=0;
-            iFrame=false;
-        }
         if(projectile.getRect().intersects(player.getRect())&&!iFrame){
             hp-=1;
+            System.out.println(hp);
             iFrame=true;//turns invincibility frames on where player is not hurt
             if(hp<=0){
                 lose=true;
@@ -240,8 +266,8 @@ public class Battle {
     }
     private void nextAtk(){
         betweenTimer.stop();//stop timer for next time
-//        int pick=random(0,1);
-        int pick=2;
+//        int pick=random(0,2);
+        int pick=1;
         if(pick==0){
             createSpikes(false,true);
             createCloud();//creates cloud, creates snow
@@ -328,6 +354,7 @@ public class Battle {
             if(ice.spikesImgs[0]==null) {//no images yet
                 for (int rota = 0; rota < 8; rota++) {//rotates base image according to which heading it was created with
                     ice.spikesImgs[rota]=rotateImage(spikesBase[rota],ice.heading).getScaledInstance(100,100,Image.SCALE_SMOOTH);
+//                    ice.spikesImgs[rota]=rotateImage(spikesBase[rota],ice.width,ice.height,ice.heading);
                 }
             }
         }
@@ -341,18 +368,19 @@ public class Battle {
     //icicles go in a straight line towards player once they are created
     private void createIcicle(){
         int randX=random(0,1);
-        if (randX == 1) {
+        if (randX == 1) {//create on either left or right of screen not in middle
             randX=WIDTH-150;
         }
-        int randY=random(0,HEIGHT-75);
-        double angle=getAngle(randX+75,randY+33,player);
+        int randY=random(0,HEIGHT-75);//random y
+        double angle=getAngle(randX,randY,player);
 
-        this.icicles.add(new Projectile(randX,randY,150,75,15,angle,null));
+        this.icicles.add(new Projectile(randX,randY,150,75,5,angle,null));
 
         for(Projectile ice: icicles){
             if(ice.iceImgs[0]==null) {//icicles not filled yet
-                for(int rot=0;rot<10;rot++){//rotates base image for creation of new icicle image facing towards player
-                    ice.iceImgs[rot] = rotateImage(iciclesBase[rot], angle).getScaledInstance(150, 75, Image.SCALE_SMOOTH);
+                for(int rota=0;rota<10;rota++){//rotates base image for creation of new icicle image facing towards player
+                    ice.iceImgs[rota] = rotateImage(iciclesBase[rota], angle).getScaledInstance(150, 75, Image.SCALE_SMOOTH);
+//                    ice.iceImgs[rota]=rotateImage(iciclesBase[rota],ice.width,ice.height,angle);
                 }
             }
         }
@@ -455,6 +483,10 @@ public class Battle {
         frame++;
         //background
         g.drawImage(battleBack,0,0,null);
+        if(blinks>=10){//10 blinks/1 second later
+            blinks=0;
+            iFrame=false;//turns invicibility frames off
+        }
         if(iFrame) {
             if (timeMill(100, BLINK)) {
                 blinks++;
@@ -471,11 +503,13 @@ public class Battle {
             poke.spikeAnimation(g);
         }
         for(Projectile iceType1: icicles){
+            g.setColor(Color.red);
+            g.fillRect(iceType1.x,iceType1.y,iceType1.width, iceType1.height);
             iceType1.icicleAnimation(g);
         }
         for(Projectile iceType2: seekers){
-//            g.setColor(Color.red);
-//            g.fillRect(iceType2.x,iceType2.y,100,50);
+            g.setColor(Color.red);
+            g.fillRect(iceType2.x,iceType2.y,iceType2.width,iceType2.height);
             iceType2.seekerAnimation(g);
         }
         for(Projectile nimbus:clouds){
