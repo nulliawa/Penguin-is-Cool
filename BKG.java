@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -9,6 +10,11 @@ public class BKG {
     private static final int WIDTH = 1400, HEIGHT = 800;
     private static final char DEFAULT='0',TOP='1',BOT='2',LEFT='3',RIGHT='4',STAIR='5',TOPL='6',TOPR='7',BOTL='8',BOTR='9';
     private static final char WALL='A',WATER='W';
+    private static final String[] blockNames =new String[]{"iceTileBasic","iceTileWall","iceTileWater","iceTileTop","iceTileBot",
+            "iceTileLeft","iceTileRight","iceTileStair",
+            "iceTileTopLeft","iceTileTopRight","iceTileBotLeft","iceTileBotRight",
+    };
+    private static final Image[] blockImgs=new Image[blockNames.length];
     private static final ArrayList<BKG> squares=new ArrayList<>();//TEMP
     private static final ArrayList<ArrayList<BKG>> blocks=new ArrayList<>();
     private static final ArrayList<ArrayList<BKG>> walls=new ArrayList<>();
@@ -23,21 +29,24 @@ public class BKG {
         this.height=height;
         this.cover=cover;
     }
-    public static void setup(Image[] images){
-        for(int i=0;i<20;i++){//temporary grid for easier visuals
-            for(int j=0;j<15;j++){
-                if(i%2==0) {
-                    if (j % 2 == 0) {
-                        squares.add(new BKG(i * 100, j * 100, 100, 100,null));
-                    }
-                }
-                else{
-                    if(j%2==1){
-                        squares.add(new BKG(i * 100, j * 100, 100, 100,null));
-                    }
-                }
-            }
+    public static void setup(){
+        for(int i = 0; i< blockNames.length; i++){//make image list
+            blockImgs[i]= new ImageIcon("iceTile/"+blockNames[i]+".png").getImage().getScaledInstance(100,100,Image.SCALE_SMOOTH);
         }
+//        for(int i=0;i<20;i++){//temporary grid for easier visuals
+//            for(int j=0;j<15;j++){
+//                if(i%2==0) {
+//                    if (j % 2 == 0) {
+//                        squares.add(new BKG(i * 100, j * 100, 100, 100,null));
+//                    }
+//                }
+//                else{
+//                    if(j%2==1){
+//                        squares.add(new BKG(i * 100, j * 100, 100, 100,null));
+//                    }
+//                }
+//            }
+//        }
         //creation of grid array
         for(int ad=0;ad<30;ad++) {
             blocks.add(new ArrayList<BKG>());
@@ -70,41 +79,41 @@ public class BKG {
                 col=0;
             }
             else if(type==DEFAULT){//blank snow tile
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[0]));
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,blockImgs[0]));
             }
             else if(type==WALL){//default wall pattern
-                walls.get(row).add(new BKG(col*100,row*100,100,100,images[1]));
+                walls.get(row).add(new BKG(col*100,row*100,100,100,blockImgs[1]));
             }
             else if(type==WATER){//water acts as wall
-                walls.get(row).add(new BKG(col*100,row*100,100,100,images[2]));
+                walls.get(row).add(new BKG(col*100,row*100,100,100,blockImgs[2]));
 
             }
             else if(type==TOP){//pattern at top
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[3]));
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,blockImgs[3]));
             }
             else if(type==BOT){//patern at bottom
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[4]));
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,blockImgs[4]));
             }
             else if(type==LEFT){//pattern on left
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[5]));
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,blockImgs[5]));
             }
             else if(type==RIGHT){//pattern on right
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[6]));
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,blockImgs[6]));
             }
             else if(type==STAIR){//stair (needs walls on both sides)
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[7]));
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,blockImgs[7]));
             }
             else if(type==TOPL){//pattern on top left
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[8]));
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,blockImgs[8]));
             }
             else if(type==TOPR){//pattern on top right
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[9]));
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,blockImgs[9]));
             }
             else if(type==BOTL){//pattern on bottom left
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[10]));
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,blockImgs[10]));
             }
             else if(type==BOTR){//pattern on bottom right
-                blocks.get(row).add(new BKG(col*100,row*100,100,100,images[11]));
+                blocks.get(row).add(new BKG(col*100,row*100,100,100,blockImgs[11]));
             }
             if(loc%2==0){//every odd is a space character
                 col++;

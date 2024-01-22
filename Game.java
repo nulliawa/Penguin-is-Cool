@@ -24,10 +24,6 @@ public class Game extends BaseFrame {
     private ArrayList<Note> notes = new ArrayList<>();
     private final int[] times = {500, 200, 50, 50, 50};
     private int timeCounter = 0;
-    private static Image[] blocks;
-    private static Image[] projectiles;
-    private static Image[] golems;
-    private static Image[] spirits;
     Timer timer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
@@ -48,19 +44,19 @@ public class Game extends BaseFrame {
     public Game(String title, int width, int height) {
         super(title, width, height);
         ImageInit.setUp();
-        blocks=ImageInit.getBlocks();
-        projectiles=ImageInit.getProjectiles();
-        golems=ImageInit.getGolems();
-        spirits=ImageInit.getSpirits();
+//        blocks=ImageInit.getBlocks();
+//        projectiles=ImageInit.getProjectiles();
+//        golems=ImageInit.getGolems();
+//        spirits=ImageInit.getSpirits();
 
         bkg = new BKG(0, 0, 3000, 1500,null);//wip
-        BKG.setup(blocks);
+        BKG.setup();
 
         player = new Player(width / 2, height / 2);
-        enemy = new Enemy(0, 0, 0, 0);
-        enemy.setUp(spirits);
-        battle = new Battle(1);
-        Battle.setUp(projectiles,ImageInit.getBacks()[0]);
+        enemy = new Enemy();
+        Enemy.setUp();
+        battle = new Battle(100);
+        Battle.setUp();
 
         puzzle.createButton();
     }

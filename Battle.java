@@ -22,7 +22,7 @@ public class Battle {
             this.width=width;
             this.height=height;
             this.heading=heading;
-            this.spdScale=5;
+            this.spdScale=spdScale;
             this.cover=cover;
         }
 //        //ellipse version
@@ -32,14 +32,8 @@ public class Battle {
 //            this.width=width;
 //            this.height=height;
 //        }
-        public void move(){
-            //sideways movement supported
-            this.spdX= (int) Math.round(spdScale*Math.cos(heading));
-            this.spdY= -(int) Math.round(spdScale*Math.sin(heading));
-            this.x += this.spdX;
-            this.y += this.spdY;
-        }
-        public void edgeCX(){//edge collision x direction does not let cloud out of edge
+
+        private void edgeCX(){//edge collision x direction does not let cloud out of edge
             if(this.x<=0){
                 x=0;
             }
@@ -47,7 +41,7 @@ public class Battle {
                 x=WIDTH-width;
             }
         }
-        public boolean remove(ArrayList pList){//removes off-screen projectiles
+        private boolean remove(ArrayList pList){//removes off-screen projectiles
             if(this.x+width<0){
                 pList.remove(this);
                 return true;
@@ -66,6 +60,22 @@ public class Battle {
             }
             return false;
         }
+        //accurate sideways movement supported with cos and sin
+        private void move(double heading, int spdScale){//"seeking" move (can change heading)
+            this.heading=heading;
+            this.spdScale=spdScale;
+            this.spdX= (int) Math.round(this.spdScale*Math.cos(this.heading));
+            this.spdY= -(int) Math.round(this.spdScale*Math.sin(this.heading));
+            this.x += this.spdX;
+            this.y += this.spdY;
+        }
+        private void move(){//basic move based on constructor's variables
+            this.spdX= (int) Math.round(this.spdScale*Math.cos(this.heading));
+            this.spdY= -(int) Math.round(this.spdScale*Math.sin(this.heading));
+            this.x += this.spdX;
+            this.y += this.spdY;
+        }
+
         //cloud "follows" x position of player
         private void followPlayerX(Player player){
             int pX=player.getRect().x, pW=player.getRect().width/2;
@@ -77,18 +87,12 @@ public class Battle {
                 setSpdScale(7);
             }
             if(pX<cMid){
-                this.setSpeeds(LEFT,spdScale);
+                this.move(rad(LEFT),spdScale);
             }
             else if(pX+pW>cMid){
-                this.setSpeeds(RIGHT,spdScale);
+                this.move(rad(RIGHT),spdScale);
             }
-            this.x += this.spdX;
-            this.y += this.spdY;
             edgeCX();
-        }
-        private void setSpeeds(int heading,int spdScale){
-            spdX =(int)Math.round(spdScale*Math.cos(rad(heading)));
-            spdY =-(int)Math.round(spdScale*Math.sin(rad(heading)));
         }
         private void setSpdScale(int set){
             this.spdScale=set;
@@ -96,12 +100,14 @@ public class Battle {
         public Rectangle getRect(){
             return new Rectangle(this.x,this.y,this.width,this.height);
         }
-        public void hit(){
-            if(blinks==10){//10 blinks/1 second later
+        private void hit(){
+            System.out.println(blinks);
+            if(blinks>=10){//10 blinks/1 second later
                 blinks=0;
                 iFrame=false;
             }
             if(this.getRect().intersects(player.getRect())&&!iFrame){
+                System.out.println(hp);
                 hp-=1;
                 iFrame=true;//turns invincibility frames on where player is not hurt
                 if(hp<=0){
@@ -109,12 +115,19 @@ public class Battle {
                 }
             }
         }
+        private void icicleAnimation(Graphics g,Projectile icicle){
+            int iX=icicle.getRect().x,iY=icicle.getRect().y;
+            int index=frame/ICEANI%icicles.length;//gets a number 0 to 5
+            g.drawImage(icicles[index],iX,iY,null);
+        }
         public void draw(Graphics g){
 //            g.fillRect(x,y,width,height);
             g.drawImage(cover,x,y,null);
         }
     }
-    private static Image[] covers;
+//    private static Image[] covers;
+    private static Image[] icicles=new Image[4];
+    private static Image[] snows=new Image[8];
     private static Image battleBack;
     private final Random random=new Random();
     private boolean iFrame=false;
@@ -122,8 +135,9 @@ public class Battle {
     private final long[] memTime=new long[10];
     private static final double PI=Math.PI;
     private static final int WIDTH = 1400, HEIGHT = 800,SIZE=30,RIGHT=0,LEFT=180,UP=90,DOWN=270;
-    private static final int SNOWGEN=100,CLOUDSTALL=5000,ICESTALL=1000,GENERATE=2000;
+    private static final int SNOWGEN=100,CLOUDSTALL=5000,ICESTALL=4000, BETWEEN =2000,ICEANI=3;
     private static final int CLOUD=0,SNOW=1,BLINK=3;
+    private int frame;
     private int hp,blinks=0;
     private final ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
     private static final ArrayList<Projectile> clouds=new ArrayList<>();
@@ -133,11 +147,15 @@ public class Battle {
         this.win=false;
         this.lose=false;
         this.hp=hp;
+        //TEMP
         //new screen with new projectiles, player set to middle
     }
     public void start(){
         betweenTimer.start();
+//        this.projectiles.add(new Projectile(WIDTH/2,HEIGHT/2,20,20,50,rad(UP),covers[CLOUD]));
+//        projectiles.get(0).setSpeeds(UP,10);
     }
+
     public void stop(){
         betweenTimer.stop();
         destroyCloud();
@@ -145,16 +163,35 @@ public class Battle {
             snow.clear();
         }
     }
-    public static void setUp(Image[] images,Image background){//happens once to initialize all images
-        battleBack=background;
-        covers=images;
+    public static void setUp(){//happens once to initialize all images
+//        battleBack=background;
+//        covers=images;
+//        for(int i=1;i<5;i++){
+//            icicles[i-1]=covers[i+7];//first 7 are snowflakes
+//        }
+        battleBack=new ImageIcon("battleBack.png").getImage().getScaledInstance(WIDTH,HEIGHT,Image.SCALE_SMOOTH);
+        for(int ice=1;ice<5;ice++){//icicle projectile
+            icicles[ice-1]=new ImageIcon("icicle"+ice+".png").getImage().getScaledInstance(50,30,Image.SCALE_SMOOTH);
+        }
+        for(int j=1;j<8;j++){//7 snowflake variants
+            snows[j]=new ImageIcon("snow/snowFlake"+j+".png").getImage().getScaledInstance(15,15,Image.SCALE_SMOOTH);
+        }
+        snows[0]=new ImageIcon("snowCloud.png").getImage().getScaledInstance(500,100,Image.SCALE_SMOOTH);
+
     }
     public int getHP(){
         return hp;
     }
-    private void nextAtk(){
+    private void nextAtk(){//CHANGE VALUES WIP
         betweenTimer.stop();//stop timer for next time
-        createCloud();
+        int pick=random(0,1);
+        System.out.println(pick);
+        if(pick==1||pick==0){
+            createCloud();
+        }
+//        else if(pick==1||pick==0){
+//            createIcicles();
+//        }
     }
     public boolean result(){//constantly called to see if battle has ended
         if(lose||win){
@@ -164,7 +201,7 @@ public class Battle {
         return false;
     }
     //rest period in between attacks
-    private final Timer betweenTimer = new Timer(1000, new ActionListener() {
+    private final Timer betweenTimer = new Timer(BETWEEN, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             System.out.println("new atk");
@@ -174,22 +211,47 @@ public class Battle {
     private final Timer cloudTimer = new Timer(CLOUDSTALL, new ActionListener() {//duration of cloud 10s
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            System.out.println("new cloud");
+            System.out.println("destroy cloud");
             //stops cloud by removing it
             destroyCloud();
             betweenTimer.start();//start next sequence
         }
     });
+    private final Timer icicleTimer=new Timer(ICESTALL, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("destroy icicles");
+            icicleTimer.stop();//stop icicles
+            betweenTimer.start();//next attack
+        }
+    });
     //create main cloud that is above snow
-    public void createCloud(){
-        clouds.add(new Projectile(random(0,900),0,500,100,2,rad(RIGHT),covers[CLOUD]));
+    private void createCloud(){
+        clouds.add(new Projectile(random(0,900),0,500,100,2,rad(RIGHT),snows[CLOUD]));
         cloudTimer.start();
     }
-    public void destroyCloud(){
+    //snow generates at a random x under a cloud
+    private void createSnow(Projectile cloud){
+        Rectangle cRect=cloud.getRect();
+        //snow starts appearing in middle of cloud with random x along cloud's width
+        snow.add(new Projectile(cRect.x+random(0,49)*10,cRect.y+50,15,15,5,rad(DOWN),snows[random(1,7)]));//snow per tick
+        snow.add(new Projectile(cRect.x+random(0,49)*10,cRect.y+50,15,15,5,rad(DOWN),snows[random(1,7)]));
+    }
+
+    private void destroyCloud(){
         if(!clouds.isEmpty()) {
             clouds.clear();
         }
         cloudTimer.stop();
+    }
+    private void createIcicles(){
+        int randX=random(0,1);
+        if (randX == 1) {
+            randX=WIDTH-50;
+        }
+        int randY=random(0,HEIGHT-30);
+        this.projectiles.add(new Projectile(randX,randY,50,20,40,getAngle(randX+20,randY+20,player),icicles[0]));
+        icicleTimer.start();
     }
     public boolean timeMill(int delay,int index){
         //difference between current time and last recorded time is greater than delay, proceed with action (true)
@@ -206,13 +268,6 @@ public class Battle {
     public double rad(int degree){//direction from degree to radians
         return degree/180.0*PI;
     }
-    //snow generates at a random x under a cloud
-    private void createSnow(Projectile cloud){
-        Rectangle cRect=cloud.getRect();
-        //snow starts appearing in middle of cloud with random x along cloud's width
-        snow.add(new Projectile(cRect.x+random(0,49)*10,cRect.y+50,15,15,5,rad(DOWN),covers[random(1,7)]));//snow per tick
-        snow.add(new Projectile(cRect.x+random(0,49)*10,cRect.y+50,15,15,5,rad(DOWN),covers[random(1,7)]));
-    }
 
     private void runProj(ArrayList<Projectile> pList) {
         for (int i = 0; i < pList.size(); i++) {
@@ -226,24 +281,25 @@ public class Battle {
             }
         }
     }
-    private double distance(Projectile proj,Player player){//USE MATH.ATAN2
-        double dist=0;
-        int pX=player.getRect().x,pY=player.getRect().y,pW=player.getRect().width,pH=player.getRect().height;
-
-        return dist;
+    //gets the radian angle from projectile to player
+    private double getAngle(int startX,int startY,Player player){
+        int pX=player.getRect().x, pY=player.getRect().y,pW=player.getRect().width,pH=player.getRect().height;
+        double distX=pX+pW-startX;
+        double distY=startY-(pY+pH);//y is inverted
+        return Math.atan2(distY,distX);//"slope" distY/distX in radians
     }
-
-//    public void setUp(){//old setup tester
-//        projectiles.add(new Projectile(500,500,10,10,1, rad(350)));
-//        projectiles.add(new Projectile(100,100,10,10,1,rad(280)));
-//    }
 
     public void move(boolean[] keys) {
 //        runProj(projectiles);
-        if (!snow.isEmpty()) {
-            runProj(snow);
+//        if (!snow.isEmpty()) {
+//            runProj(snow);
+//        }
+        //runs at angle specified when created
+        if(!projectiles.isEmpty()){
+            runProj(projectiles);
         }
-        for (int i = 0; i < clouds.size(); i++) {Projectile cloud = clouds.get(i);
+        for (int i = 0; i < clouds.size(); i++) {
+            Projectile cloud = clouds.get(i);
             if (!cloud.remove(clouds)) {//projectile is not off screen
                 cloud.followPlayerX(player);
                 cloud.hit();
@@ -258,8 +314,7 @@ public class Battle {
         player.move(keys);
     }
     public void draw(Graphics g){
-//        g.setColor(Color.blue);
-//        g.fillRect(0,0,WIDTH,HEIGHT);
+        frame++;
         //background
         g.drawImage(battleBack,0,0,null);
         if(iFrame) {
@@ -272,7 +327,7 @@ public class Battle {
             player.draw(g);
         }
         for(Projectile p:projectiles){
-            p.draw(g);
+            p.icicleAnimation(g,p);
         }
         for(Projectile flake:snow){///NEED IMAGE
 //            g.setColor(Color.white);
