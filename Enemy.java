@@ -86,7 +86,7 @@ public class Enemy {
     }
     public void draw(Graphics g){
         frame++;//which frame needs to be put up, constantly increasing
-        if(frame==2147483647){//limit on ints
+        if(frame>=2147483647){//limit on ints
             frame=0;
         }
         for(Enemy e:enemies){

@@ -52,7 +52,7 @@ public class Game extends BaseFrame {
         player = new Player(width / 2, height / 2);
         enemy = new Enemy();
         Enemy.setUp();
-        battle = new Battle(1);
+        battle = new Battle(10);
         Battle.setUp();
 
         puzzle.createButton();
@@ -203,6 +203,7 @@ public class Game extends BaseFrame {
     }
 
     public void playMusic() {
+        //help from ChatGPT3.5
         try {
             // Create an AudioInputStream from the file
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("The Barber.wav"));

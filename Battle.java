@@ -12,7 +12,8 @@ import java.util.Random;
 public class Battle {
     private class Projectile{
         private final Image[] iceImgs=new Image[10];
-        private static final Image[] spikesImgs=new Image[8];
+        private final Image[] spikesImgs=new Image[8];
+        private final Image[] seekerImgs=new Image[4];
         private int x,y,spdX,spdY,spdScale;
         private final int width,height;
 //        private int elli;
@@ -45,7 +46,7 @@ public class Battle {
                 x=WIDTH-width;
             }
         }
-        private boolean remove(ArrayList pList){//removes off-screen projectiles
+        private boolean clean(ArrayList pList){//removes off-screen projectiles
             if(this.x+width<0){
                 pList.remove(this);
                 return true;
@@ -54,11 +55,11 @@ public class Battle {
                 pList.remove(this);
                 return true;
             }
-            else if(this.y<0){
+            else if(this.y+height<0){
                 pList.remove(this);
                 return true;
             }
-            else if(this.y+height>HEIGHT){
+            else if(this.y>HEIGHT){
                 pList.remove(this);
                 return true;
             }
@@ -82,9 +83,9 @@ public class Battle {
 
         //cloud "follows" x position of player
         private void followPlayerX(Player player){
-            int pX=player.getRect().x, pW=player.getRect().width/2;
+            int pX=player.getRect().x, pM=player.getRect().width/2;
             int cMid=this.width/2+this.x;
-            if(pX<cMid&&pX+pW>cMid){//stop moving
+            if(pX<cMid&&pX+pM>cMid){//stop moving
                 this.spdScale=0;
             }
             else {
@@ -93,10 +94,18 @@ public class Battle {
             if(pX<cMid){
                 this.move(rad(LEFT),spdScale);
             }
-            else if(pX+pW>cMid){
+            else if(pX+pM>cMid){
                 this.move(rad(RIGHT),spdScale);
             }
             edgeCX();
+        }
+        private void seek(Player player){
+            this.move(getAngle(x+50,y+50,player),5);
+            for(Projectile ice:seekers){
+                for (int rota = 0; rota < 4; rota++) {//rotates base image according to which heading it was created with
+                    ice.seekerImgs[rota]=rotateImage(seekersBase[rota],ice.heading).getScaledInstance(100,100,Image.SCALE_SMOOTH);
+                }
+            }
         }
         private void setSpdScale(int set){
             this.spdScale=set;
@@ -104,32 +113,26 @@ public class Battle {
         public Rectangle getRect(){
             return new Rectangle(this.x,this.y,this.width,this.height);
         }
-        private void hit(){
-            if(blinks>=10){//10 blinks/1 second later
-                blinks=0;
-                iFrame=false;
-            }
-            if(this.getRect().intersects(player.getRect())&&!iFrame){
-                hp-=1;
-                iFrame=true;//turns invincibility frames on where player is not hurt
-                if(hp<=0){
-                    lose=true;
-                }
-            }
+        private void icicleAnimation(Graphics g){
+            int index=frame/ICEANI%iciclesBase.length;//the frame based on animation time
+            g.drawImage(iceImgs[index],x,y,null);
         }
-        private void icicleAnimation(Graphics g,Projectile icicle){
-            int iX=icicle.getRect().x,iY=icicle.getRect().y;
-            int index=frame/ICEANI%iciclesBase.length;//gets a number 0 to 5
-            g.drawImage(iceImgs[index],iX,iY,null);
+        private void spikeAnimation(Graphics g){
+            int index=frame/SPIKEANI%spikesBase.length;//gets to next index when frame/ani allows
+            g.drawImage(spikesImgs[index],x,y,null);
+        }
+        private void seekerAnimation(Graphics g){
+            int index=frame/SEEKERANI%seekersBase.length;
+            g.drawImage(seekerImgs[index],x,y,null);
         }
         public void draw(Graphics g){
-//            g.fillRect(x,y,width,height);
             g.drawImage(cover,x,y,null);
         }
     }
     private static final Image[] iciclesBase=new Image[10];
-    private static Image[] spikesBase=new Image[8];
+    private static final Image[] spikesBase=new Image[8];
     private static final Image[] snows=new Image[8];
+    private static final Image[] seekersBase=new Image[4];
     private static Image battleBack;
     private final Random random=new Random();
     private boolean iFrame=false;
@@ -137,14 +140,15 @@ public class Battle {
     private final long[] memTime=new long[10];
     private static final double PI=Math.PI;
     private static final int WIDTH = 1400, HEIGHT = 800,SIZE=30,RIGHT=0,LEFT=180,UP=90,DOWN=270;
-    private static final int SNOWGEN=100,CLOUDSTALL=5000,ICESTALL=0,BETWEEN =100,ICEANI=3;
-    private static final int CLOUD=0,SNOW=1,ICICLE=2,BLINK=3;
-    private int frame;
+    private static final int SNOWGEN=100,CLOUDSTALL=7000,ICICLESTALL=10000,BETWEEN =4000,ICEANI=3,SPIKEANI=6,SEEKERANI=10;
+    private static final int CLOUD=0,SNOW=1,ICICLE=2,BLINK=3,SEEKER=4;
+    private static int frame;
     private int hp,blinks=0;
     private final ArrayList<Projectile> icicles = new ArrayList<Projectile>();
     private static final ArrayList<Projectile> clouds=new ArrayList<>();
     private static final ArrayList<Projectile> snow=new ArrayList<>();
     private static final ArrayList<Projectile> spikes=new ArrayList<>();
+    private static final ArrayList<Projectile> seekers=new ArrayList<>();
     private Player player=new Player(WIDTH/2,HEIGHT/2);
     public Battle(int hp){//create new battle
         this.win=false;
@@ -157,14 +161,20 @@ public class Battle {
         betweenTimer.start();
     }
 
-    public void stop(){
+    public void stopAll(){
         betweenTimer.stop();
         destroyCloud();
+        icicleTimer.stop();
         if(!snow.isEmpty()){
             snow.clear();
         }
+        if(!icicles.isEmpty()){
+            icicles.clear();
+        }
     }
-    private static Image rotateImage(Image image, double angle) {//rotates specified image
+
+    private static Image rotateImage(Image image, double angle) {//rotates specified image to angle
+        //help from ChatGPT3.5
         int width = image.getWidth(null);
         int height = image.getHeight(null);
 
@@ -174,7 +184,7 @@ public class Battle {
         Graphics2D g2d = rotatedImage.createGraphics();
         AffineTransform transform = new AffineTransform();
         //rotate based on given angle (radians)
-        transform.rotate(-angle, width / 2, height / 2);
+        transform.rotate(-angle,width/2,height/2);
         //center rotation at center of image
         g2d.setTransform(transform);//perform transformation
 
@@ -200,30 +210,52 @@ public class Battle {
         for(int s=1;s<9;s++) {
             spikesBase[s-1] = new ImageIcon("icicle/Ice VFX 2 Active"+s+".png").getImage();
         }
+        for(int q=1;q<5;q++){
+            seekersBase[q-1]=new ImageIcon("icicle/icicle"+q+".png").getImage();
+        }
     }
 
     public int getHP(){
         return hp;
     }
-    private void nextAtk(){//CHANGE VALUES WIP
-        betweenTimer.stop();//stop timer for next time
-        int pick=random(0,1);
-//        if(pick==1||pick==0){
-//            createCloud();
-//        }
-        if(pick==1||pick==0){
-            icicleTimer.start();//starts creating icicles
+    private void hit(Projectile projectile){
+        if(blinks>=10){//10 blinks/1 second later
+            blinks=0;
+            iFrame=false;
+        }
+        if(projectile.getRect().intersects(player.getRect())&&!iFrame){
+            hp-=1;
+            iFrame=true;//turns invincibility frames on where player is not hurt
+            if(hp<=0){
+                lose=true;
+            }
         }
     }
     public boolean result(){//constantly called to see if battle has ended
         if(lose||win){
-            this.stop();
+            this.stopAll();
             return true;
         }
         return false;
     }
+    private void nextAtk(){
+        betweenTimer.stop();//stop timer for next time
+//        int pick=random(0,1);
+        int pick=2;
+        if(pick==0){
+            createSpikes(false,true);
+            createCloud();//creates cloud, creates snow
+        }
+        else if(pick==1){
+            createSpikes(true,false);//spikes accompanying for icicle atk duration
+            icicleTimer.start();//starts creating icicles
+        }
+        else if(pick==2){
+            seekerTimer.start();//start (creates 1 seeker automatically)
+        }
+    }
     //rest period in between attacks
-    private final Timer betweenTimer = new Timer(1000, new ActionListener() {
+    private final Timer betweenTimer = new Timer(4000, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             System.out.println("new atk");
@@ -233,18 +265,28 @@ public class Battle {
     private final Timer cloudTimer = new Timer(CLOUDSTALL, new ActionListener() {//duration of cloud 10s
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            System.out.println("destroy cloud");
+            System.out.println("cloud end");
             //stops cloud by removing it
             destroyCloud();
+            destroySpikes();
             betweenTimer.start();//start next sequence
         }
     });
     private final Timer icicleTimer=new Timer(10000, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("destroy icicles");
+            System.out.println("icicles end");
             icicleTimer.stop();//stop icicles
+            destroySpikes();
             betweenTimer.start();//next attack
+        }
+    });
+    private final Timer seekerTimer=new Timer(10000, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            seekers.clear();//get rid of current seekers if any
+            seekerTimer.stop();
+            betweenTimer.start();
         }
     });
     //create main cloud that is above snow
@@ -266,30 +308,58 @@ public class Battle {
         }
         cloudTimer.stop();
     }
-    private void createSpikes(){
-        for(int i=0;i<14;i++) {
-            //bottom and top spikes
-            spikes.add(new Projectile(i * 100,HEIGHT-100,100,100,0,0,null));
-            spikes.add(new Projectile(i * 100,0,100,100,0,0,null));
+    private void createSpikes(boolean topBot,boolean leftRight){
+        if(topBot) {//while normal icicles happening
+            for (int i = 1; i < 13; i++) {
+                //bottom and top spikes
+                spikes.add(new Projectile(i * 100, HEIGHT - 100, 100, 55, 0, 0, null));
+                spikes.add(new Projectile(i * 100, 0, 100, 55, 0, rad(180), null));
+                //width/height reduced due to image scaling
+            }
         }
-    }
-    private void createIcicle(){
-        int randX=random(0,1);
-        if (randX == 1) {
-            randX=WIDTH-50;
+        else if(leftRight){//while cloud/snow atk is performed
+            for (int j = 0; j < 8; j++) {
+                //left and right spikes
+                spikes.add(new Projectile(0, j * 100, 55, 100, 0, rad(-90), null));
+                spikes.add(new Projectile(WIDTH - 100, j * 100, 55, 100, 0, rad(90), null));
+            }
         }
-        int randY=random(0,HEIGHT-30);
-        double angle=getAngle(randX+20,randY+20,player);
-
-        this.icicles.add(new Projectile(randX,randY,80,40,15,angle,null));
-
-        for(Projectile ice: icicles){
-            for(int rot=0;rot<10;rot++){//rotates base image for creation of new icicle image facing towards player
-                if(ice.iceImgs[rot]==null) {//icicles not filled yet
-                    ice.iceImgs[rot] = rotateImage(iciclesBase[rot], angle).getScaledInstance(100, 50, Image.SCALE_SMOOTH);
+        for(Projectile ice:spikes){
+            if(ice.spikesImgs[0]==null) {//no images yet
+                for (int rota = 0; rota < 8; rota++) {//rotates base image according to which heading it was created with
+                    ice.spikesImgs[rota]=rotateImage(spikesBase[rota],ice.heading).getScaledInstance(100,100,Image.SCALE_SMOOTH);
                 }
             }
         }
+    }
+    private void destroySpikes(){
+        System.out.println("spikes end");
+        if(!spikes.isEmpty()){
+            spikes.clear();
+        }
+    }
+    //icicles go in a straight line towards player once they are created
+    private void createIcicle(){
+        int randX=random(0,1);
+        if (randX == 1) {
+            randX=WIDTH-150;
+        }
+        int randY=random(0,HEIGHT-75);
+        double angle=getAngle(randX+75,randY+33,player);
+
+        this.icicles.add(new Projectile(randX,randY,150,75,15,angle,null));
+
+        for(Projectile ice: icicles){
+            if(ice.iceImgs[0]==null) {//icicles not filled yet
+                for(int rot=0;rot<10;rot++){//rotates base image for creation of new icicle image facing towards player
+                    ice.iceImgs[rot] = rotateImage(iciclesBase[rot], angle).getScaledInstance(150, 75, Image.SCALE_SMOOTH);
+                }
+            }
+        }
+    }
+    //seekers follow the player
+    private void createSeeker(){
+        seekers.add(new Projectile(0,0,100,100,10,getAngle(0,0,player),null));
     }
     public boolean timeMill(int delay,int index){
         //difference between current time and last recorded time is greater than delay, proceed with action (true)
@@ -310,9 +380,9 @@ public class Battle {
     private void runProj(ArrayList<Projectile> pList) {
         for (int i = 0; i < pList.size(); i++) {
             Projectile proj = pList.get(i);
-            if (!proj.remove(pList)) {//projectile is not off screen
+            if (!proj.clean(pList)) {//projectile is not off screen
                 proj.move();
-                proj.hit();
+                this.hit(proj);
             }
             else {//take out of list loop
                 i--;
@@ -322,8 +392,8 @@ public class Battle {
     //gets the radian angle from projectile to player
     private double getAngle(int startX,int startY,Player player){
         int pX=player.getRect().x, pY=player.getRect().y,pW=player.getRect().width,pH=player.getRect().height;
-        double distX=pX+pW-startX;
-        double distY=startY-(pY+pH);//y is inverted
+        double distX=pX+pW/2-startX;
+        double distY=startY-(pY+pH/2);//y is inverted
         return Math.atan2(distY,distX);//"slope" distY/distX in radians
     }
 
@@ -339,15 +409,35 @@ public class Battle {
                 }
             }
         }
+        if(seekerTimer.isRunning()){
+            if(timeMill(3000,SEEKER)){
+                createSeeker();
+            }
+        }
         //runs at angle specified when created
         if(!icicles.isEmpty()){
             runProj(icicles);
         }
+        if(!spikes.isEmpty()){
+            runProj(spikes);
+        }
+        if(!seekers.isEmpty()){
+            for (int i = 0; i < seekers.size(); i++) {
+                Projectile proj = seekers.get(i);
+                if (!proj.clean(seekers)) {//projectile is not off screen or hit player
+                    proj.seek(player);
+                    this.hit(proj);
+                }
+                else {//list loop index set back
+                    i--;
+                }
+            }
+        }
         for (int i = 0; i < clouds.size(); i++) {
             Projectile cloud = clouds.get(i);
-            if (!cloud.remove(clouds)) {//projectile is not off screen
+            if (!cloud.clean(clouds)) {//projectile is not off screen
                 cloud.followPlayerX(player);
-                cloud.hit();
+                this.hit(cloud);
                 //create new snowflake every 200milliseconds with 200ms variation
                 if (timeMill(SNOWGEN + random(0, 200), SNOW)) {
                     createSnow(cloud);
@@ -359,6 +449,9 @@ public class Battle {
         player.move(keys);
     }
     public void draw(Graphics g){
+        if(frame>=2147483647){//limit on ints
+            frame=0;
+        }
         frame++;
         //background
         g.drawImage(battleBack,0,0,null);
@@ -371,12 +464,19 @@ public class Battle {
         else{
             player.draw(g);
         }
-        for(Projectile p: icicles){
-            p.icicleAnimation(g,p);
+        for(Projectile flake:snow){
+            flake.draw(g);//snows[1-7] inclusive are snowflake variations
         }
-        for(Projectile flake:snow){///NEED IMAGE
-//            g.setColor(Color.white);
-            flake.draw(g);//section 1-7 inclusive are snowflake variations
+        for(Projectile poke:spikes){
+            poke.spikeAnimation(g);
+        }
+        for(Projectile iceType1: icicles){
+            iceType1.icicleAnimation(g);
+        }
+        for(Projectile iceType2: seekers){
+//            g.setColor(Color.red);
+//            g.fillRect(iceType2.x,iceType2.y,100,50);
+            iceType2.seekerAnimation(g);
         }
         for(Projectile nimbus:clouds){
             nimbus.draw(g);
