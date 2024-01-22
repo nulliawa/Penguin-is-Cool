@@ -12,10 +12,12 @@ import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import java.io.File;
 //main game, start at menu
+//ESC TO PAUSE (any screen)
 
 public class Game extends BaseFrame {
     private static final int WIDTH = 1400, HEIGHT = 800;
-    public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5;
+    public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5,PAUSE=6;
+    public int resume;
     int screen = MENU;
     private final Player player;
     private final BKG bkg;
@@ -233,6 +235,17 @@ public class Game extends BaseFrame {
     public void drawPuzzle(Graphics g) {
         puzzle.draw(g);
     }
+    public void drawPause(Graphics g){
+        //layer underneath (before pause)
+        if(resume==GAME){
+            drawGame(g);
+        }
+        else if(resume==BATTLE){
+            drawBattle(g);
+        }
+        g.setColor(new Color(10,10,10,100));//semi transparent
+        g.fillRect(0,0,WIDTH,HEIGHT);
+    }
 
     public void draw(Graphics g) {//test
         if (screen == MENU) {
@@ -248,12 +261,26 @@ public class Game extends BaseFrame {
         } else if (screen == PUZZLE) {
 
         }
+        else if(screen==PAUSE){
+            drawPause(g);
+            super.timer.stop();
+        }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {//constant new checking for keys[], based on actionPerformed()
         super.keyPressed(e);
         keys[e.getKeyCode()] = true;
+        if(keys[ESC]){
+            if(screen!=PAUSE) {
+                resume=screen;
+                screen=PAUSE;
+            }
+            else{
+                screen=resume;
+                super.timer.start();
+            }
+        }
     }
 
     @Override
