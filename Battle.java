@@ -464,7 +464,7 @@ private void createSpikes(boolean topBot,boolean leftRight){
                     }
                 }
             }
-            else{//seekers will "coast" until all destroyed
+            else{//seekers will "coast" unless atk sequence is seekers
                 runProj(seekers);
             }
         }

@@ -11,7 +11,8 @@ import java.io.File;
 //main game, start at menu
 //ESC TO PAUSE (any screen)
 
-public class Game extends BaseFrame {
+public class Game extends BaseFrame{
+    public GamePane pane;
     private static final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5,PAUSE=6;
     public int resume;
@@ -313,35 +314,38 @@ public class Game extends BaseFrame {
     public void keyPressed(KeyEvent e) {//constant new checking for keys[], based on actionPerformed()
         super.keyPressed(e);
         keys[e.getKeyCode()] = true;
-        if(keys[ESC]){
-            if(screen!=PAUSE&&screen!=MENU&&screen!=PUZZLE) {
-                resume=screen;
-                screen=PAUSE;
+        if(screen!=PAUSE&&screen!=MENU&&screen!=PUZZLE) {
+            if(keys[ESC]) {
+                resume = screen;
+                screen = PAUSE;
             }
-            else if(screen==PAUSE){
-                screen=resume;
+        }
+        else if(screen==PAUSE){
+            if(keys[ESC]) {
+                screen = resume;
+                super.timer.start();
+            }
+            else if(keys[SPACE]){
+                screen=MENU;
                 super.timer.start();
             }
         }
-//        if(mb==1&&screen==PAUSE){
-//            screen=MENU;
-//            super.timer.start();
-//        }
     }
     @Override
     public void keyReleased(KeyEvent e) {
         super.keyPressed(e);
         keys[e.getKeyCode()] = false;
     }
-    @Override
-    public void mouseClicked(MouseEvent m){//THIS DOESNT WORK//////////////////////
-        System.out.println("click");
-        super.mouseClicked(m);
-        if(mb==1&&screen==PAUSE){
-            screen=MENU;
-            super.timer.start();
-        }
-    }
+
+//    @Override
+//    public void mouseClicked(MouseEvent m){//THIS DOESNT WORK//////////////////////
+////        System.out.println("click");
+//        super.mouseClicked(m);
+//        if(mb==1&&screen==PAUSE){
+//            screen=MENU;
+//            super.timer.start();
+//        }
+//    }
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println(mb);
