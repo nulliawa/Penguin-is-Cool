@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 //switch to battle screen when you touch an enemy
-//win the battle by waiting enough time
+//win the battle by waiting enough time (survive 3 randomly generated attacks)
 //lose when hp goes to 0 and return to game's overworld
 public class Battle {
     private class Projectile{
@@ -131,9 +131,10 @@ public class Battle {
     private final long[] memTime=new long[10];
     private static final double PI=Math.PI;
     private static final int WIDTH = 1400, HEIGHT = 800,SIZE=30,RIGHT=0,LEFT=180,UP=90,DOWN=270;
-    private static final int SNOWGEN=100,CLOUDSTALL=7000,ICICLESTALL=10000,BETWEEN =4000,ICEANI=3,SPIKEANI=6,SEEKERANI=10;
+    private static final int SNOWGEN=100,CLOUDSTALL=10000,ICICLESTALL=10000,BETWEEN =4000,ICEANI=6,SPIKEANI=3,SEEKERANI=4;
     private static final int CLOUD=0,SNOW=1,ICICLE=2,BLINK=3,SEEKER=4;
     private static int frame;
+    private static int totalAtks;
     private int hp,blinks=0;
     private final ArrayList<Projectile> icicles = new ArrayList<Projectile>();
     private static final ArrayList<Projectile> clouds=new ArrayList<>();
@@ -150,8 +151,8 @@ public class Battle {
     }
     public void start(){
         betweenTimer.start();
+        totalAtks=-1;
     }
-
     public void stopAll(){
         betweenTimer.stop();
         destroyCloud();
@@ -258,6 +259,7 @@ public class Battle {
     private void nextAtk(){
         betweenTimer.stop();//stop timer for next time
         int pick=random(0,2);
+//        pick=2;
         if(pick==0){
             createSpikes(false,true);
             createCloud();//creates cloud, creates snow
@@ -267,6 +269,7 @@ public class Battle {
             icicleTimer.start();//starts creating icicles
         }
         else if(pick==2){
+            createSpikes(true,true);
             seekerTimer.start();//start (creates 1 seeker automatically)
         }
     }
@@ -274,14 +277,18 @@ public class Battle {
     private final Timer betweenTimer = new Timer(4000, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-//            System.out.println("new atk");
-            nextAtk();//start next attack (random)
+            totalAtks++;
+            if(totalAtks<3) {
+                nextAtk();//start next attack (random)
+            }
+            else{//win when 3 attacks have passed
+                win=true;
+            }
         }
     });
     private final Timer cloudTimer = new Timer(CLOUDSTALL, new ActionListener() {//duration of cloud 10s
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-//            System.out.println("cloud end");
             //stops cloud by removing it
             destroyCloud();
             destroySpikes();
@@ -291,17 +298,17 @@ public class Battle {
     private final Timer icicleTimer=new Timer(10000, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-//            System.out.println("icicles end");
             icicleTimer.stop();//stop icicles
             destroySpikes();
             betweenTimer.start();//next attack
         }
     });
-    private final Timer seekerTimer=new Timer(10000, new ActionListener() {
+    private final Timer seekerTimer=new Timer(12000, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            seekers.clear();//get rid of current seekers if any
+//            seekers.clear();//get rid of current seekers if any
             seekerTimer.stop();
+            destroySpikes();
             betweenTimer.start();
         }
     });
@@ -333,7 +340,7 @@ public class Battle {
         int randY=random(0,HEIGHT-75);//random y
         double angle=getAngle(randX,randY,player);
         System.out.println(angle);
-        this.icicles.add(new Projectile(randX, randY, 150, 75, 5, angle, null));
+        this.icicles.add(new Projectile(randX, randY, 150, 75, 15, angle, null));
 
         for(Projectile ice: icicles){
             if(ice.iceImgs[0]==null) {//icicles not filled yet
@@ -352,7 +359,7 @@ private void createSpikes(boolean topBot,boolean leftRight){
             //width/height reduced due to image scaling
         }
     }
-    else if(leftRight){//while cloud/snow atk is performed
+    if(leftRight){//while cloud/snow atk is performed
         for (int j = 0; j < 8; j++) {
             //left and right spikes
             spikes.add(new Projectile(0, j * 100, 100, 100, 0, rad(-90), null));
@@ -375,7 +382,15 @@ private void createSpikes(boolean topBot,boolean leftRight){
     }
     //seekers follow the player
     private void createSeeker(){
-        seekers.add(new Projectile(0,0,100,100,10,getAngle(0,0,player),null));
+        int randX=random(0,1);
+        int randY=random(0,1);
+        if(randX==1){
+            randX=WIDTH-100;
+        }
+        if(randY==1){
+            randY=HEIGHT-100;
+        }
+        seekers.add(new Projectile(randX,randY,100,100,10,getAngle(0,0,player),null));
     }
     public boolean timeMill(int delay,int index){
         //difference between current time and last recorded time is greater than delay, proceed with action (true)
@@ -419,14 +434,14 @@ private void createSpikes(boolean topBot,boolean leftRight){
             runProj(snow);
         }
         if(icicleTimer.isRunning()){
-            if(timeMill(4000,ICICLE)){
+            if(timeMill(2000,ICICLE)){
                 for(int icy=0;icy<6;icy++){
                     createIcicle();
                 }
             }
         }
         if(seekerTimer.isRunning()){
-            if(timeMill(3000,SEEKER)){
+            if(timeMill(2500,SEEKER)){
                 createSeeker();
             }
         }
@@ -438,15 +453,19 @@ private void createSpikes(boolean topBot,boolean leftRight){
             runProj(spikes);
         }
         if(!seekers.isEmpty()){
-            for (int i = 0; i < seekers.size(); i++) {
-                Projectile proj = seekers.get(i);
-                if (!proj.clean(seekers)) {//projectile is not off screen or hit player
-                    proj.seek(player);
-                    this.hit(proj);
+            if(seekerTimer.isRunning()){
+                for (int i = 0; i < seekers.size(); i++) {
+                    Projectile proj = seekers.get(i);
+                    if (!proj.clean(seekers)) {//projectile is not off screen or hit player
+                        proj.seek(player);
+                        this.hit(proj);
+                    } else {//list loop index set back
+                        i--;
+                    }
                 }
-                else {//list loop index set back
-                    i--;
-                }
+            }
+            else{//seekers will "coast" until all destroyed
+                runProj(seekers);
             }
         }
         for (int i = 0; i < clouds.size(); i++) {
