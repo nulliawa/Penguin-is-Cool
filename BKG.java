@@ -172,8 +172,7 @@ public class BKG {
         this.offX+=offSpdX;
         this.offY+=offSpdY;
     }
-    public void move(boolean[] keys,boolean direction,Player player){
-        //direction: true=up/down, false=left/right
+    public void move(boolean[] keys,Player player){
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
         //when no keys pressed, speed 0, no movement
         int collideY=collisionY(player);
@@ -181,23 +180,26 @@ public class BKG {
         offSpdX=0;
         offSpdY=0;
         // Movement of offset
-        if(direction) {//true=up/down
-            if(!(keys[W]&&keys[S])) {
+        if(player.isFixedY()) {
+            if(!(keys[W]&&keys[S])) {//no more "vibrating" with quick switch of spd from +/-
                 if (keys[W] && !edgeYT() && collideY != 2) {
                     offSpdY = offSpd;
                 }
                 if (keys[S] && !edgeYB() && collideY != 1) {
                     offSpdY = -offSpd;
                 }
+
             }
         }
-        else{//false=left/right
+        if(player.isFixedX()){//last direction for player animation
             if(!(keys[A]&&keys[D])) {
                 if (keys[A] && !edgeXL() && collideX != 4) {
                     offSpdX = offSpd;
+                    Player.lastDirection=true;//left
                 }
                 if (keys[D] && !edgeXR() && collideX != 3) {
                     offSpdX = -offSpd;
+                    Player.lastDirection=false;//right
                 }
             }
         }
@@ -230,22 +232,26 @@ public class BKG {
     public int getHeight(){
         return this.height;
     }
-    public int getOffSpdX(){
+    public static int getOffSpdX(){
         return offSpdX;
     }
-    public int getOffSpdY(){
+    public static int getOffSpdY(){
         return offSpdY;
     }
+    public void ground(boolean direction){//stops background x and y speeds
+        if(direction) {
+            offSpdY = 0;
+        }
+        else {
+            offSpdY = 0;
+        }
+    }
+    public void ground(){
+        offSpdX=0;
+        offSpdY=0;
+    }
 
-    public void draw(Graphics g,Image img){
-//        g.setColor(Color.cyan);//placeholder large main rect
-//        g.fillRect(offX,offY,width,height);
-//        g.setColor(Color.blue);
-
-//        for (BKG b : squares) {//grid
-//            g.fillRect(b.offX, b.offY, b.width, b.height);
-//        }
-//        g.setColor(Color.orange);
+    public void draw(Graphics g){
         for(ArrayList<BKG> row:blocks){
             for(BKG block:row){
                 g.drawImage(block.cover,block.offX,block.offY,null);

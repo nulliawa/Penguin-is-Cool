@@ -22,4 +22,3 @@ Enemies:
 
 Healing mechanic:
 * Eating fish (found by roaming around the overworld)
-

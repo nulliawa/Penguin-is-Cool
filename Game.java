@@ -8,21 +8,25 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import java.io.File;
-//main game, start at menu
+//main game extending baseframe, start at menu
 //ESC TO PAUSE (any screen)
 
-public class Game extends BaseFrame {
+public class Game extends BaseFrame implements MouseListener{
+    public GamePane pane;
     private static final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5, PAUSE = 6;
     public int resume;
-    int screen = MENU;
+    private int screen = MENU;
+    private int codAmount;
+    private Image codFish=new ImageIcon("codFish.png").getImage();
+    private boolean winAnimation;
+    private static int frame;
     private final Player player;
     private final BKG bkg;
-
+    private boolean direction;
     private ArrayList<Integer> noteX = new ArrayList<>();
     private ArrayList<Integer> noteY = new ArrayList<>();
     private ArrayList<Note> notes = new ArrayList<>();
-
     private int offset = 250; // CHANGE LATENCY BASED OFF OF YOUR MACHINE
     private int[] times = {2300, 700, 1200, 700, -1};
     private int timeCounter = 0;
@@ -54,6 +58,7 @@ public class Game extends BaseFrame {
         BKG.setup();
 
         player = new Player(width / 2, height / 2);
+        Player.setUp();
         enemy = new Enemy();
         Enemy.setUp();
         battle = new Battle(10000);
@@ -61,31 +66,14 @@ public class Game extends BaseFrame {
 
         puzzle.createButton();
         generateNotes();
+        addOffset();
     }
 
     public void move() {
         // If player gets to the edge of the background, stop moving the background, instead move the player
-
-        if (player.isFixedX()) {
-            //player is fixed to middle line, can move background left/right
-            bkg.move(keys, false, player);
-            enemy.move(bkg);
-        }
-
-        if (player.isFixedY()) {
-            bkg.move(keys, true, player);
-            enemy.move(bkg);
-        }
-
-        if (bkg.edgeX()) {//arrive at edge of background left/right direction
-            player.move(keys, false, bkg);
-            //player itself can move left/right and background stops
-            // left/right movement as it will no longer be at a midline
-        }
-        if (bkg.edgeY()) {
-            player.move(keys, true, bkg);
-        }
-
+        bkg.move(keys,player);
+        player.move(keys,bkg);
+        enemy.move();
     }
 
     public void drawMenu(Graphics g) {
@@ -98,6 +86,7 @@ public class Game extends BaseFrame {
         // Title
         g.setColor(MAIN);
         g.setFont(new Font("SnowtopCaps", Font.PLAIN, 150));
+        g.setColor(Color.CYAN);
         g.drawString("Penguin is Cool", WIDTH / 2 - 550, 200);
 
         // Arrays for buttons
@@ -127,15 +116,17 @@ public class Game extends BaseFrame {
         // Button function
         if (buttons.get(0).isClicked(mx, my, mb)) {
             screen = GAME;
+            player.setX(WIDTH-30);//reset player to middle of screen
+            player.setY(HEIGHT-30);
         } else if (buttons.get(1).isClicked(mx, my, mb)) {
             screen = TUTORIAL;
         }
     }
 
     public void drawGame(Graphics g) {
-        bkg.draw(g, null);
+        bkg.draw(g);
         enemy.draw(g);
-        player.draw(g);
+        player.draw(g,bkg);
     }
 
     public void drawTutorial(Graphics g) {
@@ -336,6 +327,10 @@ public class Game extends BaseFrame {
     public void draw(Graphics g) {//test
         if (screen == MENU) {
             drawMenu(g);
+            player.draw(g,0,50,300);
+            if(winAnimation){
+                g.drawImage(codFish,WIDTH-codFish.getWidth(null),HEIGHT-codFish.getHeight(null),null);
+            }
         } else if (screen == GAME) {
             drawGame(g);
         } else if (screen == TUTORIAL) {
@@ -351,19 +346,29 @@ public class Game extends BaseFrame {
             super.timer.stop();
         }
     }
-
     @Override
     public void keyPressed(KeyEvent e) {//constant new checking for keys[], based on actionPerformed()
         super.keyPressed(e);
         keys[e.getKeyCode()] = true;
-        if (keys[ESC]) {
-            if (screen != PAUSE && screen != MENU && screen != PUZZLE) {
+        if(screen!=PAUSE&&screen!=MENU&&screen!=PUZZLE) {
+            if(keys[ESC]) {
                 resume = screen;
                 screen = PAUSE;
-            } else if (screen == PAUSE) {
+            }
+        }
+        else if(screen==PAUSE){
+            if(keys[ESC]) {
                 screen = resume;
                 super.timer.start();
             }
+            else if(keys[SPACE]){
+                screen=MENU;
+                super.timer.start();
+            }
+            else if(keys[KeyEvent.VK_ENTER]&&resume==BATTLE){
+                screen=GAME;
+                super.timer.start();
+            }//hi :)
         }
     }
 
@@ -372,11 +377,15 @@ public class Game extends BaseFrame {
         super.keyPressed(e);
         keys[e.getKeyCode()] = false;
     }
-
     @Override
-    public void mouseClicked(MouseEvent m) { // PLACEHOLDER
+    public void mouseClicked(MouseEvent m){//THIS DOESNT WORK//////////////////////
+        System.out.println("click");
+        super.mouseClicked(m);
+        if(mb==1&&screen==PAUSE){
+            screen=MENU;
+            super.timer.start();
+        }
     }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println(mb);

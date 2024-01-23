@@ -91,7 +91,7 @@ public class Battle {
             edgeCX();
         }
         private void seek(Player player){
-            this.move(getAngle(x+50,y+50,player),5);
+            this.move(getAngle(x+width/2,y+width/2,player),5);//finds angle from center to player
             for(Projectile ice:seekers){
                 for (int rota = 0; rota < 4; rota++) {//rotates base image according to which heading it was created with
                     ice.seekerImgs[rota]=rotateImage(seekersBase[rota],ice.width,ice.height,ice.heading);
@@ -131,7 +131,7 @@ public class Battle {
     private final long[] memTime=new long[10];
     private static final double PI=Math.PI;
     private static final int WIDTH = 1400, HEIGHT = 800,SIZE=30,RIGHT=0,LEFT=180,UP=90,DOWN=270;
-    private static final int SNOWGEN=100,CLOUDSTALL=10000,ICICLESTALL=10000,BETWEEN =4000,ICEANI=6,SPIKEANI=3,SEEKERANI=4;
+    private static final int SNOWGEN=100,CLOUDSTALL=10000,ICICLESTALL=10000,BETWEEN =4000,ICEANI=6,SPIKEANI=3,SEEKERANI=9;
     private static final int CLOUD=0,SNOW=1,ICICLE=2,BLINK=3,SEEKER=4;
     private static int frame;
     private static int totalAtks;
@@ -151,7 +151,7 @@ public class Battle {
     }
     public void start(){
         betweenTimer.start();
-        totalAtks=-1;
+        totalAtks=-1;//3 attacks survived to win
     }
     public void stopAll(){
         betweenTimer.stop();
@@ -256,6 +256,9 @@ public class Battle {
         }
         return false;
     }
+    public boolean getWin(){
+        return win;
+    }
     private void nextAtk(){
         betweenTimer.stop();//stop timer for next time
         int pick=random(0,2);
@@ -306,7 +309,6 @@ public class Battle {
     private final Timer seekerTimer=new Timer(12000, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-//            seekers.clear();//get rid of current seekers if any
             seekerTimer.stop();
             destroySpikes();
             betweenTimer.start();
@@ -339,7 +341,6 @@ public class Battle {
         }
         int randY=random(0,HEIGHT-75);//random y
         double angle=getAngle(randX,randY,player);
-        System.out.println(angle);
         this.icicles.add(new Projectile(randX, randY, 150, 75, 15, angle, null));
 
         for(Projectile ice: icicles){
@@ -375,7 +376,6 @@ private void createSpikes(boolean topBot,boolean leftRight){
     }
 }
     private void destroySpikes(){
-//        System.out.println("spikes end");
         if(!spikes.isEmpty()){
             spikes.clear();
         }
@@ -464,7 +464,7 @@ private void createSpikes(boolean topBot,boolean leftRight){
                     }
                 }
             }
-            else{//seekers will "coast" until all destroyed
+            else{//seekers will "coast" unless atk sequence is seekers
                 runProj(seekers);
             }
         }
@@ -503,25 +503,28 @@ private void createSpikes(boolean topBot,boolean leftRight){
         else{
             player.draw(g);
         }
-        g.setColor(Color.red);
+//        g.setColor(Color.red);
 
         for(Projectile flake:snow){
             flake.draw(g);//snows[1-7] inclusive are snowflake variations
         }
         for(Projectile poke:spikes){
-            g.fillRect(poke.x,poke.y,poke.width,poke.height);
+//            g.fillRect(poke.x,poke.y,poke.width,poke.height);
             poke.spikeAnimation(g);
         }
         for(Projectile iceType1: icicles){
-            g.fillRect(iceType1.x,iceType1.y,iceType1.width, iceType1.height);
+//            g.fillRect(iceType1.x,iceType1.y,iceType1.width, iceType1.height);
             iceType1.icicleAnimation(g);
         }
         for(Projectile iceType2: seekers){
-            g.fillRect(iceType2.x,iceType2.y,iceType2.width,iceType2.height);
+//            g.fillRect(iceType2.x,iceType2.y,iceType2.width,iceType2.height);
             iceType2.seekerAnimation(g);
         }
         for(Projectile nimbus:clouds){
             nimbus.draw(g);
         }
+    }
+    public void drawIcicle(Graphics g,int posX,int posY, double angle){
+
     }
 }
