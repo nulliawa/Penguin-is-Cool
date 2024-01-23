@@ -11,10 +11,12 @@ import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import java.io.File;
 //main game, start at menu
+//ESC TO PAUSE (any screen)
 
 public class Game extends BaseFrame {
     private static final int WIDTH = 1400, HEIGHT = 800;
-    public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5;
+    public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5,PAUSE=6;
+    public int resume;
     int screen = MENU;
     private final Player player;
     private final BKG bkg;
@@ -26,10 +28,6 @@ public class Game extends BaseFrame {
     private final int offset = 100;
     private int[] times = {2300, 700, 1200, -1};
     private int timeCounter = 0;
-    private static Image[] blocks;
-    private static Image[] projectiles;
-    private static Image[] golems;
-    private static Image[] spirits;
     Timer firstTimer = new Timer(times[0], new ActionListener() { // Timer goes off at different intervals listed in array times
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
@@ -47,24 +45,17 @@ public class Game extends BaseFrame {
 
     public Game(String title, int width, int height) {
         super(title, width, height);
-        ImageInit.setUp();
-        blocks = ImageInit.getBlocks();
-        projectiles = ImageInit.getProjectiles();
-        golems = ImageInit.getGolems();
-        spirits = ImageInit.getSpirits();
 
         bkg = new BKG(0, 0, 3000, 1500, null);//wip
-        BKG.setup(blocks);
+        BKG.setup();
 
         player = new Player(width / 2, height / 2);
-        enemy = new Enemy(0, 0, 0, 0);
-        enemy.setUp(spirits);
-        battle = new Battle(1);
-        Battle.setUp(projectiles, ImageInit.getBacks()[0]);
+        enemy = new Enemy();
+        Enemy.setUp();
+        battle = new Battle(10000);
+        Battle.setUp();
 
         puzzle.createButton();
-
-        addOffset();
     }
 
     public void move() {
@@ -242,6 +233,7 @@ public class Game extends BaseFrame {
     }
 
     public void playMusic() {
+        //help from ChatGPT3.5
         try {
             // Create an AudioInputStream from the file
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("The Barber.wav"));
@@ -274,6 +266,17 @@ public class Game extends BaseFrame {
     public void drawPuzzle(Graphics g) {
         puzzle.draw(g);
     }
+    public void drawPause(Graphics g){
+        //layer underneath (before pause)
+        if(resume==GAME){
+            drawGame(g);
+        }
+        else if(resume==BATTLE){
+            drawBattle(g);
+        }
+        g.setColor(new Color(10,10,10,100));//semi transparent
+        g.fillRect(0,0,WIDTH,HEIGHT);
+    }
 
     public void draw(Graphics g) {//test
         if (screen == MENU) {
@@ -290,12 +293,26 @@ public class Game extends BaseFrame {
         } else if (screen == PUZZLE) {
 
         }
+        else if(screen==PAUSE){
+            drawPause(g);
+            super.timer.stop();
+        }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {//constant new checking for keys[], based on actionPerformed()
         super.keyPressed(e);
         keys[e.getKeyCode()] = true;
+        if(keys[ESC]){
+            if(screen!=PAUSE) {
+                resume=screen;
+                screen=PAUSE;
+            }
+            else{
+                screen=resume;
+                super.timer.start();
+            }
+        }
     }
 
     @Override

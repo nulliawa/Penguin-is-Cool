@@ -1,21 +1,21 @@
+import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 //enemies are golems
 //collide with them to initiate battle
 public class Enemy {
     private static final int WIDTH = 1400, HEIGHT = 800;
     private int x, y, width, height,spdX,spdY;
-    private ArrayList<Enemy> enemies=new ArrayList<>();
-    private int current;
+    private static final ArrayList<Enemy> enemies=new ArrayList<>();
     public static int frame=0;
     private static final int IDLETIME=5,DEATHTIME=5;
-    private int[] animation=new int[]{10};
-    private int idleAnimation=0;
-    private long[] memTime=new long[4];
-    private static Image[] covers;
-    private static Image[] idles=new Image[6];
-    private static Image[] deaths=new Image[6];
+    private static final Image[] idles=new Image[6];
+    private static final Image[] deaths=new Image[6];
     private boolean dead;
+    public Enemy(){
+
+    }
     public Enemy(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
@@ -25,24 +25,23 @@ public class Enemy {
         this.height = height;
         this.dead=false;
     }
-    public void setUp(Image[] images){
-        covers=images;
-        for(int i=0;i<6;i++){//copies section of all images to idle animation array
-            idles[i]=covers[i];
+    public static void setUp(){
+        //buffered image so first load does is not chunky
+        for(int i=1;i<7;i++){//idle animation pics
+            Image file=new ImageIcon("spirit/spiritIdle"+i+".png").getImage();//getScaledInstance(50,50,Image.SCALE_SMOOTH);
+            BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+            bufferedImage.getGraphics().drawImage(file, 0, 0, null);
+            idles[i-1]=bufferedImage.getScaledInstance(50,50,Image.SCALE_SMOOTH);;
         }
-        for(int j=6;j<12;j++){
-            deaths[j-6]=covers[j];
+        for(int j=1;j<7;j++){//death animation pics
+            Image file=new ImageIcon("spirit/spiritDeath"+j+".png").getImage();
+            BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+            bufferedImage.getGraphics().drawImage(file, 0, 0, null);
+            deaths[j-1]=bufferedImage.getScaledInstance(50,50,Image.SCALE_SMOOTH);;
         }
-//        enemies.add(new Enemy(1000,30,50,70));
-//        enemies.add(new Enemy(510,340,50,70));
-//        enemies.add(new Enemy(WIDTH-200,HEIGHT-200,50,70));
         enemies.add(new Enemy(1000,30,50,55));
         enemies.add(new Enemy(510,340,50,55));
         enemies.add(new Enemy(WIDTH-200,HEIGHT-200,50,50));
-    }
-    public boolean dead(){
-        return true;
-//        enemies.remove();
     }
     public void destroy(){//destroys once death animation is over
         for(int i=0;i<enemies.size();i++){
@@ -87,7 +86,7 @@ public class Enemy {
     }
     public void draw(Graphics g){
         frame++;//which frame needs to be put up, constantly increasing
-        if(frame==2147483647){//limit on ints
+        if(frame>=2147483647){//limit on ints
             frame=0;
         }
         for(Enemy e:enemies){
