@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -41,11 +40,9 @@ public class Game extends BaseFrame {
         }
     });
     private boolean first = true;
-
     private boolean playingSong = false;
     private final Enemy enemy;
     private Battle battle;
-
     private Puzzle puzzle = new Puzzle();
 
     public Game(String title, int width, int height) {
@@ -77,12 +74,11 @@ public class Game extends BaseFrame {
             //player is fixed to middle line, can move background left/right
             bkg.move(keys, false, player);
             enemy.move(bkg);
-
         }
+
         if (player.isFixedY()) {
             bkg.move(keys, true, player);
             enemy.move(bkg);
-
         }
 
         if (bkg.edgeX()) {//arrive at edge of background left/right direction
