@@ -26,7 +26,7 @@ public class Game extends BaseFrame {
     private ArrayList<Note> notes = new ArrayList<>();
 
     private final int offset = 100;
-    private int[] times = {2300, 700, 1200, -1};
+    private int[] times = {2300, 700, 1200, 700, -1};
     private int timeCounter = 0;
     Timer firstTimer = new Timer(times[0], new ActionListener() { // Timer goes off at different intervals listed in array times
         @Override
@@ -37,6 +37,7 @@ public class Game extends BaseFrame {
             updateTimer();
         }
     });
+    Timer beatTimer;
     private boolean first = true;
     private boolean playingSong = false;
     private final Enemy enemy;
@@ -56,6 +57,8 @@ public class Game extends BaseFrame {
         Battle.setUp();
 
         puzzle.createButton();
+        generateNotes();
+        addOffset();
     }
 
     public void move() {
@@ -193,25 +196,34 @@ public class Game extends BaseFrame {
     }
 
     public void updateTimer() {
-        timer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
+        beatTimer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (timeCounter < times.length - 1) { // If not out of bounds
                     createNotes();
                     timeCounter++;
                 } else { // Stop the timer after going through the list
-                    timer.stop();
+                    beatTimer.stop();
                 }
             }
         });
-        timer.start();
+        beatTimer.start();
     }
 
     public void generateNotes() {
-        // Need to check for generation
         for (int i = 0; i < 100; i++) {
-            noteX.add((int) (Math.random() * 500 + 200));
-            noteY.add((int) (Math.random() * 500 + 200));
+            if (i == 0) {
+                noteX.add((int) (Math.random() * 1000 + 200));
+                noteY.add((int) (Math.random() * 500 + 200));
+            } else {
+                int tmpX = (int) (Math.random() * 1000 + 200);
+                int tmpY = (int) (Math.random() * 500 + 200);
+
+                if (Math.sqrt(Math.pow((tmpX - noteX.getLast()), 2) + Math.pow((tmpY - noteY.getLast()), 2)) >= 150) {
+                    noteX.add(tmpX);
+                    noteY.add(tmpY);
+                }
+            }
         }
     }
 
@@ -233,7 +245,7 @@ public class Game extends BaseFrame {
     }
 
     public void playMusic() {
-        //help from ChatGPT3.5
+        // help from ChatGPT 3.5 (Java API documentation was tried first)
         try {
             // Create an AudioInputStream from the file
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("The Barber.wav"));
