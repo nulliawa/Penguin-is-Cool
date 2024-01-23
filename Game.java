@@ -377,18 +377,9 @@ public class Game extends BaseFrame implements MouseListener{
         super.keyPressed(e);
         keys[e.getKeyCode()] = false;
     }
-    @Override
-    public void mouseClicked(MouseEvent m){//THIS DOESNT WORK//////////////////////
-        System.out.println("click");
-        super.mouseClicked(m);
-        if(mb==1&&screen==PAUSE){
-            screen=MENU;
-            super.timer.start();
-        }
-    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println(mb);
         if (screen == GAME) {
             move();
             enemy.destroy();
@@ -401,6 +392,10 @@ public class Game extends BaseFrame implements MouseListener{
         if (screen == BATTLE) {
             if (battle.result()) {
                 screen = GAME;
+                if(battle.getWin()){
+                    codAmount+=3;
+                }
+                winAnimation=true;
             } else {
                 battle.move(keys);
             }
