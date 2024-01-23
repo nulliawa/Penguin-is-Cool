@@ -41,7 +41,6 @@ class BaseFrame extends JFrame implements KeyListener, ActionListener, MouseList
         super(t);
         pane = new GamePane(this);
         pane.setPreferredSize(new Dimension(w, h));
-
         addKeyListener(this);
 
         setResizable(false);
@@ -143,5 +142,4 @@ class BaseFrame extends JFrame implements KeyListener, ActionListener, MouseList
         }
 
     }
-
 }
