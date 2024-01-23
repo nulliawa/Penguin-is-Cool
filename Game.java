@@ -120,6 +120,9 @@ public class Game extends BaseFrame implements MouseListener{
         //temp player draw
         Player menuPlayer1=new Player(200,200);
         menuPlayer1.draw(g,0);
+        //temp enemy draw
+        Enemy menuEnemy1=new Enemy(1200,200,0,0);
+        menuEnemy1.draw(g,0);
 //        Battle menuDraw1=new Battle(-1);
 //        Battle.setUp();
 //        menuDraw1.drawIcicle(g,200,200);

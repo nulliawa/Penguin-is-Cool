@@ -99,4 +99,17 @@ public class Enemy {
             }
         }
     }
+    public void draw(Graphics g, int type){
+        frame++;//which frame needs to be put up, constantly increasing
+        if(frame>=2147483647){//limit on ints
+            frame=0;
+        }
+        int index=frame/IDLETIME%idles.length;//gets a number 0 to 5
+        if(type==0){
+            g.drawImage(idles[index],x,y,null);
+        }
+        else if(type==1){
+            g.drawImage(deaths[index],x,y,null);
+        }
+    }
 }
