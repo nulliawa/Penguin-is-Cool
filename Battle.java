@@ -91,7 +91,7 @@ public class Battle {
             edgeCX();
         }
         private void seek(Player player){
-            this.move(getAngle(x,y,player),5);
+            this.move(getAngle(x+width/2,y+width/2,player),5);//finds angle from center to player
             for(Projectile ice:seekers){
                 for (int rota = 0; rota < 4; rota++) {//rotates base image according to which heading it was created with
                     ice.seekerImgs[rota]=rotateImage(seekersBase[rota],ice.width,ice.height,ice.heading);
@@ -151,7 +151,7 @@ public class Battle {
     }
     public void start(){
         betweenTimer.start();
-        totalAtks=-1;
+        totalAtks=-1;//3 attacks survived to win
     }
     public void stopAll(){
         betweenTimer.stop();
@@ -256,6 +256,9 @@ public class Battle {
         }
         return false;
     }
+    public boolean getWin(){
+        return win;
+    }
     private void nextAtk(){
         betweenTimer.stop();//stop timer for next time
         int pick=random(0,2);
@@ -306,7 +309,6 @@ public class Battle {
     private final Timer seekerTimer=new Timer(12000, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-//            seekers.clear();//get rid of current seekers if any
             seekerTimer.stop();
             destroySpikes();
             betweenTimer.start();
@@ -339,7 +341,6 @@ public class Battle {
         }
         int randY=random(0,HEIGHT-75);//random y
         double angle=getAngle(randX,randY,player);
-        System.out.println(angle);
         this.icicles.add(new Projectile(randX, randY, 150, 75, 15, angle, null));
 
         for(Projectile ice: icicles){
@@ -375,7 +376,6 @@ private void createSpikes(boolean topBot,boolean leftRight){
     }
 }
     private void destroySpikes(){
-//        System.out.println("spikes end");
         if(!spikes.isEmpty()){
             spikes.clear();
         }
@@ -523,5 +523,8 @@ private void createSpikes(boolean topBot,boolean leftRight){
         for(Projectile nimbus:clouds){
             nimbus.draw(g);
         }
+    }
+    public void drawIcicle(Graphics g,int posX,int posY, double angle){
+
     }
 }

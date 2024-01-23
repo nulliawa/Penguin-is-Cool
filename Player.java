@@ -74,8 +74,6 @@ public class Player {
         int collideY=collisionY(bkg);
         spdX=0;
         spdY=0;
-        int bspdX=BKG.getOffSpdX();
-        int bspdY=BKG.getOffSpdY();
         // Movement of penguin in overworld (scrolling/side movement)
         if(bkg.edgeY()) {
             if(!(keys[W]&&keys[S])) {//no more "vibrating" with quick switch of spd from +/-
@@ -91,11 +89,11 @@ public class Player {
             if(!(keys[A]&&keys[D])) {
                 if (keys[A] && collideX != 4) {
                     spdX = -walkSpd;
-                    lastDirection=true;
+                    lastDirection=true;//left
                 }
                 if (keys[D] && collideX != 3) {
                     spdX = walkSpd;
-                    lastDirection=false;
+                    lastDirection=false;//right
                 }
             }
         }
@@ -240,23 +238,6 @@ public class Player {
     public Rectangle getRect() {
         return new Rectangle(x, y, SIZE,SIZE);
     }
-    public void ground(boolean direction){//stops speed of player (animation stops)
-        if(direction){
-            this.spdY=0;
-        }
-        else{
-            this.spdX=0;
-        }
-        //updates animation based on background speed
-//        backSpdX=BKG.getOffSpdX();
-//        backSpdY=BKG.getOffSpdY();
-//        System.out.println(backSpdX+", "+backSpdY);
-
-    }
-    public void ground(){
-        this.spdX=0;
-        this.spdY=0;
-    }
     private void walkAnimation(Graphics g,boolean direction){
         int index=frame/5%walkLeft.length;//get the image index to display
         if(direction) {
@@ -282,21 +263,9 @@ public class Player {
             frame=0;
         }
         // Draw the penguin
-//        System.out.println(spdX+", "+spdY);
         int bspdX=BKG.getOffSpdX();
         int bspdY=BKG.getOffSpdY();
-//        System.out.println(backSpdX+", "+backSpdY);
-        //lastDirection
-        //true=left, false=right
-//        if(spdX==0&&spdY==0&&backSpdX==0&&backSpdY==0){
-//            idleAnimation(g,lastDirection);
-//        }
-//        else if(spdX<0||spdY!=0||backSpdX>0||backSpdY!=0){//left walking
-//            walkAnimation(g,lastDirection);
-//        }
-//        else if(spdX>0||spdY!=0||backSpdX<0||backSpdY!=0){//right walking
-//            walkAnimation(g,lastDirection);
-//        }
+
         if(spdX==0&&spdY==0&&bspdX==0&&bspdY==0){
             idleAnimation(g,lastDirection);
         }
@@ -306,8 +275,6 @@ public class Player {
         else if(spdX>0||spdY!=0||bspdX<0||bspdY!=0){//right walking
             walkAnimation(g,lastDirection);
         }
-//        System.out.println(spdX+", "+spdY);
-        System.out.println(bspdX+", "+bspdY);
     }
     //battle drawing
     public void draw(Graphics g) {//no offset in battle
@@ -316,7 +283,6 @@ public class Player {
             frame=0;
         }
         // Draw the penguin
-//        System.out.println(spdX+", "+spdY);
         //lastDirection
         //true=left, false=right
         if(spdX==0&&spdY==0){//no movement idle
@@ -326,6 +292,24 @@ public class Player {
             walkAnimation(g,lastDirection);
         }
         else if(spdX>0||spdY!=0){//right walking
+            walkAnimation(g,lastDirection);
+        }
+    }
+    //for drawing in menus
+    public void draw(Graphics g, int type,int posX, int posY){
+        x=posX;
+        y=posY;
+        frame++;
+        if(frame>=2147483647){//limit on ints
+            frame=0;
+        }
+        if(type==0){//idle
+            idleAnimation(g,lastDirection);
+        }
+        else if(type==1){//left walking
+            walkAnimation(g,lastDirection);
+        }
+        else if(type==2){//right walking
             walkAnimation(g,lastDirection);
         }
     }

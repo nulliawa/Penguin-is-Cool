@@ -16,14 +16,17 @@ public class Game extends BaseFrame implements MouseListener{
     private static final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5,PAUSE=6;
     public int resume;
-    int screen = MENU;
+    private int screen = MENU;
+    private int codAmount;
+    private Image codFish=new ImageIcon("codFish.png").getImage();
+    private boolean winAnimation;
+    private static int frame;
     private final Player player;
     private final BKG bkg;
     private boolean direction;
     private ArrayList<Integer> noteX = new ArrayList<>();
     private ArrayList<Integer> noteY = new ArrayList<>();
     private ArrayList<Note> notes = new ArrayList<>();
-
     private final int offset = 100;
     private int[] times = {2300, 700, 1200, 700, -1};
     private int timeCounter = 0;
@@ -111,6 +114,8 @@ public class Game extends BaseFrame implements MouseListener{
         // Button function
         if (buttons.get(0).isClicked(mx, my, mb)) {
             screen = GAME;
+            player.setX(WIDTH-30);//reset player to middle of screen
+            player.setY(HEIGHT-30);
         } else if (buttons.get(1).isClicked(mx, my, mb)) {
             screen = TUTORIAL;
         }
@@ -275,6 +280,10 @@ public class Game extends BaseFrame implements MouseListener{
     public void draw(Graphics g) {//test
         if (screen == MENU) {
             drawMenu(g);
+            player.draw(g,0,50,300);
+            if(winAnimation){
+                g.drawImage(codFish,WIDTH-codFish.getWidth(null),HEIGHT-codFish.getHeight(null),null);
+            }
         } else if (screen == GAME) {
             drawGame(g);
         } else if (screen == TUTORIAL) {
@@ -292,7 +301,6 @@ public class Game extends BaseFrame implements MouseListener{
             super.timer.stop();
         }
     }
-
     @Override
     public void keyPressed(KeyEvent e) {//constant new checking for keys[], based on actionPerformed()
         super.keyPressed(e);
@@ -338,6 +346,10 @@ public class Game extends BaseFrame implements MouseListener{
         if (screen == BATTLE) {
             if (battle.result()) {
                 screen = GAME;
+                if(battle.getWin()){
+                    codAmount+=3;
+                }
+                winAnimation=true;
             } else {
                 battle.move(keys);
             }

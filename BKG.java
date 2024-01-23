@@ -181,7 +181,7 @@ public class BKG {
         offSpdY=0;
         // Movement of offset
         if(player.isFixedY()) {
-            if(!(keys[W]&&keys[S])) {
+            if(!(keys[W]&&keys[S])) {//no more "vibrating" with quick switch of spd from +/-
                 if (keys[W] && !edgeYT() && collideY != 2) {
                     offSpdY = offSpd;
                 }
@@ -262,27 +262,5 @@ public class BKG {
                 g.drawImage(wall.cover,wall.offX,wall.offY,null);
             }
         }
-    }
-    public void drawPlayer(Graphics g,Player player){
-//        player.draw(g);
-//        if(spdX==0&&spdY==0&&backSpdX==0&&backSpdY==0){
-//            idleAnimation(g,lastDirection);
-//        }
-//        else if(spdX<0||spdY!=0||backSpdX>0||backSpdY!=0){//left walking
-//            walkAnimation(g,lastDirection);
-//        }
-//        else if(spdX>0||spdY!=0||backSpdX<0||backSpdY!=0){//right walking
-//            walkAnimation(g,lastDirection);
-//        }
-//        System.out.println(Player.frame);
-//        if(offSpdX==0&&offSpdY==0){
-//            player.idleAnimation(g,true);//LEFT TEMP
-//        }
-//        else if(offSpdX>0||offSpdY!=0){
-//            player.walkAnimation(g,true);
-//        }
-//        else if(offSpdX<0||offSpdY!=0){
-//            player.walkAnimation(g,true);
-//        }
     }
 }
