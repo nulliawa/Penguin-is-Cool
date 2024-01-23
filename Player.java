@@ -4,14 +4,14 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 //player movement controlled by wasd in both battle and overworld
+//contains animation for player
 //penguin is cool :)
 public class Player {
-    // Private vs. protected?
     private int x, y;
     private static final int SIZE=30,WIDTH = 1400, HEIGHT = 800, LEFT=180,RIGHT=0,UP=90,DOWN=270,HALF=45;;
     private int spdX =0, spdY =0,walkSpd=10;
     private static int frame;
-    public static boolean lastDirection;//true=left false=right
+    private static boolean lastDirection;//true=left false=right
     private int interactionDistance = 10, offsetDistance = 10; // Within interactionDistance
     private static final Image[] walkLeft=new Image[4];
     private static final Image[] walkRight=new Image[4];
@@ -68,11 +68,11 @@ public class Player {
         return y>=HEIGHT/2-50&&y<=HEIGHT/2+50;
     }
     public void move(boolean[] keys,BKG bkg) {
-        //direction: true=up/down, false=left/right
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
-        int collideX=collisionX(bkg);
-        int collideY=collisionY(bkg);
-        spdX=0;
+        int collideX=collisionX(bkg);//cannot move past walls/water
+        int collideY=collisionY(bkg);//gets a number representing the direction the collision is happening in
+        //0=none,1=North,2=South,3=East,4=West
+        spdX=0;//reset
         spdY=0;
         // Movement of penguin in overworld (scrolling/side movement)
         if(bkg.edgeY()) {
@@ -85,7 +85,7 @@ public class Player {
                 }
             }
         }
-        if(bkg.edgeX()){
+        if(bkg.edgeX()){//background meets its edge in x direction
             if(!(keys[A]&&keys[D])) {
                 if (keys[A] && collideX != 4) {
                     spdX = -walkSpd;
@@ -229,14 +229,19 @@ public class Player {
 //        }
 //    }
 
-    public void setX(int x){
+    public void setPos(int x,int y){
         this.x=x;
-    }
-    public void setY(int y){
         this.y=y;
+    }
+    public void stopMove(){
+        this.spdX=0;
+        this.spdY=0;
     }
     public Rectangle getRect() {
         return new Rectangle(x, y, SIZE,SIZE);
+    }
+    public static void setLastDirection(boolean direction){
+        lastDirection=direction;
     }
     private void walkAnimation(Graphics g,boolean direction){
         int index=frame/5%walkLeft.length;//get the image index to display
@@ -296,9 +301,7 @@ public class Player {
         }
     }
     //for drawing in menus
-    public void draw(Graphics g, int type,int posX, int posY){
-        x=posX;
-        y=posY;
+    public void draw(Graphics g, int type){
         frame++;
         if(frame>=2147483647){//limit on ints
             frame=0;

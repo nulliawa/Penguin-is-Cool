@@ -46,16 +46,16 @@ public class BKG {
                 "3 0 0 0 0 0 0 A A A A 0 A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
                 "3 0 0 0 0 0 0 0 0 0 A 0 A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
                 "3 0 0 0 0 0 A # 0 0 A A A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 A A A 0 0 0 0 A 5 A A 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 A 0 0 0 0 A 5 A A 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 A 0 0 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 0 0 4 W W 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "8 2 2 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "W W W W W W W W W W 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "W W W W W W W W W W 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "W W W W W W W W W W 8 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 9";
+                "3 0 0 0 0 0 A A A 0 0 0 0 A 5 A A A A 0 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 0 0 A 0 0 0 0 A 5 A A A A A 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 0 0 A 0 0 2 2 0 0 0 0 0 0 A 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 0 0 0 0 4 W W 3 0 0 0 0 0 A 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 A 0 0 0 0 0 0 0 0 0 4\n" +
+                "3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 A A 5 A 0 0 0 0 0 0 4\n" +
+                "8 2 2 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 A 0 0 0 0 0 0 4\n" +
+                "W W W W W W W W W W W W 3 0 0 0 0 0 0 0 0 0 A 0 0 0 0 0 0 4\n" +
+                "W W W W W W W W W W W W 3 0 0 0 0 0 0 0 0 0 A 0 0 0 0 0 0 4\n" +
+                "W W W W W W W W W W W W 8 2 2 2 2 2 2 2 2 2 A 2 2 2 2 2 2 9";
         int row=0,col=0;
         for(int loc=0;loc<template.length();loc++){
             char type=template.charAt(loc);
@@ -174,9 +174,11 @@ public class BKG {
     }
     public void move(boolean[] keys,Player player){
         final int W = KeyEvent.VK_W, A = KeyEvent.VK_A, S = KeyEvent.VK_S, D = KeyEvent.VK_D;
-        //when no keys pressed, speed 0, no movement
+        //0=none,1=North,2=South,3=East,4=West
         int collideY=collisionY(player);
         int collideX=collisionX(player);
+
+        //when no keys pressed, speed 0, no movement
         offSpdX=0;
         offSpdY=0;
         // Movement of offset
@@ -191,15 +193,17 @@ public class BKG {
 
             }
         }
-        if(player.isFixedX()){//last direction for player animation
+        if(player.isFixedX()){//player within area where background can be moved, player will
+            // stop moving across screen and background will move instead
             if(!(keys[A]&&keys[D])) {
                 if (keys[A] && !edgeXL() && collideX != 4) {
                     offSpdX = offSpd;
-                    Player.lastDirection=true;//left
+                    Player.setLastDirection(true);//left
+                    //last direction for player animation
                 }
                 if (keys[D] && !edgeXR() && collideX != 3) {
                     offSpdX = -offSpd;
-                    Player.lastDirection=false;//right
+                    Player.setLastDirection(false);//right
                 }
             }
         }
@@ -237,6 +241,10 @@ public class BKG {
     }
     public static int getOffSpdY(){
         return offSpdY;
+    }
+    public static void stopMove(){
+        offSpdX=0;
+        offSpdY=0;
     }
     public void ground(boolean direction){//stops background x and y speeds
         if(direction) {

@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -17,13 +19,14 @@ public class Game extends BaseFrame implements MouseListener{
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5,PAUSE=6;
     public int resume;
     private int screen = MENU;
-    private int codAmount;
-    private Image codFish=new ImageIcon("codFish.png").getImage();
-    private boolean winAnimation;
-    private static int frame;
+    private int codAmount=99;
+    private static final Image codFishBase =new ImageIcon("codFish.png").getImage();
+    private static final Image codUI=codFishBase.getScaledInstance(100,100,Image.SCALE_SMOOTH);
+    private double codAngle=0;
+    private static final Image heart=new ImageIcon("heart.png").getImage().getScaledInstance(50,50,Image.SCALE_SMOOTH);
     private final Player player;
     private final BKG bkg;
-    private boolean direction;
+    private long[] memTime=new long[2];
     private ArrayList<Integer> noteX = new ArrayList<>();
     private ArrayList<Integer> noteY = new ArrayList<>();
     private ArrayList<Note> notes = new ArrayList<>();
@@ -56,7 +59,7 @@ public class Game extends BaseFrame implements MouseListener{
         Player.setUp();
         enemy = new Enemy();
         Enemy.setUp();
-        battle = new Battle(10000);
+        battle = new Battle(10);
         Battle.setUp();
 
         puzzle.createButton();
@@ -66,9 +69,11 @@ public class Game extends BaseFrame implements MouseListener{
 
     public void move() {
         // If player gets to the edge of the background, stop moving the background, instead move the player
-        bkg.move(keys,player);
-        player.move(keys,bkg);
-        enemy.move();
+        if(!battle.getWin()) {
+            bkg.move(keys, player);
+            player.move(keys, bkg);
+            enemy.move();
+        }
     }
 
     public void drawMenu(Graphics g) {
@@ -110,12 +115,20 @@ public class Game extends BaseFrame implements MouseListener{
             g.setColor(Color.WHITE);
             g.drawString(buttonText[i], textCoordinates[i][X], textCoordinates[i][Y]);
         }
+        //temp player draw
+        Player menuPlayer1=new Player(200,200);
+        menuPlayer1.draw(g,0);
+//        Battle menuDraw1=new Battle(-1);
+//        Battle.setUp();
+//        menuDraw1.drawIcicle(g,200,200);
 
+
+        g.drawImage(codFishBase,WIDTH- codFishBase.getWidth(null),HEIGHT- codFishBase.getHeight(null),null);
         // Button function
         if (buttons.get(0).isClicked(mx, my, mb)) {
             screen = GAME;
-            player.setX(WIDTH-30);//reset player to middle of screen
-            player.setY(HEIGHT-30);
+            //reset player to middle of screen
+            player.setPos(WIDTH/2,HEIGHT/2);
         } else if (buttons.get(1).isClicked(mx, my, mb)) {
             screen = TUTORIAL;
         }
@@ -125,6 +138,15 @@ public class Game extends BaseFrame implements MouseListener{
         bkg.draw(g);
         enemy.draw(g);
         player.draw(g,bkg);
+        g.drawImage(codUI,WIDTH-codUI.getWidth(null),0,null);
+        Font UI=new Font("Comic Sans MS", Font.PLAIN, 40);
+        g.setFont(UI);
+        String codText=String.valueOf(codAmount);
+        g.drawString(codText,WIDTH-codUI.getWidth(null)-codText.length()*20,60);
+        g.setColor(Color.RED);//health bar
+        g.drawRect(20,20,400,50);
+        g.fillRect(20,20,400*battle.getHP()/10,50);
+        g.drawImage(heart,440,20,null);
     }
 
     public void drawTutorial(Graphics g) {
@@ -158,6 +180,13 @@ public class Game extends BaseFrame implements MouseListener{
 
     public void drawBattle(Graphics g) {
         battle.draw(g);
+        g.setColor(Color.RED);//health bar
+        g.drawRect(20,20,400,50);
+        g.fillRect(20,20,400*battle.getHP()/10,50);
+        g.drawImage(heart,440,20,null);
+    }
+    public void drawUI(Graphics g){
+
     }
 
     public void addOffset() {
@@ -276,16 +305,29 @@ public class Game extends BaseFrame implements MouseListener{
         g.setColor(new Color(10,10,10,100));//semi transparent
         g.fillRect(0,0,WIDTH,HEIGHT);//whole screen
     }
-
+    public void drawWin(Graphics g){
+        player.stopMove();
+        BKG.stopMove();
+        codAngle+=Math.PI/50;
+        Image codImg=rotateImage(codFishBase, codAngle);
+        g.drawImage(codImg,WIDTH/2- codFishBase.getWidth(null)/2,HEIGHT/2- codFishBase.getHeight(null)/2,null);
+        Color brown =new Color(100,78,40);
+        g.setColor(brown);
+        g.setFont(new Font("Comic Sans MS", Font.BOLD, 50));
+        g.drawString("+3 Fish",WIDTH/2-100,HEIGHT/2+200);
+        if(timeMill(3000,0)){
+            battle.setResult(false);//stop win animation
+            codAngle=0;
+        }
+    }
     public void draw(Graphics g) {//test
         if (screen == MENU) {
             drawMenu(g);
-            player.draw(g,0,50,300);
-            if(winAnimation){
-                g.drawImage(codFish,WIDTH-codFish.getWidth(null),HEIGHT-codFish.getHeight(null),null);
-            }
         } else if (screen == GAME) {
             drawGame(g);
+            if(battle.getWin()){//when win battle
+                drawWin(g);
+            }
         } else if (screen == TUTORIAL) {
             drawMusicGame(g);
             // drawTutorial(g);
@@ -300,6 +342,38 @@ public class Game extends BaseFrame implements MouseListener{
             drawPause(g);
             super.timer.stop();
         }
+    }
+    public boolean timeMill(int delay,int index){
+        //difference between current time and last recorded time is greater than delay, proceed with action (true)
+        //always performs action on first use
+        if(System.currentTimeMillis()-memTime[index]>delay){
+            memTime[index]=System.currentTimeMillis();
+            return true;
+        }
+        return false;
+    }
+    //taken from battle for win animation
+    private static Image rotateImage(Image image, double angle) {//rotates specified image to angle
+        //help from ChatGPT3.5
+        int width = image.getWidth(null);
+        int height = image.getHeight(null);
+
+        //convert to buffered image for rotation
+        BufferedImage rotatedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = rotatedImage.createGraphics();
+        AffineTransform transform = new AffineTransform();
+        //rotate based on given angle (radians)
+        transform.rotate(-angle,width/2.0,height/2.0);
+        //center rotation at center of image
+        g2d.setTransform(transform);//perform transformation
+
+        // Draw the rotated image onto the BufferedImage
+        g2d.drawImage(image, 0, 0, null);
+
+        g2d.dispose();
+
+        return rotatedImage;
     }
     @Override
     public void keyPressed(KeyEvent e) {//constant new checking for keys[], based on actionPerformed()
@@ -322,6 +396,8 @@ public class Game extends BaseFrame implements MouseListener{
             }
             else if(keys[KeyEvent.VK_ENTER]&&resume==BATTLE){
                 screen=GAME;
+                battle.setResult(false);
+                battle.stopAll();
                 super.timer.start();
             }//hi :)
         }
@@ -335,6 +411,7 @@ public class Game extends BaseFrame implements MouseListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (screen == GAME) {
+//            System.out.println(codAmount);
             move();
             enemy.destroy();
             if (enemy.pCollision(player)) {
@@ -348,8 +425,8 @@ public class Game extends BaseFrame implements MouseListener{
                 screen = GAME;
                 if(battle.getWin()){
                     codAmount+=3;
+                    memTime[0]=System.currentTimeMillis();//simple timer for win
                 }
-                winAnimation=true;
             } else {
                 battle.move(keys);
             }
