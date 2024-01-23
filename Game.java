@@ -13,7 +13,7 @@ import java.io.File;
 
 public class Game extends BaseFrame {
     private static final int WIDTH = 1400, HEIGHT = 800;
-    public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5,PAUSE=6;
+    public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5, PAUSE = 6;
     public int resume;
     int screen = MENU;
     private final Player player;
@@ -23,7 +23,7 @@ public class Game extends BaseFrame {
     private ArrayList<Integer> noteY = new ArrayList<>();
     private ArrayList<Note> notes = new ArrayList<>();
 
-    private final int offset = 100;
+    private int offset = 250; // CHANGE LATENCY BASED OFF OF YOUR MACHINE
     private int[] times = {2300, 700, 1200, 700, -1};
     private int timeCounter = 0;
     Timer firstTimer = new Timer(times[0], new ActionListener() { // Timer goes off at different intervals listed in array times
@@ -42,6 +42,11 @@ public class Game extends BaseFrame {
     private Battle battle;
     private Puzzle puzzle = new Puzzle();
 
+    private int tutorialSlides = 0;
+
+    private final Color MAIN = new Color(151, 181, 219);
+    private final Color SECONDARY = new Color(150, 167, 176);
+
     public Game(String title, int width, int height) {
         super(title, width, height);
 
@@ -56,7 +61,6 @@ public class Game extends BaseFrame {
 
         puzzle.createButton();
         generateNotes();
-        addOffset();
     }
 
     public void move() {
@@ -92,8 +96,8 @@ public class Game extends BaseFrame {
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
         // Title
+        g.setColor(MAIN);
         g.setFont(new Font("SnowtopCaps", Font.PLAIN, 150));
-        g.setColor(Color.CYAN);
         g.drawString("Penguin is Cool", WIDTH / 2 - 550, 200);
 
         // Arrays for buttons
@@ -105,19 +109,15 @@ public class Game extends BaseFrame {
 
         // Button creation
         for (int i = 0; i < buttonCoordinates.length; i++) {
-            g.setColor(Color.BLUE); // PLACEHOLDER
-
             // Creating new button
+            g.setColor(MAIN);
             Button temp = new Button(buttonCoordinates[i][X], buttonCoordinates[i][Y], buttonCoordinates[i][W], buttonCoordinates[i][H]);
             buttons.add(temp);
 
             g.fillRect(temp.getRect().x, temp.getRect().y, temp.getRect().width, temp.getRect().height); // Drawing buttons
 
             // Drawing buttons when hovered
-            if (temp.isHover(mx, my)) {
-                g.setColor(Color.DARK_GRAY); // PLACEHOLDER
-                g.fillRect(temp.getRect().x, temp.getRect().y, temp.getRect().width, temp.getRect().height);
-            }
+            temp.drawHover(g, SECONDARY, mx, my);
 
             g.setFont(new Font("Comic Sans MS", Font.BOLD, 50));
             g.setColor(Color.WHITE);
@@ -142,29 +142,74 @@ public class Game extends BaseFrame {
         // Background
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, WIDTH, HEIGHT);
+
+        // BACK AND NEXT (CONVENTIONS?)
+        Button back = new Button(20, HEIGHT - 120, 200, 100);
+        Button next = new Button(WIDTH - 220, HEIGHT - 120, 200, 100);
+        back.draw(g, MAIN);
+        next.draw(g, MAIN);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("SnowtopCaps", Font.PLAIN, 70));
+        g.drawString("BACK", 40, HEIGHT - 45);
+        g.drawString("NEXT", WIDTH - 203, HEIGHT - 45);
+
         // Controls
-        g.setColor(Color.CYAN); // PLACEHOLDER
+        g.setColor(MAIN); // PLACEHOLDER
         g.setFont(new Font("SnowtopCaps", Font.PLAIN, 70));
         g.drawString("CONTROLS", 20, 100);
+        g.drawString("SETTINGS", 850, 100);
 
         String[] instructions = {"W - UP", "A - LEFT", "S - DOWN", "D - RIGHT"};
         // Rectangle creation
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
-                g.drawRect(350 * i + 25, 250 * j + 200, 300, 200);
+                g.drawRect(350 * i + 25, 250 * j + 125, 300, 200);
             }
         }
 
         g.setFont(new Font("Comic Sans MS", Font.PLAIN, 50));
-        g.drawString(instructions[0], 20, 100);
-        g.drawString(instructions[1], 50, 200);
+        g.drawString(instructions[0], 20, 250);
+        g.drawString(instructions[1], 50, 400);
+        g.drawString("Offset: ", 800, 250);
         // WHAT TO DO
         /*
         WASD - up left down right
         SPACE - interact
         */
 
-        Button next = new Button(100, 100, 200, 200);
+        // OFFSET CONTROL (to deal with song delays)
+        Button increase = new Button(1110, 205, 50, 50);
+        Button decrease = new Button(1000, 205, 50, 50);
+        increase.draw(g, MAIN);
+        increase.drawHover(g, SECONDARY, mx, my);
+        decrease.draw(g, MAIN);
+        decrease.drawHover(g, SECONDARY, mx, my);
+        if (increase.isClicked(mx, my, mb)) {
+            offset += 10;
+            mb = 0;
+        }
+        if (decrease.isClicked(mx, my, mb)) {
+            offset -= 10;
+            mb = 0;
+        }
+
+        g.setFont(new Font("Comic Sans MS", Font.PLAIN, 25));
+        g.drawString(offset + "", 1058, 240);
+        g.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
+
+        if (decrease.isHovered(mx, my)) {
+            g.setColor(new Color(100, 100, 100));
+        } else {
+            g.setColor(SECONDARY);
+        }
+        g.drawString("-", 1016, 240);
+
+        if (increase.isHovered(mx, my)) {
+            g.setColor(new Color(100, 100, 100));
+        } else {
+            g.setColor(SECONDARY);
+        }
+        g.drawString("+", 1125, 242);
     }
 
     public void drawBattle(Graphics g) {
@@ -177,7 +222,8 @@ public class Game extends BaseFrame {
         }
     }
 
-    public void drawTest(Graphics g) {
+    public void drawSong(Graphics g) {
+        addOffset();
         if (!playingSong) {
             playMusic();
             playingSong = true;
@@ -211,13 +257,13 @@ public class Game extends BaseFrame {
     public void generateNotes() {
         for (int i = 0; i < 100; i++) {
             if (i == 0) {
-                noteX.add((int) (Math.random() * 1000 + 200));
+                noteX.add((int) (Math.random() * 1000 + 200)); // Generate the first note
                 noteY.add((int) (Math.random() * 500 + 200));
             } else {
-                int tmpX = (int) (Math.random() * 1000 + 200);
+                int tmpX = (int) (Math.random() * 1000 + 200); // Generate new notes
                 int tmpY = (int) (Math.random() * 500 + 200);
 
-                if (Math.sqrt(Math.pow((tmpX - noteX.getLast()), 2) + Math.pow((tmpY - noteY.getLast()), 2)) >= 150) {
+                if (Math.sqrt(Math.pow((tmpX - noteX.getLast()), 2) + Math.pow((tmpY - noteY.getLast()), 2)) >= 150) { // Compare distance to last note
                     noteX.add(tmpX);
                     noteY.add(tmpY);
                 }
@@ -227,7 +273,6 @@ public class Game extends BaseFrame {
 
     public void createNotes() {
         notes.add(new Note(noteX.get(timeCounter), noteY.get(timeCounter)));
-        System.out.println(times[timeCounter]); //PLACEHOLDER
     }
 
     public void drawNotes(Graphics g) {
@@ -276,16 +321,16 @@ public class Game extends BaseFrame {
     public void drawPuzzle(Graphics g) {
         puzzle.draw(g);
     }
-    public void drawPause(Graphics g){
+
+    public void drawPause(Graphics g) {
         //layer underneath (before pause)
-        if(resume==GAME){
+        if (resume == GAME) {
             drawGame(g);
-        }
-        else if(resume==BATTLE){
+        } else if (resume == BATTLE) {
             drawBattle(g);
         }
-        g.setColor(new Color(10,10,10,100));//semi transparent
-        g.fillRect(0,0,WIDTH,HEIGHT);//whole screen
+        g.setColor(new Color(10, 10, 10, 100));//semi transparent
+        g.fillRect(0, 0, WIDTH, HEIGHT);//whole screen
     }
 
     public void draw(Graphics g) {//test
@@ -294,16 +339,14 @@ public class Game extends BaseFrame {
         } else if (screen == GAME) {
             drawGame(g);
         } else if (screen == TUTORIAL) {
-            drawTest(g);
-            // drawTutorial(g);
+            drawTutorial(g);
         } else if (screen == MUSIC) {
-            drawTest(g);
+            drawSong(g);
         } else if (screen == BATTLE) {
             drawBattle(g);
         } else if (screen == PUZZLE) {
 
-        }
-        else if(screen==PAUSE){
+        } else if (screen == PAUSE) {
             drawPause(g);
             super.timer.stop();
         }
@@ -313,35 +356,27 @@ public class Game extends BaseFrame {
     public void keyPressed(KeyEvent e) {//constant new checking for keys[], based on actionPerformed()
         super.keyPressed(e);
         keys[e.getKeyCode()] = true;
-        if(keys[ESC]){
-            if(screen!=PAUSE&&screen!=MENU&&screen!=PUZZLE) {
-                resume=screen;
-                screen=PAUSE;
-            }
-            else if(screen==PAUSE){
-                screen=resume;
+        if (keys[ESC]) {
+            if (screen != PAUSE && screen != MENU && screen != PUZZLE) {
+                resume = screen;
+                screen = PAUSE;
+            } else if (screen == PAUSE) {
+                screen = resume;
                 super.timer.start();
             }
         }
-//        if(mb==1&&screen==PAUSE){
-//            screen=MENU;
-//            super.timer.start();
-//        }
     }
+
     @Override
     public void keyReleased(KeyEvent e) {
         super.keyPressed(e);
         keys[e.getKeyCode()] = false;
     }
+
     @Override
-    public void mouseClicked(MouseEvent m){//THIS DOESNT WORK//////////////////////
-        System.out.println("click");
-        super.mouseClicked(m);
-        if(mb==1&&screen==PAUSE){
-            screen=MENU;
-            super.timer.start();
-        }
+    public void mouseClicked(MouseEvent m) { // PLACEHOLDER
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println(mb);
