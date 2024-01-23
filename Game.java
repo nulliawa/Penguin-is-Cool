@@ -1,8 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.sound.sampled.AudioInputStream;
@@ -245,7 +243,7 @@ public class Game extends BaseFrame {
             drawBattle(g);
         }
         g.setColor(new Color(10,10,10,100));//semi transparent
-        g.fillRect(0,0,WIDTH,HEIGHT);
+        g.fillRect(0,0,WIDTH,HEIGHT);//whole screen
     }
 
     public void draw(Graphics g) {//test
@@ -273,25 +271,37 @@ public class Game extends BaseFrame {
         super.keyPressed(e);
         keys[e.getKeyCode()] = true;
         if(keys[ESC]){
-            if(screen!=PAUSE) {
+            if(screen!=PAUSE&&screen!=MENU&&screen!=PUZZLE) {
                 resume=screen;
                 screen=PAUSE;
             }
-            else{
+            else if(screen==PAUSE){
                 screen=resume;
                 super.timer.start();
             }
         }
+//        if(mb==1&&screen==PAUSE){
+//            screen=MENU;
+//            super.timer.start();
+//        }
     }
-
     @Override
     public void keyReleased(KeyEvent e) {
         super.keyPressed(e);
         keys[e.getKeyCode()] = false;
     }
-
+    @Override
+    public void mouseClicked(MouseEvent m){//THIS DOESNT WORK//////////////////////
+        System.out.println("click");
+        super.mouseClicked(m);
+        if(mb==1&&screen==PAUSE){
+            screen=MENU;
+            super.timer.start();
+        }
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.out.println(mb);
         if (screen == GAME) {
             move();
             enemy.destroy();
@@ -311,7 +321,6 @@ public class Game extends BaseFrame {
         }
         repaint();
     }
-
 
     public static void main(String[] args) {
         Game game = new Game("Penguin Is Cool", 1400, 800);
