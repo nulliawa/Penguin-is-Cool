@@ -36,7 +36,7 @@ public class Note {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.GRAY);
+        g.setColor(Color.WHITE);
         miss();
         if (visible) {
             g.fillOval(x - RADIUS / 2, y - RADIUS / 2, RADIUS, RADIUS);
@@ -50,7 +50,19 @@ public class Note {
         }
     }
 
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
     public void setGame(boolean game) {
         this.game = game;
+    }
+
+    public int getApproachRadius() {
+        return approachRadius;
+    }
+
+    public int getRADIUS() {
+        return RADIUS;
     }
 }

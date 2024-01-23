@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -19,32 +18,33 @@ public class Game extends BaseFrame {
     int screen = MENU;
     private final Player player;
     private final BKG bkg;
-    private ArrayList<Integer> noteX = new ArrayList<>(Arrays.asList(300, 700, 800, 900, 100));
-    private ArrayList<Integer> noteY = new ArrayList<>(Arrays.asList(400, 200, 300, 320, 100));
+
+    private ArrayList<Integer> noteX = new ArrayList<>();
+    private ArrayList<Integer> noteY = new ArrayList<>();
     private ArrayList<Note> notes = new ArrayList<>();
-    private final int[] times = {500, 200, 50, 50, 50};
+
+    private final int offset = 100;
+    private int[] times = {2300, 700, 1200, -1};
     private int timeCounter = 0;
-    Timer timer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
+    Timer firstTimer = new Timer(times[0], new ActionListener() { // Timer goes off at different intervals listed in array times
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            // System.out.println(times[timeCounter]);
-            if (timeCounter < times.length - 1) {
-                createNotes();
-                timeCounter++;
-            }
+            createNotes();
+            timeCounter++;
+            firstTimer.stop();
+            updateTimer();
         }
     });
-
+    private boolean first = true;
     private boolean playingSong = false;
     private final Enemy enemy;
     private Battle battle;
-
     private Puzzle puzzle = new Puzzle();
 
     public Game(String title, int width, int height) {
         super(title, width, height);
 
-        bkg = new BKG(0, 0, 3000, 1500,null);//wip
+        bkg = new BKG(0, 0, 3000, 1500, null);//wip
         BKG.setup();
 
         player = new Player(width / 2, height / 2);
@@ -63,12 +63,11 @@ public class Game extends BaseFrame {
             //player is fixed to middle line, can move background left/right
             bkg.move(keys, false, player);
             enemy.move(bkg);
-
         }
+
         if (player.isFixedY()) {
             bkg.move(keys, true, player);
             enemy.move(bkg);
-
         }
 
         if (bkg.edgeX()) {//arrive at edge of background left/right direction
@@ -165,8 +164,14 @@ public class Game extends BaseFrame {
         Button next = new Button(100, 100, 200, 200);
     }
 
-    public void drawBattle(Graphics g){
+    public void drawBattle(Graphics g) {
         battle.draw(g);
+    }
+
+    public void addOffset() {
+        for (int i = 0; i < times.length; i++) {
+            times[i] += offset;
+        }
     }
 
     public void drawTest(Graphics g) {
@@ -174,28 +179,53 @@ public class Game extends BaseFrame {
             playMusic();
             playingSong = true;
         }
-        timer.start();
-        g.setColor(Color.WHITE);
+        if (first) {
+            firstTimer.start();
+            first = false;
+        }
+
+        g.setColor(Color.BLACK);
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
         drawNotes(g);
     }
 
+    public void updateTimer() {
+        timer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (timeCounter < times.length - 1) { // If not out of bounds
+                    createNotes();
+                    timeCounter++;
+                } else { // Stop the timer after going through the list
+                    timer.stop();
+                }
+            }
+        });
+        timer.start();
+    }
+
+    public void generateNotes() {
+        // Need to check for generation
+        for (int i = 0; i < 100; i++) {
+            noteX.add((int) (Math.random() * 500 + 200));
+            noteY.add((int) (Math.random() * 500 + 200));
+        }
+    }
+
     public void createNotes() {
-        // System.out.println(timeCounter);
-        Note newNote = new Note(noteX.get(timeCounter), noteY.get(timeCounter));
-        notes.add(newNote);
+        notes.add(new Note(noteX.get(timeCounter), noteY.get(timeCounter)));
+        System.out.println(times[timeCounter]); //PLACEHOLDER
     }
 
     public void drawNotes(Graphics g) {
         for (Note note : notes) {
             note.draw(g);
             note.setGame(true);
-        }
 
-        for (int i = notes.size() - 1; i >= 0; i--) {
-            if (notes.get(i).isHovered(mx, my) && mb == 1) {
-                notes.remove(i);
+            // Clicked on note
+            if (note.isHovered(mx, my) && mb == 1) {
+                note.setVisible(false);
             }
         }
     }
@@ -252,7 +282,8 @@ public class Game extends BaseFrame {
         } else if (screen == GAME) {
             drawGame(g);
         } else if (screen == TUTORIAL) {
-            drawTutorial(g);
+            drawTest(g);
+            // drawTutorial(g);
         } else if (screen == MUSIC) {
             drawTest(g);
         } else if (screen == BATTLE) {
@@ -307,15 +338,14 @@ public class Game extends BaseFrame {
             enemy.destroy();
             if (enemy.pCollision(player)) {
                 screen = BATTLE;
-                battle=new Battle(battle.getHP());//new battle carries over hp
+                battle = new Battle(battle.getHP());//new battle carries over hp
                 battle.start();
             }
         }
-        if(screen==BATTLE){
-            if(battle.result()){
-                screen=GAME;
-            }
-            else{
+        if (screen == BATTLE) {
+            if (battle.result()) {
+                screen = GAME;
+            } else {
                 battle.move(keys);
             }
         }
