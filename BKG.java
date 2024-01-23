@@ -230,22 +230,14 @@ public class BKG {
     public int getHeight(){
         return this.height;
     }
-    public int getOffSpdX(){
+    public static int getOffSpdX(){
         return offSpdX;
     }
-    public int getOffSpdY(){
+    public static int getOffSpdY(){
         return offSpdY;
     }
 
-    public void draw(Graphics g,Image img){
-//        g.setColor(Color.cyan);//placeholder large main rect
-//        g.fillRect(offX,offY,width,height);
-//        g.setColor(Color.blue);
-
-//        for (BKG b : squares) {//grid
-//            g.fillRect(b.offX, b.offY, b.width, b.height);
-//        }
-//        g.setColor(Color.orange);
+    public void draw(Graphics g){
         for(ArrayList<BKG> row:blocks){
             for(BKG block:row){
                 g.drawImage(block.cover,block.offX,block.offY,null);

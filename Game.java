@@ -11,7 +11,7 @@ import java.io.File;
 //main game, start at menu
 //ESC TO PAUSE (any screen)
 
-public class Game extends BaseFrame{
+public class Game extends BaseFrame implements MouseListener{
     public GamePane pane;
     private static final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5,PAUSE=6;
@@ -50,6 +50,7 @@ public class Game extends BaseFrame{
         BKG.setup();
 
         player = new Player(width / 2, height / 2);
+        Player.setUp();
         enemy = new Enemy();
         Enemy.setUp();
         battle = new Battle(10000);
@@ -66,12 +67,14 @@ public class Game extends BaseFrame{
         if (player.isFixedX()) {
             //player is fixed to middle line, can move background left/right
             bkg.move(keys, false, player);
-            enemy.move(bkg);
+            enemy.move();
+            player.ground();
         }
 
         if (player.isFixedY()) {
             bkg.move(keys, true, player);
-            enemy.move(bkg);
+            enemy.move();
+            player.ground();//sets speeds to 0 (animation purposes)
         }
 
         if (bkg.edgeX()) {//arrive at edge of background left/right direction
@@ -134,9 +137,9 @@ public class Game extends BaseFrame{
     }
 
     public void drawGame(Graphics g) {
-        bkg.draw(g, null);
+        bkg.draw(g);
         enemy.draw(g);
-        player.draw(g);
+        player.draw(g,bkg);
     }
 
     public void drawTutorial(Graphics g) {
@@ -178,7 +181,7 @@ public class Game extends BaseFrame{
         }
     }
 
-    public void drawTest(Graphics g) {
+    public void drawMusicGame(Graphics g) {
         if (!playingSong) {
             playMusic();
             playingSong = true;
@@ -295,10 +298,10 @@ public class Game extends BaseFrame{
         } else if (screen == GAME) {
             drawGame(g);
         } else if (screen == TUTORIAL) {
-            drawTest(g);
+            drawMusicGame(g);
             // drawTutorial(g);
         } else if (screen == MUSIC) {
-            drawTest(g);
+            drawMusicGame(g);
         } else if (screen == BATTLE) {
             drawBattle(g);
         } else if (screen == PUZZLE) {
@@ -329,6 +332,10 @@ public class Game extends BaseFrame{
                 screen=MENU;
                 super.timer.start();
             }
+            else if(keys[KeyEvent.VK_ENTER]&&resume==BATTLE){
+                screen=GAME;
+                super.timer.start();
+            }//hi :)
         }
     }
     @Override
@@ -337,18 +344,8 @@ public class Game extends BaseFrame{
         keys[e.getKeyCode()] = false;
     }
 
-//    @Override
-//    public void mouseClicked(MouseEvent m){//THIS DOESNT WORK//////////////////////
-////        System.out.println("click");
-//        super.mouseClicked(m);
-//        if(mb==1&&screen==PAUSE){
-//            screen=MENU;
-//            super.timer.start();
-//        }
-//    }
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println(mb);
         if (screen == GAME) {
             move();
             enemy.destroy();

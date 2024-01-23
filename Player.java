@@ -1,24 +1,53 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 //player movement controlled by wasd in both battle and overworld
 //penguin is cool :)
 public class Player {
     // Private vs. protected?
     private int x, y;
-    private final int SIZE=30,WIDTH = 1400, HEIGHT = 800, LEFT=180,RIGHT=0,UP=90,DOWN=270,HALF=45;;
+    private static final int SIZE=30,WIDTH = 1400, HEIGHT = 800, LEFT=180,RIGHT=0,UP=90,DOWN=270,HALF=45;;
     private int spdX =0, spdY =0,walkSpd=10;
+    private static int frame;
+    private static boolean lastDirection;//true=left false=right
+    private static int backSpdX,backSpdY;
     private int interactionDistance = 10, offsetDistance = 10; // Within interactionDistance
-
+    private static final Image[] walkLeft=new Image[4];
+    private static final Image[] walkRight=new Image[4];
+    private static final Image[] defeatImgs=new Image[5];
+    private static final Image[] idleLeft =new Image[4];
+    private static final Image[] idleRight=new Image[4];
     public Player(int x, int y) {
         this.x = x;//x and y on screen
         this.y = y;
     }
+    public static void setUp(){
+        for(int w=1;w<5;w++){
+            Image img=new ImageIcon("penguin/penguinWalkL"+w+".png").getImage();
+            BufferedImage bufferedImage = new BufferedImage(img.getWidth(null),img.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+            bufferedImage.getGraphics().drawImage(img, 0, 0, null);
+            walkLeft[w-1]=bufferedImage.getScaledInstance(SIZE,SIZE,Image.SCALE_SMOOTH);
+
+            Image img2=new ImageIcon("penguin/penguinWalkR"+w+".png").getImage();
+            BufferedImage bufferedImage2 = new BufferedImage(img2.getWidth(null),img2.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+            bufferedImage2.getGraphics().drawImage(img2, 0, 0, null);
+            walkRight[w-1]=bufferedImage2.getScaledInstance(SIZE,SIZE,Image.SCALE_SMOOTH);
+
+            Image idle=new ImageIcon("penguin/penguinIdleL"+w+".png").getImage();
+            BufferedImage buffi=new BufferedImage(idle.getWidth(null),idle.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+            buffi.getGraphics().drawImage(idle,0,0,null);
+            idleLeft[w-1]=buffi.getScaledInstance(SIZE,SIZE,Image.SCALE_SMOOTH);
+
+            Image idle2=new ImageIcon("penguin/penguinIdleR"+w+".png").getImage();
+            BufferedImage buffi2=new BufferedImage(idle2.getWidth(null),idle2.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+            buffi2.getGraphics().drawImage(idle2,0,0,null);
+            idleRight[w-1]=buffi2.getScaledInstance(SIZE,SIZE,Image.SCALE_SMOOTH);
+        }
+
+    }
     public double rad(int degree){//direction in degrees
-//        if(degree>360){
-//            double angle=degree%360.0;
-//            return angle/180.0*Math.PI;
-//        }
         return degree/180.0*Math.PI;
     }
     private boolean edgeXL(){
@@ -62,9 +91,11 @@ public class Player {
             if(!(keys[A]&&keys[D])) {
                 if (keys[A] && collideX != 4) {
                     spdX = -walkSpd;
+                    lastDirection=true;
                 }
                 if (keys[D] && collideX != 3) {
                     spdX = walkSpd;
+                    lastDirection=false;
                 }
             }
         }
@@ -102,9 +133,11 @@ public class Player {
             }
             if(keys[D]&&!keys[A]){
                 setSpeeds((UP+RIGHT)/2);
+                lastDirection=false;
             }
             if(keys[A]&&!keys[D]){
                 setSpeeds((UP+LEFT)/2);
+                lastDirection=true;
             }
         }
         if(keys[S]){//DOWN [S] KEY
@@ -113,9 +146,11 @@ public class Player {
             }
             if(keys[D]&&!keys[A]){
                 setSpeeds(-HALF);//half between a full x/y axis direction
+                lastDirection=false;
             }
             if(keys[A]&&!keys[D]){
                 setSpeeds((DOWN+LEFT)/2);
+                lastDirection=true;
             }
         }
         if(keys[A]){//LEFT [A] KEY
@@ -128,6 +163,7 @@ public class Player {
             if(keys[S]&&!keys[W]){
                 setSpeeds((DOWN+LEFT)/2);
             }
+            lastDirection=true;
         }
         if(keys[D]){//RIGHT [D] KEY
             if(!(keys[W]||keys[S]||keys[A])){
@@ -139,6 +175,7 @@ public class Player {
             if(keys[S]&&!keys[W]){
                 setSpeeds(-HALF);
             }
+            lastDirection=false;
         }
         //enacting the movement
         this.x+= spdX;
@@ -203,11 +240,73 @@ public class Player {
     public Rectangle getRect() {
         return new Rectangle(x, y, SIZE,SIZE);
     }
+    public void ground(){//stops speed of player (animation stops)
+        this.spdX=0;
+        this.spdY=0;
+        //updates animation based on background speed
+        backSpdX=BKG.getOffSpdX();
+        backSpdY=BKG.getOffSpdY();
+//        System.out.println(backSpdX+", "+backSpdY);
 
-    public void draw(Graphics g) {
+    }
+    private void walkAnimation(Graphics g,boolean direction){
+        int index=frame/3%walkLeft.length;//get the image index to display
+        if(direction) {
+            g.drawImage(walkLeft[index], x, y, null);
+        }
+        else{
+            g.drawImage(walkRight[index],x,y,null);
+        }
+    }
+    private void idleAnimation(Graphics g,boolean direction){
+        int index=frame/20% idleLeft.length;
+        if(direction) {
+            g.drawImage(idleLeft[index], x, y, null);
+        }
+        else{
+            g.drawImage(idleRight[index],x,y,null);
+        }
+    }
+    public void draw(Graphics g, BKG bkg) {
+        frame++;
+        if(frame>=2147483647){//limit on ints
+            frame=0;
+        }
         // Draw the penguin
-        g.setColor(Color.BLACK);//temp black square
-        g.fillRect(x, y, SIZE, SIZE);
+//        System.out.println(spdX+", "+spdY);
+//        int bspdX=BKG.getOffSpdX();
+//        int bspdY=BKG.getOffSpdY();
+//        System.out.println(backSpdX+", "+backSpdY);
+        //lastDirection
+        //true=left, false=right
+        if(spdX==0&&spdY==0&&backSpdX==0&&backSpdY==0){
+            idleAnimation(g,lastDirection);
+        }
+        else if(spdX<0||spdY!=0||backSpdX>0||backSpdY!=0){//left walking
+            walkAnimation(g,lastDirection);
+        }
+        else if(spdX>0||spdY!=0||backSpdX<0||backSpdY!=0){//right walking
+            walkAnimation(g,lastDirection);
+        }
+    }
+    public void draw(Graphics g) {//no offset in battle
+        frame++;
+        if(frame>=2147483647){//limit on ints
+            frame=0;
+        }
+        // Draw the penguin
+//        System.out.println(spdX+", "+spdY);
+        //lastDirection
+        //true=left, false=right
+        if(spdX==0&&spdY==0){//no movement idle
+            idleAnimation(g,lastDirection);
+        }
+        else if(spdX<0){//left walking
+            walkAnimation(g,lastDirection);
+        }
+        else if(spdX>0){//right walking
+            walkAnimation(g,lastDirection);
+        }
     }
 
 }

@@ -37,10 +37,10 @@ public class Enemy {
             Image file=new ImageIcon("spirit/spiritDeath"+j+".png").getImage();
             BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
             bufferedImage.getGraphics().drawImage(file, 0, 0, null);
-            deaths[j-1]=bufferedImage.getScaledInstance(50,50,Image.SCALE_SMOOTH);;
+            deaths[j-1]=bufferedImage.getScaledInstance(60,60,Image.SCALE_SMOOTH);;
         }
-        enemies.add(new Enemy(1000,30,50,55));
-        enemies.add(new Enemy(510,340,50,55));
+        enemies.add(new Enemy(1000,30,50,50));
+        enemies.add(new Enemy(510,340,50,50));
         enemies.add(new Enemy(WIDTH-200,HEIGHT-200,50,50));
     }
     public void destroy(){//destroys once death animation is over
@@ -52,10 +52,10 @@ public class Enemy {
         }
     }
 
-    public void move(BKG bkg){//moves according to background offset
+    public void move(){//moves according to background offset
         for(Enemy e:enemies){
-            e.spdX=bkg.getOffSpdX();
-            e.spdY=bkg.getOffSpdY();
+            e.spdX= BKG.getOffSpdX();
+            e.spdY= BKG.getOffSpdY();
             e.x+=e.spdX;
             e.y+=e.spdY;
         }
