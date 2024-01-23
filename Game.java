@@ -8,7 +8,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import java.io.File;
-//main game, start at menu
+//main game extending baseframe, start at menu
 //ESC TO PAUSE (any screen)
 
 public class Game extends BaseFrame implements MouseListener{
@@ -19,7 +19,7 @@ public class Game extends BaseFrame implements MouseListener{
     int screen = MENU;
     private final Player player;
     private final BKG bkg;
-
+    private boolean direction;
     private ArrayList<Integer> noteX = new ArrayList<>();
     private ArrayList<Integer> noteY = new ArrayList<>();
     private ArrayList<Note> notes = new ArrayList<>();
@@ -63,29 +63,9 @@ public class Game extends BaseFrame implements MouseListener{
 
     public void move() {
         // If player gets to the edge of the background, stop moving the background, instead move the player
-
-        if (player.isFixedX()) {
-            //player is fixed to middle line, can move background left/right
-            bkg.move(keys, false, player);
-            enemy.move();
-            player.ground();
-        }
-
-        if (player.isFixedY()) {
-            bkg.move(keys, true, player);
-            enemy.move();
-            player.ground();//sets speeds to 0 (animation purposes)
-        }
-
-        if (bkg.edgeX()) {//arrive at edge of background left/right direction
-            player.move(keys, false, bkg);
-            //player itself can move left/right and background stops
-            // left/right movement as it will no longer be at a midline
-        }
-        if (bkg.edgeY()) {
-            player.move(keys, true, bkg);
-        }
-
+        bkg.move(keys,player);
+        player.move(keys,bkg);
+        enemy.move();
     }
 
     public void drawMenu(Graphics g) {
