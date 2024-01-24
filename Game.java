@@ -30,7 +30,7 @@ public class Game extends BaseFrame implements MouseListener{
     private ArrayList<Integer> noteX = new ArrayList<>();
     private ArrayList<Integer> noteY = new ArrayList<>();
     private ArrayList<Note> notes = new ArrayList<>();
-    private int offset = 250; // CHANGE LATENCY BASED OFF OF YOUR MACHINE
+    private int offset = 100; // CHANGE LATENCY BASED OFF OF YOUR MACHINE
     private int[] times = {2300, 700, 1200, 700, -1};
     private int timeCounter = 0;
     Timer firstTimer = new Timer(times[0], new ActionListener() { // Timer goes off at different intervals listed in array times
@@ -49,7 +49,7 @@ public class Game extends BaseFrame implements MouseListener{
     private Battle battle;
     private Puzzle puzzle = new Puzzle();
 
-    private int tutorialSlides = 0;
+    private int tutorialScreen = 0;
 
     private final Color MAIN = new Color(151, 181, 219);
     private final Color SECONDARY = new Color(150, 167, 176);
@@ -89,9 +89,8 @@ public class Game extends BaseFrame implements MouseListener{
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
         // Title
-        g.setColor(MAIN);
         g.setFont(new Font("SnowtopCaps", Font.PLAIN, 150));
-        g.setColor(Color.CYAN);
+        g.setColor(MAIN);
         g.drawString("Penguin is Cool", WIDTH / 2 - 550, 200);
 
         // Arrays for buttons
@@ -161,71 +160,93 @@ public class Game extends BaseFrame implements MouseListener{
 
         // BACK AND NEXT (CONVENTIONS?)
         Button back = new Button(20, HEIGHT - 120, 200, 100);
-        Button next = new Button(WIDTH - 220, HEIGHT - 120, 200, 100);
         back.draw(g, MAIN);
+        back.drawHover(g, SECONDARY, mx, my);
+        if (back.isClicked(mx, my, mb) && tutorialScreen == 0) {
+            screen = MENU;
+        } else if (back.isClicked(mx, my, mb) && tutorialScreen != 0) {
+            tutorialScreen--;
+            mb = 0;
+        }
+
+        Button next = new Button(WIDTH - 220, HEIGHT - 120, 200, 100);
         next.draw(g, MAIN);
+        next.drawHover(g, SECONDARY, mx, my);
+        if (next.isClicked(mx, my, mb) && tutorialScreen < 2) {
+            tutorialScreen++;
+            mb = 0;
+        }
+
         g.setColor(Color.WHITE);
         g.setFont(new Font("SnowtopCaps", Font.PLAIN, 70));
         g.drawString("BACK", 40, HEIGHT - 45);
         g.drawString("NEXT", WIDTH - 203, HEIGHT - 45);
 
-        // Controls
-        g.setColor(MAIN); // PLACEHOLDER
-        g.setFont(new Font("SnowtopCaps", Font.PLAIN, 70));
-        g.drawString("CONTROLS", 20, 100);
-        g.drawString("SETTINGS", 850, 100);
+        switch (tutorialScreen) {
+            case 0:
+                // Draw story
+                g.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+                g.setColor(MAIN);
+                g.drawString("Penguin wants to achieve maximum happiness. Help him by defeating every enemy for fish!", 20, 20);
 
-        String[] instructions = {"W - UP", "A - LEFT", "S - DOWN", "D - RIGHT"};
-        // Rectangle creation
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 2; j++) {
-                g.drawRect(350 * i + 25, 250 * j + 125, 300, 200);
-            }
+                break;
+            case 1:
+                // Controls
+                g.setColor(MAIN);
+                g.setFont(new Font("SnowtopCaps", Font.PLAIN, 70));
+                g.drawString("CONTROLS", 20, 100);
+                g.drawString("SETTINGS", 850, 100);
+
+                String[] instructions = {"W - UP", "A - LEFT", "S - DOWN", "D - RIGHT"};
+                // Rectangle creation
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < 2; j++) {
+                        g.drawRect(350 * i + 25, 250 * j + 125, 300, 200);
+                    }
+                }
+
+                g.setFont(new Font("Comic Sans MS", Font.PLAIN, 50));
+                g.drawString(instructions[0], 20, 250);
+                g.drawString(instructions[1], 50, 400);
+
+                // OFFSET CONTROL (to deal with song delays)
+                g.drawString("Offset: ", 850, 175);
+
+                Button decrease = new Button(1035, 135, 50, 50);
+                decrease.draw(g, MAIN);
+                decrease.drawHover(g, SECONDARY, mx, my);
+                if (decrease.isClicked(mx, my, mb)) {
+                    offset -= 10;
+                    mb = 0;
+                }
+                if (decrease.isHovered(mx, my)) {
+                    g.setColor(new Color(75, 75, 75));
+                } else {
+                    g.setColor(new Color(125, 125, 125));
+                }
+                g.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
+                g.drawString("-", 1052, 171);
+
+                Button increase = new Button(1135, 135, 50, 50);
+                increase.draw(g, MAIN);
+                increase.drawHover(g, SECONDARY, mx, my);
+                if (increase.isClicked(mx, my, mb)) {
+                    offset += 10;
+                    mb = 0;
+                }
+                if (increase.isHovered(mx, my)) {
+                    g.setColor(new Color(75, 75, 75));
+                } else {
+                    g.setColor(new Color(125, 125, 125));
+                }
+                g.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
+                g.drawString("+", 1150, 173);
+
+
+                g.setColor(new Color(75, 75, 75));
+                g.setFont(new Font("Comic Sans MS", Font.PLAIN, 23));
+                g.drawString(offset + "", 1088, 170);
         }
-
-        g.setFont(new Font("Comic Sans MS", Font.PLAIN, 50));
-        g.drawString(instructions[0], 20, 250);
-        g.drawString(instructions[1], 50, 400);
-        g.drawString("Offset: ", 800, 250);
-        // WHAT TO DO
-        /*
-        WASD - up left down right
-        SPACE - interact
-        */
-
-        // OFFSET CONTROL (to deal with song delays)
-        Button increase = new Button(1110, 205, 50, 50);
-        Button decrease = new Button(1000, 205, 50, 50);
-        increase.draw(g, MAIN);
-        increase.drawHover(g, SECONDARY, mx, my);
-        decrease.draw(g, MAIN);
-        decrease.drawHover(g, SECONDARY, mx, my);
-        if (increase.isClicked(mx, my, mb)) {
-            offset += 10;
-            mb = 0;
-        }
-        if (decrease.isClicked(mx, my, mb)) {
-            offset -= 10;
-            mb = 0;
-        }
-
-        g.setFont(new Font("Comic Sans MS", Font.PLAIN, 25));
-        g.drawString(offset + "", 1058, 240);
-        g.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
-
-        if (decrease.isHovered(mx, my)) {
-            g.setColor(new Color(100, 100, 100));
-        } else {
-            g.setColor(SECONDARY);
-        }
-        g.drawString("-", 1016, 240);
-
-        if (increase.isHovered(mx, my)) {
-            g.setColor(new Color(100, 100, 100));
-        } else {
-            g.setColor(SECONDARY);
-        }
-        g.drawString("+", 1125, 242);
     }
 
     public void drawBattle(Graphics g) {
