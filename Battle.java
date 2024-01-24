@@ -7,8 +7,18 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 //switch to battle screen when you touch an enemy
-//win the battle by waiting enough time (survive 3 randomly generated attacks)
-//lose when hp goes to 0 and return to game's overworld
+//win the battle by waiting enough time (survive 3 randomly generated attacks) and get 3 fish
+//attacks are:
+//-Icicles that seek to player's path in straight line
+//-Snow cloud that drops snow randomly from above
+//-Seekers that continuously pathfind to the player's location
+//-Spikes that appear on the sides or top/bottom accompanying another of the 3 mentioned atks
+//lose when hp goes to 0 and return to game's overworld to receive lose animation
+//Icicles/Spikes - https://pimen.itch.io/ice-spell-effect-01
+//Seekers - https://itch.io/t/2995590/ice-spells-pixel-vfx-for-your-game
+//Background - https://assetstore.unity.com/packages/tools/level-design/2d-parallax-background-parallax-2d-parallax-effect-254988
+//Snowflakes - https://opengameart.org/content/pixel-art-snowflakes
+//Cloud - https://www.reddit.com/r/PixelArt/comments/dhdgab/storm_clouds_practice/
 public class Battle {
     private class Projectile{
         private final Image[] iceImgs=new Image[10];

@@ -2,9 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-
-//enemies are golems
-//collide with them to initiate battle
+//enemies are spirits
+//collide with them to initiate battle screen
+//https://www.spriters-resource.com/fullview/118500/
 public class Enemy {
     private int x, y, width, height,spdX,spdY;
     private static final ArrayList<Enemy> enemies=new ArrayList<>();

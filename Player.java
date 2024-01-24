@@ -3,9 +3,10 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-//player movement controlled by wasd in both battle and overworld
+//player movement controlled by WASD in both battle and overworld
 //contains animation for player
 //penguin is cool :)
+//https://spritedatabase.net/file/6558
 public class Player {
     private int x, y;
     private static final int SIZE=30,WIDTH = 1400, HEIGHT = 800, LEFT=180,RIGHT=0,UP=90,DOWN=270,HALF=45;;

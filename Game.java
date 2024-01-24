@@ -12,6 +12,8 @@ import javax.sound.sampled.LineListener;
 import java.io.File;
 //main game extending baseframe, start at menu
 //ESC TO PAUSE (during GAME and BATTLE)
+//Cod - https://www.pinterest.com/pin/pixel008-stream-fish--848576754775632834/
+//Heart - https://pixabay.com/users/benbushnell-5879465/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=2779422%22%3EBen
 
 public class Game extends BaseFrame{
     private static final int WIDTH = 1400, HEIGHT = 800;
