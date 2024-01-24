@@ -13,8 +13,7 @@ import java.io.File;
 //main game extending baseframe, start at menu
 //ESC TO PAUSE (any screen)
 
-public class Game extends BaseFrame implements MouseListener{
-    public GamePane pane;
+public class Game extends BaseFrame{
     private static final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5, PAUSE = 6;
     public int resume;
@@ -116,7 +115,7 @@ public class Game extends BaseFrame implements MouseListener{
             g.drawString(buttonText[i], textCoordinates[i][X], textCoordinates[i][Y]);
         }
         //temp player draw
-        Player menuPlayer1=new Player(200,200);
+        Player menuPlayer1=new Player(165,200);
         menuPlayer1.draw(g,0);
         //temp enemy draw
         Enemy menuEnemy1=new Enemy(1200,200,0,0);
@@ -353,6 +352,9 @@ public class Game extends BaseFrame implements MouseListener{
         notes.add(new Note(noteX.get(timeCounter), noteY.get(timeCounter)));
     }
 
+    public void testCreate(){
+
+    }
     public void drawNotes(Graphics g) {
         for (Note note : notes) {
             note.draw(g);

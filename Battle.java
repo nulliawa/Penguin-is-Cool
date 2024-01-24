@@ -479,7 +479,7 @@ private void createSpikes(boolean topBot,boolean leftRight){
             if (!cloud.clean(clouds)) {//projectile is not off screen
                 cloud.followPlayerX(player);
                 this.hit(cloud);
-                //create new snowflake every 200milliseconds with 200ms variation
+                //create new snowflake every 100milliseconds with 200ms variation
                 if (timeMill(SNOWGEN + random(0, 200), SNOW)) {
                     createSnow(cloud);
                 }
