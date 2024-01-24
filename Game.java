@@ -10,8 +10,14 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import java.io.File;
-//main game extending baseframe, start at menu
-//ESC TO PAUSE (during GAME and BATTLE)
+/*
+main game extending baseframe, start at menu
+ESC TO PAUSE (during GAME and BATTLE)
+WASD TO MOVE (background scrolling included)
+LEFT CLICK BUTTON to convert fish to HP (10)
+BATTLE starts when player runs into an ENEMY
+win battle to get 3 cod
+ */
 
 public class Game extends BaseFrame{
     private static final int WIDTH = 1400, HEIGHT = 800;

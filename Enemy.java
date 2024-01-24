@@ -32,7 +32,6 @@ public class Enemy {
             BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
             bufferedImage.getGraphics().drawImage(file, 0, 0, null);
             idles[i-1]=bufferedImage.getScaledInstance(50,50,Image.SCALE_SMOOTH);
-//            idles[i-1]=(BufferedImage) new ImageIcon("spirit/spiritIdle"+i+".png").getImage().getScaledInstance(50,50,Image.SCALE_SMOOTH);
         }
         for(int j=1;j<7;j++){//death animation pics
             Image file=new ImageIcon("spirit/spiritDeath"+j+".png").getImage();
