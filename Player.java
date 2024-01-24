@@ -18,6 +18,8 @@ public class Player {
     private static final Image[] defeatImgs=new Image[5];
     private static final Image[] idleLeft =new Image[4];
     private static final Image[] idleRight=new Image[4];
+    private static final Image[] loseImgs=new Image[15];
+
     public Player(int x, int y) {
         this.x = x;//x and y on screen
         this.y = y;
@@ -44,7 +46,24 @@ public class Player {
             buffi2.getGraphics().drawImage(idle2,0,0,null);
             idleRight[w-1]=buffi2.getScaledInstance(SIZE,SIZE,Image.SCALE_SMOOTH);
         }
-
+        for(int i=0;i<5;i++){//lose animation first frame
+            Image file=new ImageIcon("penguin/penguinDefeat1.png").getImage();
+            BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+            bufferedImage.getGraphics().drawImage(file, 0, 0, null);
+            loseImgs[i]=bufferedImage.getScaledInstance(30,30,Image.SCALE_SMOOTH);;
+        }
+        for(int j=1;j<6;j++){//lose animation pics
+            Image file=new ImageIcon("penguin/penguinDefeat"+j+".png").getImage();
+            BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+            bufferedImage.getGraphics().drawImage(file, 0, 0, null);
+            loseImgs[j+5-1]=bufferedImage.getScaledInstance(30,30,Image.SCALE_SMOOTH);;
+        }
+        for(int k=0;k<5;k++){//lose animation last frames
+            Image file=new ImageIcon("penguin/penguinDefeat4.png").getImage();
+            BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+            bufferedImage.getGraphics().drawImage(file, 0, 0, null);
+            loseImgs[k+10]=bufferedImage.getScaledInstance(30,30,Image.SCALE_SMOOTH);;
+        }
     }
     public double rad(int degree){//direction in degrees
         return degree/180.0*Math.PI;
@@ -260,6 +279,18 @@ public class Player {
         else{
             g.drawImage(idleRight[index],x,y,null);
         }
+    }
+    public boolean loseAnimation(Graphics g){
+        frame++;
+        if(frame>=2147483647){//limit on ints
+            frame=0;
+        }
+        int index=frame/10%loseImgs.length;
+        g.drawImage(loseImgs[index],x,y,null);
+        return index == loseImgs.length - 1;//true when animation is finished
+    }
+    public static void setFrames(int setTo){
+        frame=setTo;
     }
     //main game drawing
     public void draw(Graphics g, BKG bkg) {

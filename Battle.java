@@ -262,6 +262,9 @@ public class Battle {
     public boolean getWin(){
         return win;
     }
+    public boolean getLose(){
+        return lose;
+    }
     public void setWin(boolean won){
         win=won;
     }

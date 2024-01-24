@@ -24,15 +24,14 @@ public class Game extends BaseFrame implements MouseListener{
     private static final Image codUI=codFishBase.getScaledInstance(100,100,Image.SCALE_SMOOTH);
     private double codAngle=0;
     private static final Image heart=new ImageIcon("heart.png").getImage().getScaledInstance(50,50,Image.SCALE_SMOOTH);
-    private static final Image[] loseImgs=new Image[5];
     private final Player player;
     private final BKG bkg;
-    private long[] memTime=new long[2];
-    private ArrayList<Integer> noteX = new ArrayList<>();
-    private ArrayList<Integer> noteY = new ArrayList<>();
-    private ArrayList<Note> notes = new ArrayList<>();
+    private final long[] memTime=new long[2];
+    private final ArrayList<Integer> noteX = new ArrayList<>();
+    private final ArrayList<Integer> noteY = new ArrayList<>();
+    private final ArrayList<Note> notes = new ArrayList<>();
     private int offset = 100; // CHANGE LATENCY BASED OFF OF YOUR MACHINE
-    private int[] times = {2300, 700, 1200, 700, -1};
+    private final int[] times = {2300, 700, 1200, 700, -1};
     private int timeCounter = 0;
     Timer firstTimer = new Timer(times[0], new ActionListener() { // Timer goes off at different intervals listed in array times
         @Override
@@ -48,7 +47,7 @@ public class Game extends BaseFrame implements MouseListener{
     private boolean playingSong = false;
     private final Enemy enemy;
     private Battle battle;
-    private Puzzle puzzle = new Puzzle();
+    private final Puzzle puzzle = new Puzzle();
 
     private int tutorialScreen = 0;
 
@@ -57,12 +56,6 @@ public class Game extends BaseFrame implements MouseListener{
 
     public Game(String title, int width, int height) {
         super(title, width, height);
-        for(int j=1;j<6;j++){//lose animation pics
-            Image file=new ImageIcon("penguin/penguinDefeat"+j+".png").getImage();
-            BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
-            bufferedImage.getGraphics().drawImage(file, 0, 0, null);
-            loseImgs[j-1]=bufferedImage.getScaledInstance(30,30,Image.SCALE_SMOOTH);;
-        }
 
         bkg = new BKG(0, 0, 3000, 1500, null);//wip
         BKG.setup();
@@ -144,7 +137,9 @@ public class Game extends BaseFrame implements MouseListener{
     public void drawGame(Graphics g) {
         bkg.draw(g);
         enemy.draw(g);
-        player.draw(g,bkg);
+        if(!battle.getLose()) {//player does not lose
+            player.draw(g, bkg);
+        }
         drawUI(g);
     }
 
@@ -413,6 +408,14 @@ public class Game extends BaseFrame implements MouseListener{
             codAngle=0;
         }
     }
+    public void drawLose(Graphics g){
+        player.stopMove();
+        BKG.stopMove();
+        System.out.println(battle.getLose());
+        if(player.loseAnimation(g)){
+            battle.setLose(false);
+        }
+    }
     public void draw(Graphics g) {//test
         if (screen == MENU) {
             drawMenu(g);
@@ -420,6 +423,9 @@ public class Game extends BaseFrame implements MouseListener{
             drawGame(g);
             if(battle.getWin()){//when win battle
                 drawWin(g);
+            }
+            else if(battle.getLose()){
+                drawLose(g);
             }
         } else if (screen == TUTORIAL) {
             drawTutorial(g);
@@ -513,14 +519,15 @@ public class Game extends BaseFrame implements MouseListener{
             }
         }
         if (screen == BATTLE) {
-            if (battle.result()) {
+            if (battle.result()) {//ending of battle
                 screen = GAME;
                 if(battle.getWin()){//win
                     codAmount+=3;
                     memTime[0]=System.currentTimeMillis();//simple timer for win
                 }
                 else{//lose
-
+                    Player.setFrames(0);
+                    memTime[1]=System.currentTimeMillis();//lose animation
                 }
             } else {
                 battle.move(keys);
