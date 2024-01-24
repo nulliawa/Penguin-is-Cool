@@ -85,6 +85,12 @@ public class Game extends BaseFrame{
         battle=new Battle(10);
         boss=new Boss();
         codAmount=0;
+        score = 0;
+        notes.clear();
+        generateNotes();
+        songDone = false;
+        playingSong = false;
+        timeCounter = 0;
     }
     public void move() {
         // If player gets to the edge of the background, stop moving the background, instead move the player
@@ -478,7 +484,19 @@ public class Game extends BaseFrame{
         g.drawImage(pengEnd, 0, 0, this);
 
         g.setColor(Color.WHITE);
-        g.drawString("FINAL SCORE: " + score, 200, HEIGHT / 2);
+        g.drawString("FINAL SCORE: " + score, 75, HEIGHT / 2);
+
+        Button tryAgain = new Button(20, HEIGHT - 120, 200, 100);
+        tryAgain.draw(g, MAIN);
+        tryAgain.drawHover(g, SECONDARY, mx, my);
+
+        g.setColor(Color.WHITE);
+        g.drawString("AGAIN", 40, HEIGHT-30);
+        if (tryAgain.isClicked(mx, my, mb)) {
+            resetGame();
+            screen = MENU;
+        }
+
     }
 
     public void drawPuzzle(Graphics g) {
