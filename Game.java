@@ -30,8 +30,9 @@ public class Game extends BaseFrame{
     private final ArrayList<Integer> noteY = new ArrayList<>();
     private final ArrayList<Note> notes = new ArrayList<>();
     private int offset = 100; // CHANGE LATENCY BASED OFF OF YOUR MACHINE
-    private final int[] times = {2300, 700, 1200, 700, 700, 700, 700, 700, 1200, 1200, -1};
+    private final int[] times = {2300, 700, 1200, 700, 700, 700, 700, 700, 1200, 1200, 700, 10000, 10000, 10000, -1};
     private int timeCounter = 0;
+    private int score = 0;
     Timer firstTimer = new Timer(times[0], new ActionListener() { // Timer goes off at different intervals listed in array times
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
@@ -44,6 +45,7 @@ public class Game extends BaseFrame{
     Timer beatTimer;
     private boolean first = true;
     private boolean playingSong = false;
+    private boolean songDone = false;
     private final Enemy enemy;
     private Battle battle;
     private final Puzzle puzzle = new Puzzle();
@@ -315,6 +317,7 @@ public class Game extends BaseFrame{
 
         drawNotes(g);
     }
+
     public void updateTimer() {
         beatTimer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
             @Override
@@ -324,6 +327,7 @@ public class Game extends BaseFrame{
                     timeCounter++;
                 } else { // Stop the timer after going through the list
                     beatTimer.stop();
+
                 }
             }
         });
@@ -350,6 +354,7 @@ public class Game extends BaseFrame{
     public void createNotes() {
         notes.add(new Note(noteX.get(timeCounter), noteY.get(timeCounter)));
     }
+
     public void drawNotes(Graphics g) {
         for (Note note : notes) {
             note.draw(g);
@@ -358,6 +363,19 @@ public class Game extends BaseFrame{
             // Clicked on note
             if (note.isHovered(mx, my) && mb == 1) {
                 note.setVisible(false);
+                int hitCloseness = note.getApproachRadius() - note.getRADIUS();
+
+                if (hitCloseness <= 15) {
+                    score += 300;
+                } else if (hitCloseness <= 25) {
+                    score += 200;
+                } else if (hitCloseness <= 35) {
+                    score += 100;
+                } else {
+                    score -= 100;
+                }
+                System.out.println(hitCloseness + " " + score);
+                mb = 0;
             }
         }
     }
@@ -381,16 +399,23 @@ public class Game extends BaseFrame{
                     if (event.getType() == LineEvent.Type.STOP) {
                         clip.close();
                         playingSong = false;
+                        songDone = true;
                     }
                 }
             });
 
             // Start playing the audio
-            clip.start();
+            if (!songDone) {
+                clip.start();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void drawMusicScore() {
+
     }
 
     public void drawPuzzle(Graphics g) {
