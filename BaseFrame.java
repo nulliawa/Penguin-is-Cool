@@ -43,6 +43,9 @@ class BaseFrame extends JFrame implements KeyListener, ActionListener, MouseList
         pane.setPreferredSize(new Dimension(w, h));
         addKeyListener(this);
 
+        ImageIcon penguin = new ImageIcon("penguinIcon.png");
+        setIconImage(penguin.getImage());
+
         setResizable(false);
         keys = new boolean[2000];
         add(pane);

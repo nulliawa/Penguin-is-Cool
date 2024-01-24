@@ -148,7 +148,7 @@ public class Game extends BaseFrame implements MouseListener{
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
-        // BACK AND NEXT (CONVENTIONS?)
+        // BACK
         Button back = new Button(20, HEIGHT - 120, 200, 100);
         back.draw(g, MAIN);
         back.drawHover(g, SECONDARY, mx, my);
@@ -159,6 +159,7 @@ public class Game extends BaseFrame implements MouseListener{
             mb = 0;
         }
 
+        // NEXT
         Button next = new Button(WIDTH - 220, HEIGHT - 120, 200, 100);
         next.draw(g, MAIN);
         next.drawHover(g, SECONDARY, mx, my);
@@ -175,9 +176,9 @@ public class Game extends BaseFrame implements MouseListener{
         switch (tutorialScreen) {
             case 0:
                 // Draw story
-                g.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+                g.setFont(new Font("Comic Sans MS", Font.PLAIN, 25));
                 g.setColor(MAIN);
-                g.drawString("Penguin wants to achieve maximum happiness. Help him by defeating every enemy for fish!", 20, 20);
+                g.drawString("Penguin wants to achieve maximum happiness. Help him by defeating every enemy for fish!", 20, 30);
 
                 break;
             case 1:
@@ -187,19 +188,35 @@ public class Game extends BaseFrame implements MouseListener{
                 g.drawString("CONTROLS", 20, 100);
                 g.drawString("SETTINGS", 850, 100);
 
-                String[] instructions = {"W - UP", "A - LEFT", "S - DOWN", "D - RIGHT"};
-                // Rectangle creation
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        g.drawRect(350 * i + 25, 250 * j + 125, 300, 200);
-                    }
-                }
 
-                g.setFont(new Font("Comic Sans MS", Font.PLAIN, 50));
-                g.drawString(instructions[0], 20, 250);
-                g.drawString(instructions[1], 50, 400);
+                g.drawRect(125, 150, 80, 80);
+                g.drawRect(125, 240, 80, 80);
+                g.drawRect(35, 240, 80, 80);
+                g.drawRect(215, 240, 80, 80);
+
+                g.setFont(new Font("Comic Sans MS", Font.PLAIN, 15));
+
+                String[] instructions = {"W - UP", "A - LEFT", "S - DOWN", "D - RIGHT"};
+
+                // UP
+                g.drawString(instructions[0], 141, 190);
+
+                // LEFT
+                g.drawString(instructions[1], 46, 270);
+                Player tutorialPeng = new Player(61, 277);
+                tutorialPeng.draw(g, 2);
+
+                //DOWN
+                g.drawString(instructions[2], 128, 270);
+
+                // RIGHT
+                g.drawString(instructions[3], 220, 270);
+                tutorialPeng.setPos(239, 277);
+                tutorialPeng.draw(g, 3);
+
 
                 // OFFSET CONTROL (to deal with song delays)
+                g.setFont(new Font("Comic Sans MS", Font.PLAIN, 50));
                 g.drawString("Offset: ", 850, 175);
 
                 Button decrease = new Button(1035, 135, 50, 50);
