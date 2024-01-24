@@ -504,7 +504,6 @@ public class Game extends BaseFrame implements MouseListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (screen == GAME) {
-//            System.out.println(codAmount);
             move();
             enemy.destroy();
             if (enemy.pCollision(player)) {
@@ -516,9 +515,12 @@ public class Game extends BaseFrame implements MouseListener{
         if (screen == BATTLE) {
             if (battle.result()) {
                 screen = GAME;
-                if(battle.getWin()){
+                if(battle.getWin()){//win
                     codAmount+=3;
                     memTime[0]=System.currentTimeMillis();//simple timer for win
+                }
+                else{//lose
+
                 }
             } else {
                 battle.move(keys);
