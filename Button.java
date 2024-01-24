@@ -1,8 +1,11 @@
 import java.awt.*;
 
 public class Button {
-    private int x, y, width, height;
-    private Rectangle rect;
+    private final int x;
+    private final int y;
+    private final int width;
+    private final int height;
+    private final Rectangle rect;
 
     public Button(int x, int y, int width, int height) {
         this.x = x;

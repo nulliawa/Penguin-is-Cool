@@ -97,7 +97,6 @@ public class Game extends BaseFrame{
             boss.move(player);
         }
     }
-
     public void drawMenu(Graphics g) {
         final int X = 0, Y = 1, W = 2, H = 3; // Variables for button creation
 

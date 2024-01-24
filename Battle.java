@@ -149,7 +149,7 @@ public class Battle {
     //animation frames
     private static int totalAtks;
     private int hp,blinks=0;
-    private final ArrayList<Projectile> icicles = new ArrayList<Projectile>();
+    private final ArrayList<Projectile> icicles = new ArrayList<>();
     private static final ArrayList<Projectile> clouds=new ArrayList<>();
     private static final ArrayList<Projectile> snow=new ArrayList<>();
     private static final ArrayList<Projectile> spikes=new ArrayList<>();

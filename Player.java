@@ -50,19 +50,19 @@ public class Player {
             Image file=new ImageIcon("penguin/penguinDefeat1.png").getImage();
             BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
             bufferedImage.getGraphics().drawImage(file, 0, 0, null);
-            loseImgs[i]=bufferedImage.getScaledInstance(30,30,Image.SCALE_SMOOTH);;
+            loseImgs[i]=bufferedImage.getScaledInstance(30,30,Image.SCALE_SMOOTH);
         }
         for(int j=1;j<6;j++){//lose animation pics
             Image file=new ImageIcon("penguin/penguinDefeat"+j+".png").getImage();
             BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
             bufferedImage.getGraphics().drawImage(file, 0, 0, null);
-            loseImgs[j+5-1]=bufferedImage.getScaledInstance(30,30,Image.SCALE_SMOOTH);;
+            loseImgs[j+5-1]=bufferedImage.getScaledInstance(30,30,Image.SCALE_SMOOTH);
         }
         for(int k=0;k<5;k++){//lose animation last frames
             Image file=new ImageIcon("penguin/penguinDefeat4.png").getImage();
             BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
             bufferedImage.getGraphics().drawImage(file, 0, 0, null);
-            loseImgs[k+10]=bufferedImage.getScaledInstance(30,30,Image.SCALE_SMOOTH);;
+            loseImgs[k+10]=bufferedImage.getScaledInstance(30,30,Image.SCALE_SMOOTH);
         }
     }
     public double rad(int degree){//direction in degrees

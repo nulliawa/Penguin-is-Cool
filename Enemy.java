@@ -37,7 +37,7 @@ public class Enemy {
             Image file=new ImageIcon("spirit/spiritDeath"+j+".png").getImage();
             BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
             bufferedImage.getGraphics().drawImage(file, 0, 0, null);
-            deaths[j-1]=bufferedImage.getScaledInstance(60,60,Image.SCALE_SMOOTH);;
+            deaths[j-1]=bufferedImage.getScaledInstance(60,60,Image.SCALE_SMOOTH);
         }
         templateWriter();
     }

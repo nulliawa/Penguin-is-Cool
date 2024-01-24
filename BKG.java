@@ -39,8 +39,8 @@ public class BKG {
     private static void templateWriter(){
         //creation of grid array
         for(int ad=0;ad<30;ad++) {
-            blocks.add(new ArrayList<BKG>());
-            walls.add(new ArrayList<BKG>());
+            blocks.add(new ArrayList<>());
+            walls.add(new ArrayList<>());
         }
         //coords based on 100x100 sized squares
         //30x  15y
