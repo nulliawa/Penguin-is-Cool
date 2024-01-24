@@ -11,7 +11,7 @@ public class Note {
     private Ellipse2D.Double circle;
     private boolean visible = true;
     private boolean game = false;
-    Timer timer = new Timer(20, new ActionListener() {
+    Timer timer = new Timer(20, new ActionListener() {//was causing lag before
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             if (visible && game) {
@@ -23,7 +23,7 @@ public class Note {
     public Note(int x, int y) {
         this.x = x;
         this.y = y;
-        timer.start();
+//        timer.start();
         circle = new Ellipse2D.Double(this.x - (double) RADIUS / 2, this.y - (double) RADIUS / 2, RADIUS, RADIUS);
     }
 

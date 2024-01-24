@@ -356,6 +356,7 @@ public class Game extends BaseFrame{
                 timeCounter++;
             }
         }
+        System.out.println(notes);
     }
 
     public void generateNotes() {
@@ -389,7 +390,7 @@ public class Game extends BaseFrame{
         for (Note note : notes) {
             note.draw(g);
             note.setGame(true);
-
+            note.shrinkCircle();//quick fix to stop the lag
             // Clicked on note
             if (note.isHovered(mx, my) && mb == 1 && note.isVisible()) {
                 note.setVisible(false);
