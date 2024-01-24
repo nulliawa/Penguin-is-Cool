@@ -23,7 +23,7 @@ public class Game extends BaseFrame{
     private static final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5, PAUSE = 6;
     public int resume;
-    private int screen = 3;
+    private int screen = MENU;
     private int codAmount=0;
     private static final Image codFishBase =new ImageIcon("codFish.png").getImage();
     private static final Image codUI=codFishBase.getScaledInstance(100,100,Image.SCALE_SMOOTH);
@@ -53,16 +53,16 @@ public class Game extends BaseFrame{
     private boolean playingSong = false;
     private boolean songDone = false;
     private final Enemy enemy;
+    private final Boss boss;
     private Battle battle;
     private final Puzzle puzzle = new Puzzle();
-
     private int tutorialScreen = 0;
-
     private final Color MAIN = new Color(151, 181, 219);
     private final Color SECONDARY = new Color(150, 167, 176);
 
     public Game(String title, int width, int height) {
         super(title, width, height);
+        boss=new Boss(0,1300);
 
         bkg = new BKG(0, 0, 3000, 1500, null);//wip
         BKG.setup();
@@ -85,6 +85,7 @@ public class Game extends BaseFrame{
             bkg.move(keys, player);
             player.move(keys, bkg);
             enemy.move();
+            boss.move(player);
         }
     }
 
@@ -145,6 +146,7 @@ public class Game extends BaseFrame{
     public void drawGame(Graphics g) {
         bkg.draw(g);
         enemy.draw(g);
+        boss.draw(g);
         if(!battle.getLose()) {//player does not lose
             player.draw(g, bkg);
         }
@@ -269,6 +271,7 @@ public class Game extends BaseFrame{
         drawUI(g);
     }
     public void drawUI(Graphics g){
+        g.setColor(Color.black);
         g.drawImage(codUI,WIDTH-codUI.getWidth(null),0,null);
         Font numCod =new Font("Comic Sans MS", Font.PLAIN, 40);
         g.setFont(numCod);
@@ -572,6 +575,10 @@ public class Game extends BaseFrame{
                 screen = BATTLE;
                 battle = new Battle(battle.getHP());//new battle carries over hp
                 battle.start();
+            }
+            else if(boss.collides(player)){
+                screen=MUSIC;
+                System.out.println("BOSS");
             }
         }
         if (screen == BATTLE) {
