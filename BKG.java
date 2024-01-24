@@ -56,7 +56,7 @@ public class BKG {
                         "3 0 0 0 0 0 0 0 A A 0 2 2 0 0 0 2 2 0 A 0 0 0 0 0 1 1 0 0 4\n" +
                         "3 0 0 0 0 0 0 0 0 A 4 W W 3 0 4 W W 3 A 0 0 0 0 0 0 0 0 0 4\n" +
                         "3 0 0 0 0 0 0 0 0 A 0 1 1 0 0 4 W W 3 A 0 0 0 0 0 0 2 2 0 4\n" +
-                        "3 0 0 0 0 0 0 0 0 A A # A A 0 0 1 1 0 A A 5 A 0 0 9 W W 8 2\n" +
+                        "3 0 0 0 0 0 0 0 0 A A A A A 0 0 1 1 0 A A 5 A 0 0 9 W W 8 2\n" +
                         "8 2 2 2 2 2 2 2 2 2 2 2 0 A A 0 0 0 0 0 0 0 A 0 4 W W W W W\n" +
                         "W W W W W W W W W W W W 3 0 A 0 0 0 0 0 0 0 A 0 0 7 W W W W\n" +
                         "W W W W W W W W W W W W 3 0 A A 0 0 0 0 0 0 A 0 0 0 1 1 1 1\n" +
