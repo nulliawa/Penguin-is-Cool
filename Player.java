@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 //player movement controlled by WASD in both battle and overworld
 //contains animation for player
+//both player and bkg are needed for proper movement
 //penguin is cool :)
 //https://spritedatabase.net/file/6558
 public class Player {

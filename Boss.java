@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 //boss seeks player after they are in range
 //moves back and forth in set bounds
+//hard coded boss hitboxes
 //Orca - https://opengameart.org/content/swimming-whale
 public class Boss{
     private int x,y,width,height,selfSpdX,selfSpdY,rectX,rectY;
