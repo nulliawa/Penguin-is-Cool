@@ -17,7 +17,7 @@ public class Game extends BaseFrame{
     private static final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5, PAUSE = 6;
     public int resume;
-    private int screen = MENU;
+    private int screen = 3;
     private int codAmount=0;
     private static final Image codFishBase =new ImageIcon("codFish.png").getImage();
     private static final Image codUI=codFishBase.getScaledInstance(100,100,Image.SCALE_SMOOTH);
@@ -30,7 +30,7 @@ public class Game extends BaseFrame{
     private final ArrayList<Integer> noteY = new ArrayList<>();
     private final ArrayList<Note> notes = new ArrayList<>();
     private int offset = 100; // CHANGE LATENCY BASED OFF OF YOUR MACHINE
-    private final int[] times = {2300, 700, 1200, 700, 700, 700, 700, 700, 1200, 1200, 700, 10000, 10000, 10000, -1};
+    private final int[] times = {2300, 700, 1200, 700, 700, 700, 700, 700, 1200, 1200, 700, 20 * 1000, 20 * 1000, 20 * 1000, -1};
     private int timeCounter = 0;
     private int score = 0;
     Timer firstTimer = new Timer(times[0], new ActionListener() { // Timer goes off at different intervals listed in array times
@@ -327,7 +327,6 @@ public class Game extends BaseFrame{
                     timeCounter++;
                 } else { // Stop the timer after going through the list
                     beatTimer.stop();
-
                 }
             }
         });
@@ -356,6 +355,8 @@ public class Game extends BaseFrame{
     }
 
     public void drawNotes(Graphics g) {
+        g.setColor(Color.white);
+        g.drawString(score+"", 20, 20);
         for (Note note : notes) {
             note.draw(g);
             note.setGame(true);
