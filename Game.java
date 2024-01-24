@@ -25,6 +25,7 @@ public class Game extends BaseFrame{
     private static final Image codUI=codFishBase.getScaledInstance(100,100,Image.SCALE_SMOOTH);
     private double codAngle=0;
     private static final Image heart=new ImageIcon("heart.png").getImage().getScaledInstance(50,50,Image.SCALE_SMOOTH);
+    private static final Image pengEnd = new ImageIcon("pengend.png").getImage();
     private final Player player;
     private final BKG bkg;
     private final long[] memTime=new long[3];
@@ -32,10 +33,7 @@ public class Game extends BaseFrame{
     private final ArrayList<Integer> noteY = new ArrayList<>();
     private final ArrayList<Note> notes = new ArrayList<>();
     private int offset = 0; // CHANGE LATENCY BASED OFF OF YOUR MACHINE
-    private final int[] times = {-1, 2000, 800, 1000, 800, 700, 700, 1200, 4000, 4000, 4000, 4000, -1};
-    // NOT WORKING PROPERLY
-
-    // private final int[] times = {2300, 700, 8000, 700, 700, 700, 700, 700, 1200, 1200, 700, 20 * 1000, 20 * 1000, 20 * 1000, -1};
+    private final int[] times = {-1, 2000, 800, 1000, 800, 700, 700, 1200, 3900, 4000, 4000, 4000, 400, 500, 700, 500, -1};
     private int timeCounter = 0;
     private int score = 0;
 //    Timer firstTimer = new Timer(times[0], new ActionListener() { // Timer goes off at different intervals listed in array times
@@ -288,8 +286,11 @@ public class Game extends BaseFrame{
                 String[] explain=new String[]{"The more fish the merrier!","However... if you find yourself in a pinch...",
                 "You can always have a snack to gain back some vigour"};
                 for(int e=0;e<explain.length;e++){
-                    g.drawString(explain[e],20,300+e*60);
+                    g.drawString(explain[e],20,260+e*60);
                 }
+                g.drawString("Fish heals Penguin 1 HP each!", 20, 470);
+                g.drawString("Dodge enemy projectiles to help Penguin gain 3 fish!", 20, 510);
+                g.drawString("Fight the final orca boss for a boatload of fish...", 20, 550);
         }
     }
 
@@ -390,12 +391,12 @@ public class Game extends BaseFrame{
         noteX.add((int) (Math.random() * 1000 + 200)); // Generate the first note
         noteY.add((int) (Math.random() * 500 + 200));
 
-        for (int i = 0; i < 99; i++) {
+        for (int i = 0; i < times.length + 5; i++) {
 
             int tmpX = (int) (Math.random() * 1000 + 200); // Generate new notes
             int tmpY = (int) (Math.random() * 500 + 200);
 
-            if (Math.sqrt(Math.pow((tmpX - noteX.getLast()), 2) + Math.pow((tmpY - noteY.getLast()), 2)) >= 125) { // Compare distance to last note
+            if (Math.sqrt(Math.pow((tmpX - noteX.getLast()), 2) + Math.pow((tmpY - noteY.getLast()), 2)) >= 150) { // Compare distance to last note
                 noteX.add(tmpX);
                 noteY.add(tmpY);
             }
@@ -409,7 +410,11 @@ public class Game extends BaseFrame{
 
     public void drawNotes(Graphics g) {
         g.setColor(Color.white);
-        g.drawString(score+"", 20, 20);
+        g.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
+        g.drawString(score+"", 20, 50);
+
+        // WARNING: VERY LAGGY
+        // TRIED -> SMALL ARRAYLIST, DRAWING ONE NOTE AT A TIME
         for (Note note : notes) {
             note.draw(g);
             note.setGame(true);
@@ -467,8 +472,13 @@ public class Game extends BaseFrame{
         }
     }
 
-    public void drawMusicScore() {
+    public void drawMusicScore(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, WIDTH, HEIGHT);
+        g.drawImage(pengEnd, 0, 0, this);
 
+        g.setColor(Color.WHITE);
+        g.drawString("FINAL SCORE: " + score, 200, HEIGHT / 2);
     }
 
     public void drawPuzzle(Graphics g) {
@@ -538,6 +548,9 @@ public class Game extends BaseFrame{
             drawTutorial(g);
         } else if (screen == MUSIC) {
             drawSong(g);
+            if (songDone) {
+                drawMusicScore(g);
+            }
         } else if (screen == BATTLE) {
             drawBattle(g);
         } else if (screen == PUZZLE) {
@@ -578,6 +591,9 @@ public class Game extends BaseFrame{
         g2d.dispose();
 
         return rotatedImage;
+    }
+    public void setScore(int score) {
+        this.score = score;
     }
     @Override
     public void keyPressed(KeyEvent e) {//constant new checking for keys[], based on actionPerformed()
