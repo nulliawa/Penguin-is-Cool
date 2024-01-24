@@ -99,7 +99,7 @@ public class Enemy {
             }
         }
     }
-    public void draw(Graphics g, int type){
+    public void draw(Graphics g, int type){//type0=idle, type1=death
         frame++;//which frame needs to be put up, constantly increasing
         if(frame>=2147483647){//limit on ints
             frame=0;

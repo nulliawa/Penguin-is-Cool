@@ -24,6 +24,7 @@ public class Game extends BaseFrame implements MouseListener{
     private static final Image codUI=codFishBase.getScaledInstance(100,100,Image.SCALE_SMOOTH);
     private double codAngle=0;
     private static final Image heart=new ImageIcon("heart.png").getImage().getScaledInstance(50,50,Image.SCALE_SMOOTH);
+    private static final Image[] loseImgs=new Image[5];
     private final Player player;
     private final BKG bkg;
     private long[] memTime=new long[2];
@@ -56,6 +57,12 @@ public class Game extends BaseFrame implements MouseListener{
 
     public Game(String title, int width, int height) {
         super(title, width, height);
+        for(int j=1;j<6;j++){//lose animation pics
+            Image file=new ImageIcon("penguin/penguinDefeat"+j+".png").getImage();
+            BufferedImage bufferedImage = new BufferedImage(file.getWidth(null),file.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+            bufferedImage.getGraphics().drawImage(file, 0, 0, null);
+            loseImgs[j-1]=bufferedImage.getScaledInstance(30,30,Image.SCALE_SMOOTH);;
+        }
 
         bkg = new BKG(0, 0, 3000, 1500, null);//wip
         BKG.setup();
@@ -99,7 +106,6 @@ public class Game extends BaseFrame implements MouseListener{
         int[][] textCoordinates = {{WIDTH / 2 - 45, 365}, {WIDTH / 2 - 95, 620}};
         ArrayList<Button> buttons = new ArrayList<>();
 
-
         // Button creation
         for (int i = 0; i < buttonCoordinates.length; i++) {
             // Creating new button
@@ -122,12 +128,9 @@ public class Game extends BaseFrame implements MouseListener{
         //temp enemy draw
         Enemy menuEnemy1=new Enemy(1200,200,0,0);
         menuEnemy1.draw(g,0);
-//        Battle menuDraw1=new Battle(-1);
-//        Battle.setUp();
-//        menuDraw1.drawIcicle(g,200,200);
-
 
         g.drawImage(codFishBase,WIDTH- codFishBase.getWidth(null),HEIGHT- codFishBase.getHeight(null),null);
+
         // Button function
         if (buttons.get(0).isClicked(mx, my, mb)) {
             screen = GAME;
@@ -142,15 +145,7 @@ public class Game extends BaseFrame implements MouseListener{
         bkg.draw(g);
         enemy.draw(g);
         player.draw(g,bkg);
-        g.drawImage(codUI,WIDTH-codUI.getWidth(null),0,null);
-        Font UI=new Font("Comic Sans MS", Font.PLAIN, 40);
-        g.setFont(UI);
-        String codText=String.valueOf(codAmount);
-        g.drawString(codText,WIDTH-codUI.getWidth(null)-codText.length()*20,60);
-        g.setColor(Color.RED);//health bar
-        g.drawRect(20,20,400,50);
-        g.fillRect(20,20,400*battle.getHP()/10,50);
-        g.drawImage(heart,440,20,null);
+        drawUI(g);
     }
 
     public void drawTutorial(Graphics g) {
@@ -251,12 +246,39 @@ public class Game extends BaseFrame implements MouseListener{
 
     public void drawBattle(Graphics g) {
         battle.draw(g);
-        g.setColor(Color.RED);//health bar
+        drawUI(g);
+    }
+    public void drawUI(Graphics g){
+        g.drawImage(codUI,WIDTH-codUI.getWidth(null),0,null);
+        Font numCod =new Font("Comic Sans MS", Font.PLAIN, 40);
+        g.setFont(numCod);
+        String codText=String.valueOf(codAmount);//amount of fish and image
+        g.drawString(codText,WIDTH-codUI.getWidth(null)-codText.length()*20,60);
+        //20 gap for all
+        //health bar
+        g.setColor(Color.RED);
         g.drawRect(20,20,400,50);
         g.fillRect(20,20,400*battle.getHP()/10,50);
         g.drawImage(heart,440,20,null);
-    }
-    public void drawUI(Graphics g){
+
+
+        //button to increase health at cost of fish
+        Button fishToHealth=new Button(20,90,200,100);
+        fishToHealth.draw(g,MAIN);
+        fishToHealth.drawHover(g,SECONDARY,mx,my);
+        if (fishToHealth.isHovered(mx, my)) {
+            g.setColor(new Color(100, 100, 100));
+        } else {
+            g.setColor(SECONDARY);
+        }
+        g.drawString("to",105,150);
+        if(fishToHealth.isClicked(mx,my,mb)&&battle.getHP()<10&&codAmount>0){//10 is max hp
+            battle.setHP(battle.getHP()+1);
+            codAmount-=1;
+            mb=0;
+        }
+        g.drawImage(codUI,20,90,null);
+        g.drawImage(heart,145,115,null);
 
     }
 
@@ -387,7 +409,7 @@ public class Game extends BaseFrame implements MouseListener{
         g.setFont(new Font("Comic Sans MS", Font.BOLD, 50));
         g.drawString("+3 Fish",WIDTH/2-100,HEIGHT/2+200);
         if(timeMill(3000,0)){
-            battle.setResult(false);//stop win animation
+            battle.setWin(false);//stop win animation
             codAngle=0;
         }
     }
@@ -448,7 +470,7 @@ public class Game extends BaseFrame implements MouseListener{
     public void keyPressed(KeyEvent e) {//constant new checking for keys[], based on actionPerformed()
         super.keyPressed(e);
         keys[e.getKeyCode()] = true;
-        if(screen!=PAUSE&&screen!=MENU&&screen!=PUZZLE) {
+        if(screen!=PAUSE&&screen!=MENU&&screen!=TUTORIAL&&!battle.getWin()) {
             if(keys[ESC]) {
                 resume = screen;
                 screen = PAUSE;
@@ -465,7 +487,8 @@ public class Game extends BaseFrame implements MouseListener{
             }
             else if(keys[KeyEvent.VK_ENTER]&&resume==BATTLE){
                 screen=GAME;
-                battle.setResult(false);
+                battle.setWin(false);
+                battle.setLose(true);
                 battle.stopAll();
                 super.timer.start();
             }//hi :)

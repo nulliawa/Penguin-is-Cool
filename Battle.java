@@ -236,6 +236,9 @@ public class Battle {
     public int getHP(){
         return hp;
     }
+    public void setHP(int setTo){
+        hp=setTo;
+    }
     public String getHealthStr(){
         return String.valueOf(hp);
     }
@@ -259,9 +262,11 @@ public class Battle {
     public boolean getWin(){
         return win;
     }
-    public void setResult(boolean won){
+    public void setWin(boolean won){
         win=won;
-        lose=!won;
+    }
+    public void setLose(boolean setTo){
+        lose=setTo;
     }
     private void nextAtk(){
         betweenTimer.stop();//stop timer for next time
