@@ -31,7 +31,7 @@ public class Game extends BaseFrame implements MouseListener{
     private final ArrayList<Integer> noteY = new ArrayList<>();
     private final ArrayList<Note> notes = new ArrayList<>();
     private int offset = 100; // CHANGE LATENCY BASED OFF OF YOUR MACHINE
-    private final int[] times = {2300, 700, 1200, 700, -1};
+    private final int[] times = {2300, 700, 1200, 700, 700, 700, 700, 700, 1200, 1200, -1};
     private int timeCounter = 0;
     Timer firstTimer = new Timer(times[0], new ActionListener() { // Timer goes off at different intervals listed in array times
         @Override
@@ -301,10 +301,10 @@ public class Game extends BaseFrame implements MouseListener{
     }
 
     public void drawSong(Graphics g) {
-        addOffset();
         if (!playingSong) {
             playMusic();
             playingSong = true;
+            addOffset();
         }
         if (first) {
             firstTimer.start();
@@ -333,19 +333,19 @@ public class Game extends BaseFrame implements MouseListener{
     }
 
     public void generateNotes() {
-        for (int i = 0; i < 100; i++) {
-            if (i == 0) {
-                noteX.add((int) (Math.random() * 1000 + 200)); // Generate the first note
-                noteY.add((int) (Math.random() * 500 + 200));
-            } else {
-                int tmpX = (int) (Math.random() * 1000 + 200); // Generate new notes
-                int tmpY = (int) (Math.random() * 500 + 200);
+        noteX.add((int) (Math.random() * 1000 + 200)); // Generate the first note
+        noteY.add((int) (Math.random() * 500 + 200));
 
-                if (Math.sqrt(Math.pow((tmpX - noteX.getLast()), 2) + Math.pow((tmpY - noteY.getLast()), 2)) >= 150) { // Compare distance to last note
-                    noteX.add(tmpX);
-                    noteY.add(tmpY);
-                }
+        for (int i = 0; i < 99; i++) {
+
+            int tmpX = (int) (Math.random() * 1000 + 200); // Generate new notes
+            int tmpY = (int) (Math.random() * 500 + 200);
+
+            if (Math.sqrt(Math.pow((tmpX - noteX.getLast()), 2) + Math.pow((tmpY - noteY.getLast()), 2)) >= 125) { // Compare distance to last note
+                noteX.add(tmpX);
+                noteY.add(tmpY);
             }
+
         }
     }
 
