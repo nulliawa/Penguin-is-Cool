@@ -25,7 +25,7 @@ public class Game extends BaseFrame{
     private static final Image codUI=codFishBase.getScaledInstance(100,100,Image.SCALE_SMOOTH);
     private double codAngle=0;
     private static final Image heart=new ImageIcon("heart.png").getImage().getScaledInstance(50,50,Image.SCALE_SMOOTH);
-    private static final Image pengEnd = new ImageIcon("pengend.png").getImage();
+    private static final Image pengEnd = new ImageIcon("pengend.png").getImage().getScaledInstance(WIDTH,HEIGHT,Image.SCALE_SMOOTH);
     private final Player player;
     private final BKG bkg;
     private final long[] memTime=new long[3];
