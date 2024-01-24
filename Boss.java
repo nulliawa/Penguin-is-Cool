@@ -1,11 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-//boss seeks player when they are in range
+//boss seeks player after they are in range
 //moves back and forth in set bounds
 
 public class Boss{
-    private static final int WIDTH = 1400, HEIGHT = 800;
     private int x,y,width,height,selfSpdX,selfSpdY,rectX,rectY;
     private final Rectangle bounds, triggerBox,hitbox;
     private static final Image[] swimRightImgs =new Image[7];
@@ -41,9 +40,6 @@ public class Boss{
     }
     public Rectangle getRect(){
         return new Rectangle(x,y,width,height);
-    }
-    public Rectangle getTriggerBox(){
-        return triggerBox;
     }
     public void move(Player player){//moves according to background offset
         int pX=player.getRect().x,pY=player.getRect().y,pW=player.getRect().width,pH=player.getRect().height;
@@ -82,16 +78,25 @@ public class Boss{
         if(frame>=2147483647){//limit on ints
             frame=0;
         }
-        g.setColor(Color.RED);
-        g.fillRect(triggerBox.x, triggerBox.y, triggerBox.width, triggerBox.height);
-        g.setColor(Color.green);
-        g.fillRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
         int index=frame/5% swimRightImgs.length;
         if(selfSpdX>0) {
             g.drawImage(swimRightImgs[index], x, y, null);
         }
         if(selfSpdX<0){
             g.drawImage(swimLeftImgs[index],x,y,null);
+        }
+    }
+    public void draw(Graphics g,int type,int x, int y){//type0=left,type1=right
+        frame++;
+        if(frame>=2147483647){//limit on ints
+            frame=0;
+        }
+        int index=frame/5% swimRightImgs.length;
+        if(type==0){
+            g.drawImage(swimLeftImgs[index],x,y,null);
+        }
+        else if(type==1){
+            g.drawImage(swimRightImgs[index],x,y,null);
         }
     }
 }

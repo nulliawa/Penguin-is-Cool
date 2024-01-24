@@ -149,7 +149,6 @@ public class Battle {
         this.win=false;
         this.lose=false;
         this.hp=hp;
-        //TEMP
         //new screen with new projectiles, player set to middle
     }
     //one orientation only rotation
@@ -243,7 +242,7 @@ public class Battle {
     public void setHP(int setTo){
         hp=setTo;
     }
-    private void hit(Projectile projectile){
+    private void hit(Projectile projectile){//projectile hits player
         if(projectile.getRect().intersects(player.getRect())&&!iFrame){
             hp-=1;
             iFrame=true;//turns invincibility frames on where player is not hurt
@@ -435,7 +434,6 @@ private void createSpikes(boolean topBot,boolean leftRight){
     }
 
     public void move(boolean[] keys) {
-//        runProj(projectiles);
         if (!snow.isEmpty()) {
             runProj(snow);
         }
@@ -489,13 +487,17 @@ private void createSpikes(boolean topBot,boolean leftRight){
         }
         player.move(keys);
     }
+    public void drawBack(Graphics g){
+        //background
+        g.drawImage(battleBack,0,0,null);
+    }
     public void draw(Graphics g){
         if(frame>=2147483647){//limit on ints
             frame=0;
         }
         frame++;
-        //background
-        g.drawImage(battleBack,0,0,null);
+        drawBack(g);
+
         if(blinks>=10){//10 blinks/1 second later
             blinks=0;
             iFrame=false;//turns invicibility frames off

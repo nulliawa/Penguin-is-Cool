@@ -197,10 +197,14 @@ public class Game extends BaseFrame{
                 g.setColor(MAIN);
                 String[] story=new String[]{"Penguin wants to achieve maximum happiness.","Help him by defeating every enemy for fish!",
                         "Ferocious ice spirits block our beloved penguin's path.","Can you survive their onslaught?","It is an arduous journey.",
-                        "Beware of what lies at the end of your adventure"};
+                        "Beware of what lies at the end of your adventure..."};
                 for(int st=0;st<story.length;st++){
                     g.drawString(story[st],20,40+60*st);
                 }
+                Enemy enemyTut=new Enemy(80,500,0,0);
+                enemyTut.draw(g,1);
+                Boss bossTut=new Boss();
+                bossTut.draw(g,1,1090,500);
                 break;
             case 1:
                 // Controls
@@ -275,8 +279,16 @@ public class Game extends BaseFrame{
                 g.setFont(new Font("Comic Sans MS", Font.PLAIN, 23));
                 g.drawString(offset + "", 1088, 170);
                 break;
-            case 2:
+            case 2://explain conversion
                 drawUI(g);
+                drawWin(g);
+                g.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
+                g.setColor(MAIN);
+                String[] explain=new String[]{"The more fish the merrier!","However... if you find yourself in a pinch...",
+                "You can always have a snack to gain back some vigour"};
+                for(int e=0;e<explain.length;e++){
+                    g.drawString(explain[e],20,300+e*60);
+                }
         }
     }
 
@@ -506,7 +518,7 @@ public class Game extends BaseFrame{
     public void drawLose(Graphics g){
         player.stopMove();
         BKG.stopMove();
-        if(player.loseAnimation(g)){
+        if(player.loseAnimation(g)&&screen!=TUTORIAL){
             screen=PAUSE;
         }
     }
