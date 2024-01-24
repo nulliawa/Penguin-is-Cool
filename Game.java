@@ -11,14 +11,14 @@ import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import java.io.File;
 //main game extending baseframe, start at menu
-//ESC TO PAUSE (any screen)
+//ESC TO PAUSE (during GAME and BATTLE)
 
 public class Game extends BaseFrame{
     private static final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5, PAUSE = 6;
     public int resume;
     private int screen = MENU;
-    private int codAmount=99;
+    private int codAmount=0;
     private static final Image codFishBase =new ImageIcon("codFish.png").getImage();
     private static final Image codUI=codFishBase.getScaledInstance(100,100,Image.SCALE_SMOOTH);
     private double codAngle=0;
@@ -73,7 +73,7 @@ public class Game extends BaseFrame{
 
     public void move() {
         // If player gets to the edge of the background, stop moving the background, instead move the player
-        if(!battle.getWin()) {
+        if(!battle.getWin()&&!battle.getLose()) {
             bkg.move(keys, player);
             player.move(keys, bkg);
             enemy.move();
@@ -114,14 +114,15 @@ public class Game extends BaseFrame{
             g.setColor(Color.WHITE);
             g.drawString(buttonText[i], textCoordinates[i][X], textCoordinates[i][Y]);
         }
-        //temp player draw
+        //player draw
         Player menuPlayer1=new Player(165,200);
         menuPlayer1.draw(g,0);
-        //temp enemy draw
+        //enemy
         Enemy menuEnemy1=new Enemy(1200,200,0,0);
         menuEnemy1.draw(g,0);
-
+        //cods
         g.drawImage(codFishBase,WIDTH- codFishBase.getWidth(null),HEIGHT- codFishBase.getHeight(null),null);
+        g.drawImage(rotateImage(codFishBase,Math.PI),0,HEIGHT-codFishBase.getHeight(null),null);
 
         // Button function
         if (buttons.get(0).isClicked(mx, my, mb)) {
@@ -290,7 +291,6 @@ public class Game extends BaseFrame{
         }
         g.drawImage(codUI,20,90,null);
         g.drawImage(heart,145,115,null);
-
     }
 
     public void addOffset() {
@@ -315,7 +315,6 @@ public class Game extends BaseFrame{
 
         drawNotes(g);
     }
-
     public void updateTimer() {
         beatTimer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
             @Override
@@ -350,10 +349,6 @@ public class Game extends BaseFrame{
 
     public void createNotes() {
         notes.add(new Note(noteX.get(timeCounter), noteY.get(timeCounter)));
-    }
-
-    public void testCreate(){
-
     }
     public void drawNotes(Graphics g) {
         for (Note note : notes) {
@@ -403,14 +398,23 @@ public class Game extends BaseFrame{
     }
 
     public void drawPause(Graphics g) {
+
         //layer underneath (before pause)
         if (resume == GAME) {
             drawGame(g);
         } else if (resume == BATTLE) {
             drawBattle(g);
+            g.setColor(Color.black);
+            g.setFont(new Font("SnowtopCaps", Font.PLAIN, 70));
+            g.drawString("[SPACE]GIVE UP",400,290);
         }
         g.setColor(new Color(10, 10, 10, 100));//semi transparent
         g.fillRect(0, 0, WIDTH, HEIGHT);//whole screen
+
+        g.setColor(Color.black);
+        g.setFont(new Font("SnowtopCaps", Font.PLAIN, 70));
+        g.drawString("[ESC]RESUME",400,390);
+        g.drawString("[ENTER]MAIN MENU",400,490);
     }
     public void drawWin(Graphics g){
         player.stopMove();
@@ -430,7 +434,6 @@ public class Game extends BaseFrame{
     public void drawLose(Graphics g){
         player.stopMove();
         BKG.stopMove();
-        System.out.println(battle.getLose());
         if(player.loseAnimation(g)){
             battle.setLose(false);
         }
@@ -502,17 +505,19 @@ public class Game extends BaseFrame{
             }
         }
         else if(screen==PAUSE){
-            if(keys[ESC]) {
+            if(keys[ESC]) {//resume
                 screen = resume;
                 super.timer.start();
             }
-            else if(keys[SPACE]){
+            else if(keys[KeyEvent.VK_ENTER]){//quit to main menu
                 screen=MENU;
                 super.timer.start();
             }
-            else if(keys[KeyEvent.VK_ENTER]&&resume==BATTLE){
+            else if(keys[SPACE]&&resume==BATTLE){//forfeit battle
+                Player.setFrames(0);
                 screen=GAME;
                 battle.setWin(false);
+                battle.setHP(0);
                 battle.setLose(true);
                 battle.stopAll();
                 super.timer.start();

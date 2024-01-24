@@ -130,10 +130,13 @@ public class Battle {
     private boolean win,lose;
     private final long[] memTime=new long[10];
     private static final double PI=Math.PI;
-    private static final int WIDTH = 1400, HEIGHT = 800,SIZE=30,RIGHT=0,LEFT=180,UP=90,DOWN=270;
-    private static final int SNOWGEN=100,CLOUDSTALL=10000,ICICLESTALL=10000,BETWEEN =4000,ICEANI=6,SPIKEANI=3,SEEKERANI=9;
+    private static final int WIDTH = 1400, HEIGHT = 800,RIGHT=0,UP=90,LEFT=180,DOWN=270;
+    private static final int SNOWGEN=100,CLOUDSTALL=10000,ICICLESTALL=10000,SEEKERSTALL=12000,BETWEEN =4000,ICEANI=5,SPIKEANI=3,SEEKERANI=9;
+    //time stats for easy adjustment
     private static final int CLOUD=0,SNOW=1,ICICLE=2,BLINK=3,SEEKER=4;
+    //index of memTime for repeatable actions timer timeMill()
     private static int frame;
+    //animation frames
     private static int totalAtks;
     private int hp,blinks=0;
     private final ArrayList<Projectile> icicles = new ArrayList<Projectile>();
@@ -245,7 +248,6 @@ public class Battle {
     private void hit(Projectile projectile){
         if(projectile.getRect().intersects(player.getRect())&&!iFrame){
             hp-=1;
-            System.out.println(hp);
             iFrame=true;//turns invincibility frames on where player is not hurt
             if(hp<=0){
                 lose=true;
@@ -288,7 +290,7 @@ public class Battle {
         }
     }
     //rest period in between attacks
-    private final Timer betweenTimer = new Timer(4000, new ActionListener() {
+    private final Timer betweenTimer = new Timer(BETWEEN, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             totalAtks++;
@@ -309,7 +311,7 @@ public class Battle {
             betweenTimer.start();//start next sequence
         }
     });
-    private final Timer icicleTimer=new Timer(10000, new ActionListener() {
+    private final Timer icicleTimer=new Timer(ICICLESTALL, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             icicleTimer.stop();//stop icicles
@@ -317,7 +319,7 @@ public class Battle {
             betweenTimer.start();//next attack
         }
     });
-    private final Timer seekerTimer=new Timer(12000, new ActionListener() {
+    private final Timer seekerTimer=new Timer(SEEKERSTALL, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             seekerTimer.stop();
@@ -509,37 +511,21 @@ private void createSpikes(boolean topBot,boolean leftRight){
         else{
             player.draw(g);
         }
-//        g.setColor(Color.red);
 
         for(Projectile flake:snow){
             flake.draw(g);//snows[1-7] inclusive are snowflake variations
         }
         for(Projectile poke:spikes){
-//            g.fillRect(poke.x,poke.y,poke.width,poke.height);
             poke.spikeAnimation(g);
         }
         for(Projectile iceType1: icicles){
-//            g.fillRect(iceType1.x,iceType1.y,iceType1.width, iceType1.height);
             iceType1.icicleAnimation(g);
         }
         for(Projectile iceType2: seekers){
-//            g.fillRect(iceType2.x,iceType2.y,iceType2.width,iceType2.height);
             iceType2.seekerAnimation(g);
         }
         for(Projectile nimbus:clouds){
             nimbus.draw(g);
         }
     }
-//    public void drawIcicle(Graphics g,int posX,int posY){
-//        if(frame>=2147483647){//limit on ints
-//            frame=0;
-//        }
-//        frame++;
-//        Projectile drawIce=new Projectile(posX,posY,150,75,0,0,null);
-//        drawIce.icicleAnimation(g);
-//        for(int rota=0;rota<10;rota++){//rotates base image for creation of new icicle image facing towards player
-//            drawIce.iceImgs[rota] = rotateImage(iciclesBase[rota], drawIce.heading).getScaledInstance(150, 75, Image.SCALE_SMOOTH);
-//        }
-//        g.drawImage(iciclesBase[0],posX,posY,null);
-//    }
 }
