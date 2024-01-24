@@ -12,10 +12,8 @@ public class Player {
     private int spdX =0, spdY =0,walkSpd=10;
     private static int frame;
     private static boolean lastDirection;//true=left false=right
-    private int interactionDistance = 10, offsetDistance = 10; // Within interactionDistance
     private static final Image[] walkLeft=new Image[4];
     private static final Image[] walkRight=new Image[4];
-    private static final Image[] defeatImgs=new Image[5];
     private static final Image[] idleLeft =new Image[4];
     private static final Image[] idleRight=new Image[4];
     private static final Image[] loseImgs=new Image[15];
@@ -239,14 +237,6 @@ public class Player {
         }
         return 0;//no collisionY on either side
     }
-
-//    public void interact(int keyCode, Puzzle puzzle) {
-//        final int SPACE = KeyEvent.VK_SPACE;
-//        // Check if penguin is close enough to an object
-//        if (Math.hypot(puzzle.getX() - playerX, puzzle.getY()) <= interactionDistance) {
-//            // If getting close enough to an object, it changes
-//        }
-//    }
 
     public void setPos(int x,int y){
         this.x=x;

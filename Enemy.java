@@ -2,15 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.PropertyResourceBundle;
 
 //enemies are golems
 //collide with them to initiate battle
 public class Enemy {
-    private static final int WIDTH = 1400, HEIGHT = 800;
     private int x, y, width, height,spdX,spdY;
     private static final ArrayList<Enemy> enemies=new ArrayList<>();
-    private static final ArrayList<Integer[]> coords=new ArrayList<>();
     public static int frame=0;
     private static final int IDLETIME=5,DEATHTIME=5;
     private static final Image[] idles=new Image[6];
@@ -42,23 +39,25 @@ public class Enemy {
             bufferedImage.getGraphics().drawImage(file, 0, 0, null);
             deaths[j-1]=bufferedImage.getScaledInstance(60,60,Image.SCALE_SMOOTH);;
         }
-        String template=
-                "6 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 7\n" +
-                "3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 A A A A A $ A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 $ 0 0 0 A 0 A A A A A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "A A 5 A A A A # 0 0 0 0 A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 A A A 0 0 0 0 A 5 A A A A 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 A 0 0 0 0 A 5 A A A A A 0 0 0 0 $ 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 A A 0 2 2 $ $ 0 0 0 0 A 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 0 A 4 W W 3 0 0 0 0 0 A 0 0 0 0 0 0 $ 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 0 A 0 1 1 0 0 0 0 0 0 A 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 0 A A A A A 0 0 0 0 0 A A $ A 0 0 0 0 0 0 4\n" +
-                "8 2 2 2 2 2 2 2 2 2 2 2 0 0 A 0 0 0 0 0 0 0 A 0 0 0 0 0 0 4\n" +
-                "W W W W W W W W W W W W 3 0 A $ 0 0 0 0 0 $ A 0 0 0 0 0 0 4\n" +
-                "W W W W W W W W W W W W 3 0 A A 0 0 0 0 0 0 A 0 0 0 0 0 0 4\n" +
-                "W W W W W W W W W W W W 8 2 2 A 2 2 2 2 2 2 A 2 2 2 2 2 2 9";
-
+        templateWriter();
+    }
+    private static void templateWriter(){
+        //adds enemy at $
+        String template="6 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 7\n" +
+                        "3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 0 0 0 0 0 0 0 2 2 0 4\n" +
+                        "3 0 0 0 0 0 A A A A A 0 A 0 0 0 4 W W 3 0 0 0 0 2 9 W W 3 4\n" +
+                        "3 0 0 0 0 0 A A A A A A A 0 0 0 0 7 W 3 0 0 0 9 W W W W 3 4\n" +
+                        "A A 5 A A A A # 0 0 0 0 A A 0 0 0 0 1 0 0 0 4 W W W W 6 0 4\n" +
+                        "3 0 0 0 0 0 A A A 0 0 0 0 A 5 A A A A 0 0 0 0 7 W W W 3 0 4\n" +
+                        "3 0 0 0 0 0 0 0 A 0 0 0 0 A 5 A A A A A 0 0 0 0 7 W W 3 0 4\n" +
+                        "3 0 0 0 0 0 0 0 A A 0 2 2 0 0 0 2 2 0 A 0 0 0 0 0 1 1 0 0 4\n" +
+                        "3 0 0 0 0 0 0 0 0 A 4 W W 3 0 4 W W 3 A 0 0 0 0 0 0 0 0 0 4\n" +
+                        "3 0 0 0 0 0 0 0 0 A 0 1 1 0 0 4 W W 3 A 0 0 0 0 0 0 2 2 0 4\n" +
+                        "3 0 0 0 0 0 0 0 0 A A A A A 0 0 1 1 0 A A 5 A 0 0 9 W W 8 2\n" +
+                        "8 2 2 2 2 2 2 2 2 2 2 2 0 A A 0 0 0 0 0 0 0 A 0 4 W W W W W\n" +
+                        "W W W W W W W W W W W W 3 0 A 0 0 0 0 0 0 0 A 0 0 7 W W W W\n" +
+                        "W W W W W W W W W W W W 3 0 A A 0 0 0 0 0 0 A 0 0 0 1 1 1 1\n" +
+                        "W W W W W W W W W W W W 8 2 2 A 2 2 2 2 2 2 A 2 2 2 2 2 2 9";
         int row=0,col=0;
         for(int loc=0;loc<template.length();loc++) {
             char type = template.charAt(loc);
@@ -67,18 +66,17 @@ public class Enemy {
                 col = 0;
             }
             else if(type=='$'){
-                addEnemyAt(col,row);
+                enemies.add(new Enemy(100*col+25,100*row+25,50,50));
             }
             if(loc%2==0){//every odd is a space character
                 col++;
             }
         }
-//        enemies.add(new Enemy(1125,225,50,50));
-//        enemies.add(new Enemy(510,340,50,50));
-//        enemies.add(new Enemy(WIDTH-200,HEIGHT-200,50,50));
     }
-    private static void addEnemyAt(int x, int y){
-        enemies.add(new Enemy(100*x+25,100*y+25,50,50));
+    public void reset(){
+        frame=0;
+        enemies.clear();
+        templateWriter();
     }
     public void destroy(){//destroys once death animation is over
         for(int i=0;i<enemies.size();i++){
@@ -108,6 +106,7 @@ public class Enemy {
         }
         return false;
     }
+
     public Rectangle getRect() {
         return new Rectangle(x, y, width, height);
     }

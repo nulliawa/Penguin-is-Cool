@@ -17,7 +17,7 @@ public class Battle {
         private int x,y,spdX,spdY,spdScale;
         private final int width,height;
         private double heading;
-        private Image cover;
+        private final Image cover;
         public Projectile(int x,int y,int width,int height,int spdScale,double heading,Image cover){
             this.x=x;
             this.y=y;
@@ -144,7 +144,7 @@ public class Battle {
     private static final ArrayList<Projectile> snow=new ArrayList<>();
     private static final ArrayList<Projectile> spikes=new ArrayList<>();
     private static final ArrayList<Projectile> seekers=new ArrayList<>();
-    private Player player=new Player(WIDTH/2,HEIGHT/2);
+    private final Player player=new Player(WIDTH/2,HEIGHT/2);
     public Battle(int hp){//create new battle
         this.win=false;
         this.lose=false;
@@ -227,6 +227,7 @@ public class Battle {
         totalAtks=-1;//3 attacks survived to win
     }
     public void stopAll(){
+        frame=0;
         betweenTimer.stop();
         destroyCloud();
         icicleTimer.stop();
@@ -241,9 +242,6 @@ public class Battle {
     }
     public void setHP(int setTo){
         hp=setTo;
-    }
-    public String getHealthStr(){
-        return String.valueOf(hp);
     }
     private void hit(Projectile projectile){
         if(projectile.getRect().intersects(player.getRect())&&!iFrame){

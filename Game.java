@@ -16,7 +16,7 @@ import java.io.File;
 public class Game extends BaseFrame{
     private static final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5, PAUSE = 6;
-    public int resume;
+    public int resume=GAME;
     private int screen = MENU;
     private int codAmount=0;
     private static final Image codFishBase =new ImageIcon("codFish.png").getImage();
@@ -50,7 +50,7 @@ public class Game extends BaseFrame{
     private boolean playingSong = false;
     private boolean songDone = false;
     private final Enemy enemy;
-    private final Boss boss;
+    private Boss boss;
     private Battle battle;
     private final Puzzle puzzle = new Puzzle();
     private int tutorialScreen = 0;
@@ -59,7 +59,7 @@ public class Game extends BaseFrame{
 
     public Game(String title, int width, int height) {
         super(title, width, height);
-        boss=new Boss(0,1300);
+        boss=new Boss();
 
         bkg = new BKG(0, 0, 3000, 1500, null);//wip
         BKG.setup();
@@ -75,7 +75,17 @@ public class Game extends BaseFrame{
         generateNotes();
         addOffset();
     }
-
+    public void resetGame(){
+        //reset player to middle of screen
+        player.setPos(WIDTH/2,HEIGHT/2);
+        //reset all enemies
+        enemy.reset();
+        bkg.reset();
+        battle.stopAll();
+        battle=new Battle(10);
+        boss=new Boss();
+        codAmount=0;
+    }
     public void move() {
         // If player gets to the edge of the background, stop moving the background, instead move the player
         if(!battle.getWin()&&!battle.getLose()) {
@@ -133,8 +143,8 @@ public class Game extends BaseFrame{
         // Button function
         if (buttons.get(0).isClicked(mx, my, mb)) {
             screen = GAME;
-            //reset player to middle of screen
-            player.setPos(WIDTH/2,HEIGHT/2);
+            resetGame();
+
         } else if (buttons.get(1).isClicked(mx, my, mb)) {
             screen = TUTORIAL;
         }
@@ -183,10 +193,14 @@ public class Game extends BaseFrame{
         switch (tutorialScreen) {
             case 0:
                 // Draw story
-                g.setFont(new Font("Comic Sans MS", Font.PLAIN, 25));
+                g.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
                 g.setColor(MAIN);
-                g.drawString("Penguin wants to achieve maximum happiness. Help him by defeating every enemy for fish!", 20, 30);
-
+                String[] story=new String[]{"Penguin wants to achieve maximum happiness.","Help him by defeating every enemy for fish!",
+                        "Ferocious ice spirits block our beloved penguin's path.","Can you survive their onslaught?","It is an arduous journey.",
+                        "Beware of what lies at the end of your adventure"};
+                for(int st=0;st<story.length;st++){
+                    g.drawString(story[st],20,40+60*st);
+                }
                 break;
             case 1:
                 // Controls
@@ -260,6 +274,9 @@ public class Game extends BaseFrame{
                 g.setColor(new Color(75, 75, 75));
                 g.setFont(new Font("Comic Sans MS", Font.PLAIN, 23));
                 g.drawString(offset + "", 1088, 170);
+                break;
+            case 2:
+                drawUI(g);
         }
     }
 
@@ -291,12 +308,13 @@ public class Game extends BaseFrame{
         } else {
             g.setColor(SECONDARY);
         }
-        g.drawString("to",105,150);
         if(fishToHealth.isClicked(mx,my,mb)&&battle.getHP()<10&&codAmount>0){//10 is max hp
             battle.setHP(battle.getHP()+1);
             codAmount-=1;
             mb=0;
         }
+        g.setColor(Color.white);
+        g.drawString("to",105,150);
         g.drawImage(codUI,20,90,null);
         g.drawImage(heart,145,115,null);
     }
@@ -445,10 +463,15 @@ public class Game extends BaseFrame{
     }
 
     public void drawPause(Graphics g) {
-
         //layer underneath (before pause)
         if (resume == GAME) {
-            drawGame(g);
+            if(!battle.getLose()) {
+                drawGame(g);
+            }
+            else{
+                drawGame(g);
+                drawLose(g);
+            }
         } else if (resume == BATTLE) {
             drawBattle(g);
             g.setColor(Color.black);
@@ -460,7 +483,9 @@ public class Game extends BaseFrame{
 
         g.setColor(Color.black);
         g.setFont(new Font("SnowtopCaps", Font.PLAIN, 70));
-        g.drawString("[ESC]RESUME",400,390);
+        if(!battle.getLose()) {
+            g.drawString("[ESC]RESUME", 400, 390);
+        }
         g.drawString("[ENTER]MAIN MENU",400,490);
     }
     public void drawWin(Graphics g){
@@ -482,7 +507,7 @@ public class Game extends BaseFrame{
         player.stopMove();
         BKG.stopMove();
         if(player.loseAnimation(g)){
-            battle.setLose(false);
+            screen=PAUSE;
         }
     }
     public void draw(Graphics g) {//test
@@ -552,7 +577,7 @@ public class Game extends BaseFrame{
             }
         }
         else if(screen==PAUSE){
-            if(keys[ESC]) {//resume
+            if(keys[ESC]&&!battle.getLose()) {//resume
                 screen = resume;
                 super.timer.start();
             }

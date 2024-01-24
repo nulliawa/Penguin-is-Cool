@@ -32,6 +32,9 @@ public class BKG {
         for(int i = 0; i< blockNames.length; i++){//make image list
             blockImgs[i]= new ImageIcon("iceTile/"+blockNames[i]+".png").getImage().getScaledInstance(100,100,Image.SCALE_SMOOTH);
         }
+        templateWriter();
+    }
+    private static void templateWriter(){
         //creation of grid array
         for(int ad=0;ad<30;ad++) {
             blocks.add(new ArrayList<BKG>());
@@ -40,22 +43,21 @@ public class BKG {
         //coords based on 100x100 sized squares
         //30x  15y
         //DEFAULT=0,TOP=1,BOT=2,LEFT=3,RIGHT=4,STAIR=5,TOPL=6,TOPR=7,BOTL=8,BOTR=9;
-        String template=
-                "6 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 7\n" +
-                "3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 A A A A A 0 A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 A 0 A A A A A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "A A 5 A A A A # 0 0 0 0 A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 A A A 0 0 0 0 A 5 A A A A 0 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 A 0 0 0 0 A 5 A A A A A 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 A A 0 2 2 0 0 0 0 0 0 A 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 0 A 4 W W 3 0 0 0 0 0 A 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 0 A 0 1 1 0 0 0 0 0 0 A 0 0 0 0 0 0 0 0 0 4\n" +
-                "3 0 0 0 0 0 0 0 0 A A A A A 0 0 0 0 0 A A 5 A 0 0 0 0 0 0 4\n" +
-                "8 2 2 2 2 2 2 2 2 2 2 2 0 0 A 0 0 0 0 0 0 0 A 0 0 0 0 0 0 4\n" +
-                "W W W W W W W W W W W W 3 0 A 0 0 0 0 0 0 0 A 0 0 0 0 0 0 4\n" +
-                "W W W W W W W W W W W W 3 0 A A 0 0 0 0 0 0 A 0 0 0 0 0 0 4\n" +
-                "W W W W W W W W W W W W 8 2 2 A 2 2 2 2 2 2 A 2 2 2 2 2 2 9";
+        String template="6 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 7\n" +
+                        "3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 0 0 0 0 0 0 0 2 2 0 4\n" +
+                        "3 0 0 0 0 0 A A A A A 0 A 0 0 0 4 W W 3 0 0 0 0 2 9 W W 3 4\n" +
+                        "3 0 0 0 0 0 A A A A A A A 0 0 0 0 7 W 3 0 0 0 9 W W W W 3 4\n" +
+                        "A A 5 A A A A # 0 0 0 0 A A 0 0 0 0 1 0 0 0 4 W W W W 6 0 4\n" +
+                        "3 0 0 0 0 0 A A A 0 0 0 0 A 5 A A A A 0 0 0 0 7 W W W 3 0 4\n" +
+                        "3 0 0 0 0 0 0 0 A 0 0 0 0 A 5 A A A A A 0 0 0 0 7 W W 3 0 4\n" +
+                        "3 0 0 0 0 0 0 0 A A 0 2 2 0 0 0 2 2 0 A 0 0 0 0 0 1 1 0 0 4\n" +
+                        "3 0 0 0 0 0 0 0 0 A 4 W W 3 0 4 W W 3 A 0 0 0 0 0 0 0 0 0 4\n" +
+                        "3 0 0 0 0 0 0 0 0 A 0 1 1 0 0 4 W W 3 A 0 0 0 0 0 0 2 2 0 4\n" +
+                        "3 0 0 0 0 0 0 0 0 A A A A A 0 0 1 1 0 A A 5 A 0 0 9 W W 8 2\n" +
+                        "8 2 2 2 2 2 2 2 2 2 2 2 0 A A 0 0 0 0 0 0 0 A 0 4 W W W W W\n" +
+                        "W W W W W W W W W W W W 3 0 A 0 0 0 0 0 0 0 A 0 0 7 W W W W\n" +
+                        "W W W W W W W W W W W W 3 0 A A 0 0 0 0 0 0 A 0 0 0 1 1 1 1\n" +
+                        "W W W W W W W W W W W W 8 2 2 A 2 2 2 2 2 2 A 2 2 2 2 2 2 9";
         int row=0,col=0;
         for(int loc=0;loc<template.length();loc++){
             char type=template.charAt(loc);
@@ -104,6 +106,14 @@ public class BKG {
                 col++;
             }
         }
+    }
+    public void reset(){
+        BKG.stopMove();
+        offX=0;
+        offY=0;
+        blocks.clear();
+        walls.clear();
+        templateWriter();
     }
     //0=none,1=North,2=South,3=East,4=West
     public int collisionY(Player p){//called on the blocks that cannot be passed through
@@ -168,7 +178,7 @@ public class BKG {
     public boolean edgeY(){//background y is on one of the edges
         return edgeYT()||edgeYB();
     }
-    private void moveHelp(BKG leader){//all other background elements follow movement of main background image
+    private void moveHelp(){//all other background elements follow movement of main background image
         this.offX+=offSpdX;
         this.offY+=offSpdY;
     }
@@ -212,12 +222,12 @@ public class BKG {
         offY+=offSpdY;
         for(ArrayList<BKG> row:blocks){//blocks and walls will also move according to speed
             for(BKG block:row){
-                block.moveHelp(this);
+                block.moveHelp();
             }
         }
         for(ArrayList<BKG> row:walls){
             for(BKG wall:row){
-                wall.moveHelp(this);
+                wall.moveHelp();
             }
         }
         //will need to stop offset at edge of screen
@@ -246,19 +256,6 @@ public class BKG {
         offSpdX=0;
         offSpdY=0;
     }
-    public void ground(boolean direction){//stops background x and y speeds
-        if(direction) {
-            offSpdY = 0;
-        }
-        else {
-            offSpdY = 0;
-        }
-    }
-    public void ground(){
-        offSpdX=0;
-        offSpdY=0;
-    }
-
     public void draw(Graphics g){
         for(ArrayList<BKG> row:blocks){
             for(BKG block:row){

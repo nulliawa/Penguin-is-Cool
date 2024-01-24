@@ -1,7 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+//boss seeks player when they are in range
+//moves back and forth in set bounds
 
 public class Boss{
     private static final int WIDTH = 1400, HEIGHT = 800;
@@ -11,9 +12,9 @@ public class Boss{
     private static final Image[] swimLeftImgs=new Image[7];
     private static int frame;
     private static boolean seek;
-    public Boss(int x, int y){
-        this.x=x;
-        this.y=y;
+    public Boss(){
+        this.x=0;
+        this.y=1300;
         this.width=300;
         this.height=100;
         this.selfSpdX=10;
@@ -46,8 +47,6 @@ public class Boss{
     }
     public void move(Player player){//moves according to background offset
         int pX=player.getRect().x,pY=player.getRect().y,pW=player.getRect().width,pH=player.getRect().height;
-
-        boundedX();
         if(player.getRect().intersects(triggerBox)){//player is within detection and initiates orca's battle
             seek=true;
         }
@@ -70,6 +69,9 @@ public class Boss{
             else if(hitbox.y+hitbox.height/2>pY+pH/2){
                 selfSpdY=-15;
             }
+        }
+        else{
+            boundedX();
         }
     }
     public boolean collides(Player player){
