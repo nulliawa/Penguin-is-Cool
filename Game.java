@@ -10,6 +10,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import java.io.File;
+//need to install font "SnowtopCaps"
 //main game extending baseframe, start at menu
 //ESC TO PAUSE (during GAME and BATTLE)
 //Cod - https://www.pinterest.com/pin/pixel008-stream-fish--848576754775632834/
@@ -36,17 +37,6 @@ public class Game extends BaseFrame{
     private final int[] times = {-1, 2000, 800, 1000, 800, 700, 700, 1200, 3900, 4000, 4000, 4000, 400, 500, 700, 500, -1};
     private int timeCounter = 0;
     private int score = 0;
-//    Timer firstTimer = new Timer(times[0], new ActionListener() { // Timer goes off at different intervals listed in array times
-//        @Override
-//        public void actionPerformed(ActionEvent actionEvent) {
-//            createNotes();
-//            timeCounter++;
-//            updateTimer();
-//            firstTimer.stop();
-//        }
-//    });
-    Timer beatTimer;
-    private boolean first = true;
     private boolean playingSong = false;
     private boolean songDone = false;
     private final Enemy enemy;
@@ -351,11 +341,6 @@ public class Game extends BaseFrame{
             playingSong = true;
             addOffset();
         }
-//        if (first) {
-//            // firstTimer.start();
-//            timeCounter++;
-//            first = false;
-//        }
 
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, WIDTH, HEIGHT);
@@ -371,26 +356,6 @@ public class Game extends BaseFrame{
                 timeCounter++;
             }
         }
-//        if (beatTimer != null && beatTimer.isRunning()) {
-//            beatTimer.stop();
-//        }
-//        beatTimer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
-//            @Override
-//            public void actionPerformed(ActionEvent actionEvent) {
-//                if (timeCounter < times.length - 1) { // If not out of bounds
-//                    createNotes();
-//                    timeCounter++;
-//
-//                    System.out.println(times[timeCounter] - offset);
-//
-//                    beatTimer.setDelay(times[timeCounter]);
-//                } else { // Stop the timer after going through the list
-//                    beatTimer.stop();
-//                }
-//            }
-//        });
-//
-//        beatTimer.start();
     }
 
     public void generateNotes() {
@@ -484,7 +449,9 @@ public class Game extends BaseFrame{
         g.drawImage(pengEnd, 0, 0, this);
 
         g.setColor(Color.WHITE);
-        g.drawString("FINAL SCORE: " + score, 75, HEIGHT / 2);
+        g.setFont(new Font("Comic Sans MS", Font.BOLD, 50));
+        g.drawString("FINAL SCORE: " + score, 20, HEIGHT / 2);
+        g.drawString("FINAL FISH: "+codAmount,20,HEIGHT/2+50);
 
         Button tryAgain = new Button(20, HEIGHT - 120, 200, 100);
         tryAgain.draw(g, MAIN);
@@ -498,11 +465,6 @@ public class Game extends BaseFrame{
         }
 
     }
-
-    public void drawPuzzle(Graphics g) {
-        puzzle.draw(g);
-    }
-
     public void drawPause(Graphics g) {
         //layer underneath (before pause)
         if (resume == GAME) {
@@ -571,8 +533,6 @@ public class Game extends BaseFrame{
             }
         } else if (screen == BATTLE) {
             drawBattle(g);
-        } else if (screen == PUZZLE) {
-
         } else if (screen == PAUSE) {
             drawPause(g);
             super.timer.stop();
@@ -609,9 +569,6 @@ public class Game extends BaseFrame{
         g2d.dispose();
 
         return rotatedImage;
-    }
-    public void setScore(int score) {
-        this.score = score;
     }
     @Override
     public void keyPressed(KeyEvent e) {//constant new checking for keys[], based on actionPerformed()

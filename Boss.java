@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 //boss seeks player after they are in range
-//moves back and forth in set bounds
+//otherwise moves back and forth in set bounds
 //hard coded boss hitboxes
 //Orca - https://opengameart.org/content/swimming-whale
 public class Boss{
@@ -11,7 +11,7 @@ public class Boss{
     private static final Image[] swimRightImgs =new Image[7];
     private static final Image[] swimLeftImgs=new Image[7];
     private static int frame;
-    private static boolean seek;
+    private boolean seek;
     public Boss(){
         this.x=0;
         this.y=1300;
@@ -38,9 +38,6 @@ public class Boss{
         if((selfSpdX>0&&rectX>=bounds.x+bounds.width)||(selfSpdX<0&&rectX<=bounds.x)){
             selfSpdX*=-1;
         }
-    }
-    public Rectangle getRect(){
-        return new Rectangle(x,y,width,height);
     }
     public void move(Player player){//moves according to background offset
         int pX=player.getRect().x,pY=player.getRect().y,pW=player.getRect().width,pH=player.getRect().height;

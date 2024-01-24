@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 //background includes walls
-//walls=water tiles and ice wall tiles
+//water tiles and ice wall tiles cannot be passed through by player
 //made of many tiles so can be easily customizable
 //has scrolling based on player's position in the overworld vs on the screen - offset
 //https://graphicriver.net/item/winterland-top-down-tileset/17565368?ref=evtheme
