@@ -10,20 +10,14 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import java.io.File;
-/*
-main game extending baseframe, start at menu
-ESC TO PAUSE (during GAME and BATTLE)
-WASD TO MOVE (background scrolling included)
-LEFT CLICK BUTTON to convert fish to HP (10)
-BATTLE starts when player runs into an ENEMY
-win battle to get 3 cod
- */
+//main game extending baseframe, start at menu
+//ESC TO PAUSE (during GAME and BATTLE)
 
 public class Game extends BaseFrame{
     private static final int WIDTH = 1400, HEIGHT = 800;
     public final int MENU = 0, GAME = 1, TUTORIAL = 2, MUSIC = 3, BATTLE = 4, PUZZLE = 5, PAUSE = 6;
     public int resume;
-    private int screen = 3;
+    private int screen = MENU;
     private int codAmount=0;
     private static final Image codFishBase =new ImageIcon("codFish.png").getImage();
     private static final Image codUI=codFishBase.getScaledInstance(100,100,Image.SCALE_SMOOTH);
@@ -31,23 +25,26 @@ public class Game extends BaseFrame{
     private static final Image heart=new ImageIcon("heart.png").getImage().getScaledInstance(50,50,Image.SCALE_SMOOTH);
     private final Player player;
     private final BKG bkg;
-    private final long[] memTime=new long[2];
+    private final long[] memTime=new long[3];
     private final ArrayList<Integer> noteX = new ArrayList<>();
     private final ArrayList<Integer> noteY = new ArrayList<>();
     private final ArrayList<Note> notes = new ArrayList<>();
-    private int offset = 100; // CHANGE LATENCY BASED OFF OF YOUR MACHINE
-    private final int[] times = {2300, 700, 1200, 700, 700, 700, 700, 700, 1200, 1200, 700, 20 * 1000, 20 * 1000, 20 * 1000, -1};
+    private int offset = 0; // CHANGE LATENCY BASED OFF OF YOUR MACHINE
+    private final int[] times = {-1, 2000, 800, 1000, 800, 700, 700, 1200, 4000, 4000, 4000, 4000, -1};
+    // NOT WORKING PROPERLY
+
+    // private final int[] times = {2300, 700, 8000, 700, 700, 700, 700, 700, 1200, 1200, 700, 20 * 1000, 20 * 1000, 20 * 1000, -1};
     private int timeCounter = 0;
     private int score = 0;
-    Timer firstTimer = new Timer(times[0], new ActionListener() { // Timer goes off at different intervals listed in array times
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-            createNotes();
-            timeCounter++;
-            firstTimer.stop();
-            updateTimer();
-        }
-    });
+//    Timer firstTimer = new Timer(times[0], new ActionListener() { // Timer goes off at different intervals listed in array times
+//        @Override
+//        public void actionPerformed(ActionEvent actionEvent) {
+//            createNotes();
+//            timeCounter++;
+//            updateTimer();
+//            firstTimer.stop();
+//        }
+//    });
     Timer beatTimer;
     private boolean first = true;
     private boolean playingSong = false;
@@ -313,30 +310,46 @@ public class Game extends BaseFrame{
             playingSong = true;
             addOffset();
         }
-        if (first) {
-            firstTimer.start();
-            first = false;
-        }
+//        if (first) {
+//            // firstTimer.start();
+//            timeCounter++;
+//            first = false;
+//        }
 
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
         drawNotes(g);
+        updateTimer();
     }
 
     public void updateTimer() {
-        beatTimer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (timeCounter < times.length - 1) { // If not out of bounds
-                    createNotes();
-                    timeCounter++;
-                } else { // Stop the timer after going through the list
-                    beatTimer.stop();
-                }
+        if (timeMill(times[timeCounter], 2)) {
+            if (timeCounter < times.length - 1) {
+                createNotes();
+                timeCounter++;
             }
-        });
-        beatTimer.start();
+        }
+//        if (beatTimer != null && beatTimer.isRunning()) {
+//            beatTimer.stop();
+//        }
+//        beatTimer = new Timer(times[timeCounter], new ActionListener() { // Timer goes off at different intervals listed in array times
+//            @Override
+//            public void actionPerformed(ActionEvent actionEvent) {
+//                if (timeCounter < times.length - 1) { // If not out of bounds
+//                    createNotes();
+//                    timeCounter++;
+//
+//                    System.out.println(times[timeCounter] - offset);
+//
+//                    beatTimer.setDelay(times[timeCounter]);
+//                } else { // Stop the timer after going through the list
+//                    beatTimer.stop();
+//                }
+//            }
+//        });
+//
+//        beatTimer.start();
     }
 
     public void generateNotes() {
@@ -368,7 +381,7 @@ public class Game extends BaseFrame{
             note.setGame(true);
 
             // Clicked on note
-            if (note.isHovered(mx, my) && mb == 1) {
+            if (note.isHovered(mx, my) && mb == 1 && note.isVisible()) {
                 note.setVisible(false);
                 int hitCloseness = note.getApproachRadius() - note.getRADIUS();
 
@@ -381,7 +394,6 @@ public class Game extends BaseFrame{
                 } else {
                     score -= 100;
                 }
-                System.out.println(hitCloseness + " " + score);
                 mb = 0;
             }
         }

@@ -54,6 +54,10 @@ public class Note {
         this.visible = visible;
     }
 
+    public boolean isVisible() {
+        return visible;
+    }
+
     public void setGame(boolean game) {
         this.game = game;
     }
