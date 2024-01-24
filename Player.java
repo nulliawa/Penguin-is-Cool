@@ -301,7 +301,7 @@ public class Player {
         }
     }
     //for drawing in menus
-    public void draw(Graphics g, int type){//type0=idle right,type1=left,type2=right
+    public void draw(Graphics g, int type){//type0=idle left,type1=idle right,type2=left,type3=right
         frame++;
         if(frame>=2147483647){//limit on ints
             frame=0;
@@ -309,13 +309,13 @@ public class Player {
         if(type==0){//idle left
             idleAnimation(g,true);
         }
-        if(type==0){//idle right
+        if(type==1){//idle right
             idleAnimation(g,false);
         }
-        else if(type==1){//left walking
+        else if(type==2){//left walking
             walkAnimation(g,true);
         }
-        else if(type==2){//right walking
+        else if(type==3){//right walking
             walkAnimation(g,false);
         }
     }
