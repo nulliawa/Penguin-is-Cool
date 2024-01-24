@@ -37,17 +37,21 @@ public class Note {
 
     public void draw(Graphics g) {
         g.setColor(Color.WHITE);
-        miss();
+        if (approachRadius <= RADIUS) {
+            visible = false;
+        }
         if (visible) {
             g.fillOval(x - RADIUS / 2, y - RADIUS / 2, RADIUS, RADIUS);
             g.drawOval(x - approachRadius / 2, y - approachRadius / 2, approachRadius, approachRadius);
         }
     }
 
-    public void miss() {
+    public boolean miss() {
         if (approachRadius <= RADIUS) {
             visible = false;
+            return true;
         }
+        return false;
     }
 
     public void setVisible(boolean visible) {
