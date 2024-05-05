@@ -47,7 +47,7 @@ public class Battle {
                 x=WIDTH-width;
             }
         }
-        private boolean clean(ArrayList pList){//removes off-screen projectiles
+        private boolean clean(ArrayList<Projectile> pList){//removes off-screen projectiles
             if(this.x+width<0){
                 pList.remove(this);
                 return true;
